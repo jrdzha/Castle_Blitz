@@ -1,0 +1,17 @@
+R = Red Mage
+G = Green Mage
+B = Blue Mage
+D = Dwarf
+K = Knight
+TO = Torch
+CH = Chest
+BV = Bridge (Vertical)
+BH = Bridge (Horizontal)
+BA = Barrel
+SB = Small Box
+BB = Big Box
+Numbers = Tile Index
+
+*R, G, B, D, K must be followed by a number from 1-5 indicating its team (ex. RM1)
+
+-- = Empty
