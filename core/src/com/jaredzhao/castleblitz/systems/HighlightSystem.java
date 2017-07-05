@@ -22,12 +22,10 @@ public class HighlightSystem extends EntitySystem{
 
     private Engine ashleyEngine;
 
-    private EntityFactory entityFactory;
     private Entity map;
 
-    public HighlightSystem(Engine ashleyEngine, EntityFactory entityFactory, Entity map){
+    public HighlightSystem(Engine ashleyEngine, Entity map){
         this.ashleyEngine = ashleyEngine;
-        this.entityFactory = entityFactory;
         this.map = map;
     }
 

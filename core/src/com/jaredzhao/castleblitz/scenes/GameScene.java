@@ -71,7 +71,7 @@ public class GameScene extends Scene {
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem(ashleyEngine);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine, entityFactory, map);
+        highlightSystem = new HighlightSystem(ashleyEngine, map);
         animationManagerSystem = new AnimationManagerSystem();
 
         //Add systems to ashleyEngine

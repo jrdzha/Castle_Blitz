@@ -76,6 +76,8 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).tileY = tileY;
         entity.getComponent(LightComponent.class).light = createLight(tileX * 16, (tileY * 16) + 8);
         entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/torch.wav";
+        entity.getComponent(HasSoundEffectComponent.class).continuous = true;
+        entity.getComponent(HasSoundEffectComponent.class).soundLength = 5.12f;
         return entity;
     }
 
@@ -208,6 +210,8 @@ public class EntityFactory {
                 type == 80 || type == 81) {
             entity.add(new HasSoundEffectComponent());
             entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/runningwater.wav";
+            entity.getComponent(HasSoundEffectComponent.class).continuous = true;
+            entity.getComponent(HasSoundEffectComponent.class).soundLength = 5.493f;
         }
 
         entity.getComponent(HighlightComponent.class).highlight = createHighlight(1, 1, 1, tileX, tileY);
@@ -246,6 +250,9 @@ public class EntityFactory {
         entity.getComponent(SoundEffectComponent.class).sound = audioFactory.loadSound(location);
         if(location.equals("audio/sfx/runningwater.wav")){
             entity.getComponent(SoundEffectComponent.class).boost = .25f;
+        }
+        if(location.equals("audio/sfx/blop.wav")){
+            entity.getComponent(SoundEffectComponent.class).boost = .75f;
         }
         return entity;
     }

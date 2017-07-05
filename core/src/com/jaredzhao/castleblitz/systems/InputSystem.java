@@ -5,6 +5,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -51,11 +52,21 @@ public class InputSystem extends EntitySystem implements InputProcessor{
             if (selectableComponent.removeSelection) {
                 selectableComponent.isSelected = false;
                 selectableComponent.removeSelection = false;
+                entity.add(new HasSoundEffectComponent());
+                entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/blop.wav";
+                entity.getComponent(HasSoundEffectComponent.class).continuous = false;
+                entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
+                entity.getComponent(HasSoundEffectComponent.class).soundLength = .27f;
             }
 
             if (selectableComponent.addSelection) {
                 selectableComponent.isSelected = true;
                 selectableComponent.addSelection = false;
+                entity.add(new HasSoundEffectComponent());
+                entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/blop.wav";
+                entity.getComponent(HasSoundEffectComponent.class).continuous = false;
+                entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
+                entity.getComponent(HasSoundEffectComponent.class).soundLength = .27f;
             }
         }
     }

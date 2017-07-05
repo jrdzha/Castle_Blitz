@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Sound;
 
 public class SoundEffectComponent implements Component{
     public Sound sound;
-    public float volume = 0f;
     public long id;
-    public float boost = 1f;
+    public float volume = 0f, boost = 1f;
 }

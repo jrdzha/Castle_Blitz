@@ -2,6 +2,8 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
@@ -46,35 +48,50 @@ public class AudioSystem extends EntitySystem {
     public void update(float deltaTime){
 
         for(Entity entity : soundEffectsSources){
-            HasSoundEffectComponent hsfx = hasSoundEffectComponentComponentMapper.get(entity);
-            PositionComponent position = positionComponentComponentMapper.get(entity);
+            HasSoundEffectComponent hasSoundEffectComponent = hasSoundEffectComponentComponentMapper.get(entity);
+            PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
 
-            if(!soundEffects.containsKey(hsfx.soundName.hashCode())){
-                soundEffects.put(hsfx.soundName.hashCode(), entityFactory.createSoundEffect(hsfx.soundName));
-                SoundEffectComponent soundEffectComponent = ((Entity)soundEffects.get(hsfx.soundName.hashCode())).getComponent(SoundEffectComponent.class);
+            if(!soundEffects.containsKey(hasSoundEffectComponent.soundName.hashCode())){
+                soundEffects.put(hasSoundEffectComponent.soundName.hashCode(), entityFactory.createSoundEffect(hasSoundEffectComponent.soundName));
+                SoundEffectComponent soundEffectComponent = ((Entity)soundEffects.get(hasSoundEffectComponent.soundName.hashCode())).getComponent(SoundEffectComponent.class);
                 soundEffectComponent.id = soundEffectComponent.sound.play(0f);
                 soundEffectComponent.sound.setLooping(soundEffectComponent.id, true);
             }
 
-            float xPosition = Math.abs((position.x) - (orthographicCamera.position.x - (camera.getComponent(CameraComponent.class).cameraWidth / 2f)));
-            float yPosition = Math.abs((position.y) - (orthographicCamera.position.y - (camera.getComponent(CameraComponent.class).cameraHeight / 2f)));
+            SoundEffectComponent soundEffectComponent = ((Entity) soundEffects.get(hasSoundEffectComponent.soundName.hashCode())).getComponent(SoundEffectComponent.class);
 
-            SoundEffectComponent soundEffectComponent = ((Entity)soundEffects.get(hsfx.soundName.hashCode())).getComponent(SoundEffectComponent.class);
-            soundEffectComponent.volume += (float)(75f / (Math.pow(Math.pow(xPosition, 2) + Math.pow(yPosition, 2), 1) + 512));
+            if(hasSoundEffectComponent.dynamicVolume) {
+                float xPosition = Math.abs((positionComponent.x) - (orthographicCamera.position.x - (camera.getComponent(CameraComponent.class).cameraWidth / 2f)));
+                float yPosition = Math.abs((positionComponent.y) - (orthographicCamera.position.y - (camera.getComponent(CameraComponent.class).cameraHeight / 2f)));
+
+                soundEffectComponent.volume += (float) (75f / (Math.pow(Math.pow(xPosition, 2) + Math.pow(yPosition, 2), 1) + 512));
+            } else {
+                soundEffectComponent.volume = 1;
+            }
 
             if(entity.getComponent(StopSoundComponent.class) != null){
                 entity.remove(SoundEffectComponent.class);
                 entity.remove(StopSoundComponent.class);
             }
 
+            hasSoundEffectComponent.elapsedTime += Gdx.graphics.getDeltaTime();
+
+            if(!hasSoundEffectComponent.continuous && hasSoundEffectComponent.elapsedTime > hasSoundEffectComponent.soundLength){
+                entity.remove(HasSoundEffectComponent.class);
+                soundEffectComponent.sound.stop();
+                soundEffectComponent.sound.dispose();
+                soundEffects.remove(hasSoundEffectComponent.soundName.hashCode());
+            }
         }
 
         for(Object object : soundEffects.values()) {
             SoundEffectComponent soundEffectComponent = ((Entity)object).getComponent(SoundEffectComponent.class);
             soundEffectComponent.volume *= soundEffectComponent.boost;
+
             if(soundEffectComponent.volume > 1){
                 soundEffectComponent.volume = 1;
             }
+
             soundEffectComponent.sound.setVolume(soundEffectComponent.id, soundEffectComponent.volume * soundEffectComponent.boost);
             soundEffectComponent.volume = 0;
         }

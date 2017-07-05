@@ -13,7 +13,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	private int currentScene; //Current scene number
 
-	public static String version = "Build 27"; //Current build version
+	public static String version = "Build 28"; //Current build version
 
 
 	public GameEngine(){
