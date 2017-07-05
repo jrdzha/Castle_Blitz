@@ -11,6 +11,7 @@ import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.map.UpdateTileComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
+import com.jaredzhao.castleblitz.utils.TeamColorDecoder;
 
 import java.util.ArrayList;
 
@@ -26,28 +27,21 @@ public class EntityFactory {
         this.camera = camera;
     }
 
-    public Entity createGenericEntity(){ //Create generic entity with unique id
-        Entity entity = new Entity();
-        entity.add(new AssignIDComponent());
-        entity.add(new IDComponent());
-        return entity;
-    }
-
     public Entity createCamera(){ //Create camera (only called once per game)
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new CameraComponent());
         entity.add(new PositionComponent());
         return entity;
     }
 
     public Entity createMap(){ //Creates level map
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new MapComponent());
         return entity;
     }
 
     public Entity createLight(int x, int y){ //Creates light source
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
         entity.add(new AnimationComponent());
@@ -63,7 +57,7 @@ public class EntityFactory {
     }
 
     public Entity createTorch(int tileX, int tileY){ //Create torch entity
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new SpriteComponent());
@@ -85,8 +79,8 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createCharacter(String type, int tileX, int tileY, int team){ //Create character entity
-        Entity entity = createGenericEntity();
+    public Entity createCharacter(String type, int tileX, int tileY, String team){ //Create character entity
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new SpriteComponent());
@@ -108,12 +102,13 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
         entity.getComponent(CharacterPropertiesComponent.class).team = team;
-        entity.getComponent(HighlightComponent.class).highlight = createHighlight(team - 1, 0.15f, tileX, tileY);
+        float[] decodedColor = TeamColorDecoder.decodeColor(team);
+        entity.getComponent(HighlightComponent.class).highlight = createHighlight(decodedColor[0], decodedColor[1], decodedColor[2], tileX, tileY);
         return entity;
     }
 
     public Entity createProp(String type, int tileX, int tileY){ //Create character entity
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new SpriteComponent());
@@ -131,7 +126,7 @@ public class EntityFactory {
     }
 
     public Entity createCastle(int tileX, int tileY){ //Create castle
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new SpriteComponent());
@@ -149,7 +144,7 @@ public class EntityFactory {
     }
 
     public Entity createStaticPositionUI(String type, float x, float y){ //Create UI elements
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
         entity.add(new AnimationComponent());
@@ -170,13 +165,13 @@ public class EntityFactory {
     }
 
     public Entity createSettings(){ //Create global settings
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new SettingsComponent());
         return entity;
     }
 
     public Entity createInhibitor(int tileX, int tileY){ //Create empty block on map where players can't walk
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new UpdateTileComponent());
@@ -186,7 +181,7 @@ public class EntityFactory {
     }
 
     public Entity createTile(int tileX, int tileY, int type, int layer){ //Create tile entity
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new TileComponent());
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
@@ -208,8 +203,6 @@ public class EntityFactory {
         } else {
             entity.getComponent(AnimationComponent.class).framesDisplayed = -1;
         }
-        int[] frame = {0, 0};
-        entity.getComponent(AnimationComponent.class).currentFrame = frame;
 
         if(type == 74 || type == 75 || type == 76 || type == 95 || type == 96 || type == 97 || type == 98 || type == 57 || type == 58 || type == 59 ||type == 79 ||
                 type == 80 || type == 81) {
@@ -217,14 +210,14 @@ public class EntityFactory {
             entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/runningwater.wav";
         }
 
-        entity.getComponent(HighlightComponent.class).highlight = createHighlight(6, .17f, tileX, tileY);
+        entity.getComponent(HighlightComponent.class).highlight = createHighlight(1, 1, 1, tileX, tileY);
         entity.getComponent(HighlightComponent.class).highlight.remove(VisibleComponent.class);
 
         return entity;
     }
 
-    public Entity createHighlight(int color, float alpha, int tileX, int tileY){ //Create highlight entity
-        Entity entity = createGenericEntity();
+    public Entity createHighlight(float r, float g, float b, int tileX, int tileY){ //Create highlight entity
+        Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new TileComponent());
         entity.add(new UpdateTileComponent());
@@ -235,16 +228,20 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
         entity.getComponent(LayerComponent.class).layer = 1;
-        Object[] tileSprite = animationFactory.createHighlight(color, alpha);
+
+        Object[] tileSprite = animationFactory.createHighlight(r, g, b, .17f);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
-        int[] frame = {0, 0};
-        entity.getComponent(AnimationComponent.class).currentFrame = frame;
+
+        tileSprite = animationFactory.createHighlight(r, g, b, .4f);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
+
         return entity;
     }
 
     public Entity createSoundEffect(String location){ //Create sound effect
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new SoundEffectComponent());
         entity.getComponent(SoundEffectComponent.class).sound = audioFactory.loadSound(location);
         if(location.equals("audio/sfx/runningwater.wav")){
@@ -254,7 +251,7 @@ public class EntityFactory {
     }
 
     public Entity createMusic(String[] availableTracks){ //Create music
-        Entity entity = createGenericEntity();
+        Entity entity = new Entity();
         entity.add(new MusicComponent());
         entity.getComponent(MusicComponent.class).songs = audioFactory.loadMusicTitles();
         entity.getComponent(MusicComponent.class).volume = .16f;

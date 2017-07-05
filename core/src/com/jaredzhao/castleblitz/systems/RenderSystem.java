@@ -30,10 +30,10 @@ import java.util.ArrayList;
 
 public class RenderSystem extends EntitySystem {
 
-    public SpriteBatch uiBatch;
-    public ShaderBatch batch;
-    public OrthographicCamera orthographicCamera;
-    public Sprite currentSprite;
+    private SpriteBatch uiBatch;
+    private ShaderBatch batch;
+    private OrthographicCamera orthographicCamera;
+    private Sprite currentSprite;
 
     private float lifetime;
 
@@ -77,17 +77,12 @@ public class RenderSystem extends EntitySystem {
         layout = new GlyphLayout();
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
         renderables = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class).get());
     }
 
     public void updateFixedPositionRenderables(){
-        for(int i = 0; i < sortedRenderables.size(); ++i){
-            Entity entity = sortedRenderables.get(i);
+        for(Entity entity : sortedRenderables){
             PositionComponent position = positionComponentComponentMapper.get(entity);
             FixedScreenPositionComponent fixedScreenPositionComponent = fixedScreenPositionComponentComponentMapper.get(entity);
             if(fixedScreenPositionComponent != null) {
@@ -109,25 +104,24 @@ public class RenderSystem extends EntitySystem {
 
         batch.begin(); //Render entities
 
-        for(int i = 0; i < sortedRenderables.size(); i++) { //Loop through each layer of rendering
-            Entity entity = sortedRenderables.get(i);
+        for(Entity entity : sortedRenderables){
             PositionComponent position = positionComponentComponentMapper.get(entity);
             SpriteComponent sprite = spriteComponentComponentMapper.get(entity);
             AnimationComponent animation = animationComponentComponentMapper.get(entity);
             if (animation.framesDisplayed != -1) {
-                if (0 > animation.animationTimeList.get(animation.currentFrame[0]).get(animation.currentFrame[1])) {
-                    currentSprite = sprite.spriteList.get(animation.currentFrame[0]).get(animation.currentFrame[1]);
-                } else if (animation.framesDisplayed <= animation.animationTimeList.get(animation.currentFrame[0]).get(animation.currentFrame[1])) {
-                    currentSprite = sprite.spriteList.get(animation.currentFrame[0]).get(animation.currentFrame[1]);
+                if (0 > animation.animationTimeList.get(animation.currentTrack).get(animation.currentFrame)) {
+                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
+                } else if (animation.framesDisplayed <= animation.animationTimeList.get(animation.currentTrack).get(animation.currentFrame)) {
+                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
                     animation.framesDisplayed++;
                 } else {
                     animation.framesDisplayed = 0;
-                    if (animation.currentFrame[1] < animation.animationTimeList.get(animation.currentFrame[0]).size() - 1) {
-                        animation.currentFrame[1]++;
+                    if (animation.currentFrame < animation.animationTimeList.get(animation.currentTrack).size() - 1) {
+                        animation.currentFrame++;
                     } else {
-                        animation.currentFrame[1] = 0;
+                        animation.currentFrame = 0;
                     }
-                    currentSprite = sprite.spriteList.get(animation.currentFrame[0]).get(animation.currentFrame[1]);
+                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
                 }
                 if (entity.getComponent(TileComponent.class) != null) {
                     currentSprite.setPosition((position.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),

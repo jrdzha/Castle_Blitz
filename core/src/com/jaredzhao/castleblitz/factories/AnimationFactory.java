@@ -10,20 +10,19 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    Texture textures2, textures4, texture5, light, colorTiles, ui;
+    private Texture textures2, textures4, texture5, light, highlight, ui;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
         textures4 = new Texture(Gdx.files.internal("graphics/dungeon_textures4.png"));
         texture5 = new Texture(Gdx.files.internal("graphics/castle1.png"));
         light = new Texture(Gdx.files.internal("graphics/light.png"));
-        colorTiles = new Texture(Gdx.files.internal("graphics/ColorTiles.png"));
+        highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
-        Sprite sprite = new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
-        return sprite;
+        return new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
     }
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
@@ -46,7 +45,7 @@ public class AnimationFactory {
         sprites.get(0).setAlpha(.75f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(new Integer(-1));
+        animations.add(Integer.valueOf(-1));
         completeAnimation[1] = animations;
         return completeAnimation;
     }
@@ -57,7 +56,7 @@ public class AnimationFactory {
         sprites.add(spriteRegionForTile(textures4, type % 21, type / 21, 16, 16));
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(new Integer(-1));
+        animations.add(Integer.valueOf(-1));
         completeAnimation[1] = animations;
         return completeAnimation;
     }
@@ -70,29 +69,21 @@ public class AnimationFactory {
         sprites.add(castleSprite);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(new Integer(-1));
+        animations.add(Integer.valueOf(-1));
         completeAnimation[1] = animations;
         return completeAnimation;
     }
 
-    public Object[] createHighlight(int color, float alpha){ //Generate highlight under characters when clicked
+    public Object[] createHighlight(float r, float g, float b, float a){ //Generate highlight under characters when clicked
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        Sprite tile = spriteRegionForTile(colorTiles, color, 0, 16, 16);
-        float balance = 0f;
-        if(color == 1){
-            balance = .00f;
-        } else if(color == 4){
-            balance = -.00f;
-        } else if(color == 5){
-            balance = -.00f;
-        }
-        tile.setAlpha(alpha + balance);
+        Sprite tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
+        tile.setColor(r, g, b, a);
         tile.setScale(0.95f);
         sprites.add(tile);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(new Integer(-1));
+        animations.add(Integer.valueOf(-1));
         completeAnimation[1] = animations;
         return completeAnimation;
     }
@@ -106,7 +97,7 @@ public class AnimationFactory {
             scaledSprite.setAlpha(.5f);
             scaledSprite.setScale((1f + ((float)(Math.random() - .5) / 9f)) * (float)size / 400f);
             sprites.add(scaledSprite);
-            animations.add(new Integer(2));
+            animations.add(Integer.valueOf(2));
         }
         completeAnimation[0] = sprites;
         completeAnimation[1] = animations;
@@ -120,7 +111,7 @@ public class AnimationFactory {
         for(int i = 2; i < 8; i++){
             Sprite sprite = spriteRegion(textures2, i, 0, 24, 24);
             sprites.add(sprite);
-            animations.add(new Integer(4));
+            animations.add(Integer.valueOf(4));
         }
         completeAnimation[0] = sprites;
         completeAnimation[1] = animations;
@@ -135,28 +126,28 @@ public class AnimationFactory {
         if(type.equals("R")){
             sprites.add(spriteRegion(textures2, 4, 1, 24, 24));
             sprites.add(spriteRegion(textures2, 5, 1, 24, 24));
-            animations.add(new Integer(animationTime));
-            animations.add(new Integer(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
         } else if(type.equals("G")){
             sprites.add(spriteRegion(textures2, 2, 1, 24, 24));
             sprites.add(spriteRegion(textures2, 3, 1, 24, 24));
-            animations.add(new Integer(animationTime));
-            animations.add(new Integer(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
         } else if(type.equals("B")){
             sprites.add(spriteRegion(textures2, 0, 1, 24, 24));
             sprites.add(spriteRegion(textures2, 1, 1, 24, 24));
-            animations.add(new Integer(animationTime));
-            animations.add(new Integer(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
         } else if(type.equals("D")){
             sprites.add(spriteRegion(textures2, 0, 0, 24, 24));
             sprites.add(spriteRegion(textures2, 1, 0, 24, 24));
-            animations.add(new Integer(animationTime));
-            animations.add(new Integer(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
         } else if(type.equals("K")){
             sprites.add(spriteRegion(textures2, 6, 1, 24, 24));
             sprites.add(spriteRegion(textures2, 7, 1, 24, 24));
-            animations.add(new Integer(animationTime));
-            animations.add(new Integer(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
         } else {
             return null;
         }
@@ -172,7 +163,6 @@ public class AnimationFactory {
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        int animationTime = 40;
         if(type.equals("CH")){
             sprites.add(spriteRegion(textures2, 4, 2, 24, 24));
             animations.add(-1);
@@ -185,10 +175,10 @@ public class AnimationFactory {
         } else if(type.equals("BA")){
             sprites.add(spriteRegion(textures2, 0, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("SB")){
+        } else if(type.equals("SC")){
             sprites.add(spriteRegion(textures2, 1, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("BB")){
+        } else if(type.equals("LC")){
             sprites.add(spriteRegion(textures2, 5, 2, 24, 24));
             animations.add(-1);
         } else {

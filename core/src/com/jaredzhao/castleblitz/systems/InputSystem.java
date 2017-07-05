@@ -40,17 +40,24 @@ public class InputSystem extends EntitySystem implements InputProcessor{
         this.settings = settings;
     }
 
-    public void reset() {
-
-    }
-
     @SuppressWarnings("unchecked")
     public void addedToEngine(Engine engine){
         selectables = engine.getEntitiesFor(Family.all(SelectableComponent.class, PositionComponent.class, LayerComponent.class).get());
     }
 
     public void update(float deltaTime){
+        for(Entity entity : selectables){
+            SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+            if (selectableComponent.removeSelection) {
+                selectableComponent.isSelected = false;
+                selectableComponent.removeSelection = false;
+            }
 
+            if (selectableComponent.addSelection) {
+                selectableComponent.isSelected = true;
+                selectableComponent.addSelection = false;
+            }
+        }
     }
 
     @Override
@@ -85,18 +92,12 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
             boolean nothingSelectedYet = true;
 
-            for (int i = 0; i < sortedSelectables.size(); ++i) {
-                Entity entity = sortedSelectables.get(i);
+            for (Entity entity : sortedSelectables){
                 PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
                 selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth + selectableComponent.sizeX / 2);
                 selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y + selectableComponent.sizeY / 2);
-
-                if (selectableComponent.removeSelection) {
-                    selectableComponent.isSelected = false;
-                    selectableComponent.removeSelection = false;
-                }
 
                 if (selectedX > positionComponent.x &&
                         selectedX < positionComponent.x + selectableComponent.sizeX &&
@@ -110,26 +111,18 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                     } else if (selectableComponent.name.equals("debug")) {
                         settings.getComponent(SettingsComponent.class).debug = !settings.getComponent(SettingsComponent.class).debug;
                     } else if (selectableComponent.name.equals("character") && !settings.getComponent(SettingsComponent.class).isPaused) {
-
-                        if (entity.getComponent(CharacterPropertiesComponent.class) == null) {
-                            selectableComponent.isSelected = true;
+                        if(!selectableComponent.isSelected) {
+                            selectableComponent.addSelection = true;
+                        } else {
+                            selectableComponent.removeSelection = true;
                         }
-
-                        if (entity.getComponent(CharacterPropertiesComponent.class) != null) {
-                            if (!selectableComponent.isSelected) {
-                                selectableComponent.isSelected = true;
-                                entity.add(new UpdateHighlightComponent(0.35f));
-                            } else if (selectableComponent.isSelected) {
-                                selectableComponent.isSelected = false;
-                                entity.add(new UpdateHighlightComponent(0.15f));
-                            }
-                        }
+                    } else if (selectableComponent.name.equals("tile") && !settings.getComponent(SettingsComponent.class).isPaused) {
+                        selectableComponent.isSelected = true;
                     }
                     nothingSelectedYet = false;
                 } else {
                     if (selectableComponent.name.equals("character")) {
-                        if (selectableComponent.isSelected == true && entity.getComponent(CharacterPropertiesComponent.class) != null) {
-                            entity.add(new UpdateHighlightComponent(0.15f));
+                        if (selectableComponent.isSelected) {
                             selectableComponent.removeSelection = true;
                         }
                     }

@@ -3,8 +3,7 @@ package com.jaredzhao.castleblitz.components.mechanics;
 import com.badlogic.ashley.core.Component;
 
 public class SelectableComponent implements Component{
-    public boolean isSelected = false;
-    public boolean removeSelection = false;
+    public boolean isSelected = false, removeSelection = false, addSelection = false;
     public String name;
     public float sizeX, sizeY;
 }

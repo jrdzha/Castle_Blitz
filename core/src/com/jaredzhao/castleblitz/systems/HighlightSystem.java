@@ -6,19 +6,16 @@ import com.jaredzhao.castleblitz.components.graphics.AddHighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
-import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
-import com.jaredzhao.castleblitz.components.mechanics.UpdateHighlightComponent;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 
 public class HighlightSystem extends EntitySystem{
 
-    private ImmutableArray<Entity> newHighlights, updatedEntities, selectedCharacters, highlights;
+    private ImmutableArray<Entity> newHighlights, selectedCharacters, highlights;
 
     private ComponentMapper<HighlightComponent> highlightComponentComponentMapper = ComponentMapper.getFor(HighlightComponent.class);
-    private ComponentMapper<UpdateHighlightComponent> updateHighlightComponentComponentMapper = ComponentMapper.getFor(UpdateHighlightComponent.class);
     private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -34,41 +31,21 @@ public class HighlightSystem extends EntitySystem{
         this.map = map;
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
         newHighlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, AddHighlightComponent.class).get());
-        updatedEntities = engine.getEntitiesFor(Family.all(HighlightComponent.class, UpdateHighlightComponent.class).get());
         selectedCharacters = engine.getEntitiesFor(Family.all(SelectableComponent.class, CharacterPropertiesComponent.class).get());
         highlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, PositionComponent.class).get());
     }
 
     public void update(float deltaTime){
-        for(int i = 0; i < highlights.size(); ++i){
-            Entity entity = highlights.get(i);
+        for(Entity entity : highlights){
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             highlightComponent.highlight.getComponent(PositionComponent.class).x = positionComponent.x;
             highlightComponent.highlight.getComponent(PositionComponent.class).y = positionComponent.y;
         }
 
-        for(int i = 0; i < updatedEntities.size(); ++i){
-            Entity entity = updatedEntities.get(i);
-            HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
-            CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
-            UpdateHighlightComponent updatedHighlightComponent = updateHighlightComponentComponentMapper.get(entity);
-
-            ashleyEngine.removeEntity(highlightComponent.highlight);
-            highlightComponent.highlight = entityFactory.createHighlight(characterPropertiesComponent.team - 1, updatedHighlightComponent.alpha, highlightComponent.highlight.getComponent(TileComponent.class).tileX, highlightComponent.highlight.getComponent(TileComponent.class).tileY);
-            ashleyEngine.addEntity(highlightComponent.highlight);
-
-            entity.remove(UpdateHighlightComponent.class);
-        }
-
-        for(int i = 0; i < newHighlights.size(); ++i){
-            Entity entity = newHighlights.get(i);
+        for(Entity entity : newHighlights){
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             ashleyEngine.addEntity(highlightComponent.highlight);
             entity.remove(AddHighlightComponent.class);
@@ -83,8 +60,7 @@ public class HighlightSystem extends EntitySystem{
             }
         }
 
-        for(int i = 0; i < selectedCharacters.size(); ++i){
-            Entity entity = selectedCharacters.get(i);
+        for(Entity entity : selectedCharacters){
             CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
@@ -96,7 +72,7 @@ public class HighlightSystem extends EntitySystem{
                         tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "character";
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
                     }
                 }
             }

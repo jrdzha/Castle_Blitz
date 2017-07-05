@@ -38,10 +38,6 @@ public class AudioSystem extends EntitySystem {
         this.settings = settings;
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
         soundEffectsSources = engine.getEntitiesFor(Family.all(HasSoundEffectComponent.class, PositionComponent.class).get());
         musicSources = engine.getEntitiesFor(Family.all(MusicComponent.class).get());
@@ -49,9 +45,7 @@ public class AudioSystem extends EntitySystem {
 
     public void update(float deltaTime){
 
-        for(int i = 0; i < soundEffectsSources.size(); i++) {
-
-            Entity entity = soundEffectsSources.get(i);
+        for(Entity entity : soundEffectsSources){
             HasSoundEffectComponent hsfx = hasSoundEffectComponentComponentMapper.get(entity);
             PositionComponent position = positionComponentComponentMapper.get(entity);
 
@@ -75,8 +69,8 @@ public class AudioSystem extends EntitySystem {
 
         }
 
-        for(Object o : soundEffects.values()) {
-            SoundEffectComponent soundEffectComponent = ((Entity)o).getComponent(SoundEffectComponent.class);
+        for(Object object : soundEffects.values()) {
+            SoundEffectComponent soundEffectComponent = ((Entity)object).getComponent(SoundEffectComponent.class);
             soundEffectComponent.volume *= soundEffectComponent.boost;
             if(soundEffectComponent.volume > 1){
                 soundEffectComponent.volume = 1;
@@ -85,9 +79,7 @@ public class AudioSystem extends EntitySystem {
             soundEffectComponent.volume = 0;
         }
 
-        for(int i = 0; i < musicSources.size(); ++i) {
-
-            Entity entity = musicSources.get(i);
+        for(Entity entity : musicSources){
             MusicComponent music = musicComponentComponentMapper.get(entity);
 
             if(settings.getComponent(SettingsComponent.class).fastForward){

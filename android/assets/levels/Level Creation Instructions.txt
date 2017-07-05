@@ -8,10 +8,17 @@ CH = Chest
 BV = Bridge (Vertical)
 BH = Bridge (Horizontal)
 BA = Barrel
-SB = Small Box
-BB = Big Box
+SC = Small Crate
+LC = Large Crate
 Numbers = Tile Index
 
-*R, G, B, D, K must be followed by a number from 1-5 indicating its team (ex. RM1)
+*R, G, B, D, K must be followed by its team designation
+
+R = Red Team
+O = Orange Team
+Y = Yellow Team
+G = Green Team
+C = Cyan Team
+P = Purple Team
 
 -- = Empty

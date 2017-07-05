@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class GameEngine extends ApplicationAdapter {
 
-	ArrayList<Scene> sceneList; //ArrayList containing all scenes
+	private ArrayList<Scene> sceneList; //ArrayList containing all scenes
 
 	private int currentScene; //Current scene number
 
-	public static String version = "Build 26"; //Current build version
+	public static String version = "Build 27"; //Current build version
 
 
 	public GameEngine(){

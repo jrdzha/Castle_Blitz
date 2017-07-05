@@ -9,19 +9,15 @@ import com.jaredzhao.castleblitz.components.RemoveTagComponent;
 
 public class ResourceManagementSystem extends EntitySystem{
 
-    private ImmutableArray<Entity> removeEntities;
+    private ImmutableArray<Entity> toBeRemoved;
     private Engine ashleyEngine;
 
     public ResourceManagementSystem(Engine ashleyEngine){
         this.ashleyEngine = ashleyEngine;
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
-        removeEntities = engine.getEntitiesFor(Family.all(RemoveTagComponent.class).get());
+        toBeRemoved = engine.getEntitiesFor(Family.all(RemoveTagComponent.class).get());
     }
 
     public void removeAll(){
@@ -35,8 +31,7 @@ public class ResourceManagementSystem extends EntitySystem{
     }
 
     public void update(float deltaTime){
-        for(int i = 0; i < removeEntities.size(); ++i){
-            Entity entity = removeEntities.get(i);
+        for(Entity entity : toBeRemoved){
             entity.removeAll();
             ashleyEngine.removeEntity(entity);
         }

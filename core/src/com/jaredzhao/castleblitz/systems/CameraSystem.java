@@ -18,17 +18,12 @@ public class CameraSystem extends EntitySystem{
         this.map = map;
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
         cameras = engine.getEntitiesFor(Family.all(PositionComponent.class, CameraComponent.class).get());
     }
 
     public void update(float deltaTime){
-        for(int i = 0; i < cameras.size(); ++i){
-            Entity entity = cameras.get(i);
+        for(Entity entity : cameras){
             PositionComponent position = positionComponentComponentMapper.get(entity);
             CameraComponent camera = cameraComponentComponentMapper.get(entity);
             if(position.x < 0){

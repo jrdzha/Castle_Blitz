@@ -7,7 +7,7 @@ import com.jaredzhao.castleblitz.components.graphics.LightComponent;
 
 public class LightSystem extends EntitySystem{
 
-    private ImmutableArray<Entity> lightEntities;
+    private ImmutableArray<Entity> lights;
 
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
 
@@ -17,17 +17,12 @@ public class LightSystem extends EntitySystem{
         this.ashleyEngine = ashleyEngine;
     }
 
-    public void reset() {
-
-    }
-
     public void addedToEngine(Engine engine){
-        lightEntities = engine.getEntitiesFor(Family.all(LightComponent.class, AddLightComponent.class).get());
+        lights = engine.getEntitiesFor(Family.all(LightComponent.class, AddLightComponent.class).get());
     }
 
     public void update(float deltaTime){
-        for(int i = 0; i < lightEntities.size(); ++i){
-            Entity entity = lightEntities.get(i);
+        for(Entity entity : lights){
             LightComponent lightComponent = lightComponentComponentMapper.get(entity);
             ashleyEngine.addEntity(lightComponent.light);
             entity.remove(AddLightComponent.class);

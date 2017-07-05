@@ -7,9 +7,8 @@ import com.jaredzhao.castleblitz.components.map.MapComponent;
 
 public class MapFactory {
 
-    Engine ashleyEngine;
-
-    EntityFactory entityFactory;
+    private Engine ashleyEngine;
+    private EntityFactory entityFactory;
 
     public MapFactory(Engine ashleyEngine, EntityFactory entityFactory){
         this.entityFactory = entityFactory;
@@ -41,14 +40,14 @@ public class MapFactory {
                 for (int k = 0; k < mapEntities[i][j].length; k++) {
 
                     String entityType = levelInStringArray[j + ((mapEntities[i][j].length - k - 1) * mapEntities[i].length) + (i * mapEntities[i].length * mapEntities[i][j].length)]; //Entity type data retrieved from level data
+                    String entityTypeFirstCharacter = entityType.substring(0, 1);
+                    String entityTypeSecondCharacter = entityType.substring(1, 2);
 
-                    if((entityType.contains("R") || entityType.contains("G") || entityType.contains("B") || entityType.contains("D") || entityType.contains("K")) && entityType.matches(".*\\d+.*")){
-                        mapEntities[i][j][k] = entityFactory.createCharacter(entityType.substring(0, 1), j, k, Integer.parseInt(entityType.substring(1, 2))); //The team needs to be encoded somehow
-                        ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine
-                    } else if(entityType.contains("TO")){
+
+                    if(entityType.contains("TO")){
                         mapEntities[i][j][k] = entityFactory.createTorch(j, k);
                         ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine
-                    } else if(entityType.contains("CH") || entityType.contains("BV") || entityType.contains("BH") || entityType.contains("BA") || entityType.contains("SB") || entityType.contains("BB")){
+                    } else if(entityType.contains("CH") || entityType.contains("BV") || entityType.contains("BH") || entityType.contains("BA") || entityType.contains("SC") || entityType.contains("LC")){
                         mapEntities[i][j][k] = entityFactory.createProp(entityType, j, k);
                         ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine
                     } else if(entityType.contains("CA")){
@@ -62,6 +61,9 @@ public class MapFactory {
                                 }
                             }
                         }
+                    } else if(entityTypeFirstCharacter.contains("R") || entityTypeFirstCharacter.contains("G") || entityTypeFirstCharacter.contains("B") || entityTypeFirstCharacter.contains("D") || entityTypeFirstCharacter.contains("K")){
+                        mapEntities[i][j][k] = entityFactory.createCharacter(entityTypeFirstCharacter, j, k, entityTypeSecondCharacter);
+                        ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine
                     } else if(!entityType.contains("--")){
                         mapEntities[i][j][k] = entityFactory.createTile(j, k, Integer.parseInt(entityType), i); //Create tile entity
                         ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine

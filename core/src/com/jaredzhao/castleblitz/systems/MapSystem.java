@@ -26,11 +26,6 @@ public class MapSystem extends EntitySystem {
         this.map = map;
     }
 
-    public void reset() {
-
-    }
-
-    @SuppressWarnings("unchecked")
     public void addedToEngine(Engine engine){
         tileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
         selectableEntities = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
@@ -41,8 +36,7 @@ public class MapSystem extends EntitySystem {
 
         int[] moveTo = {-1, -1};
 
-        for(int i = 0; i < selectableTiles.size(); ++i){
-            Entity entity = selectableTiles.get(i);
+        for(Entity entity : selectableTiles){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             if(entity.getComponent(CharacterPropertiesComponent.class) == null && selectableComponent.isSelected){
@@ -51,8 +45,7 @@ public class MapSystem extends EntitySystem {
             }
         }
 
-        for(int i = 0; i < selectableEntities.size(); ++i) {
-            Entity entity = selectableEntities.get(i);
+        for(Entity entity : selectableEntities){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             if(selectableComponent.isSelected && moveTo[0] != -1){
@@ -64,8 +57,7 @@ public class MapSystem extends EntitySystem {
             }
         }
 
-        for(int i = 0; i < tileEntities.size(); ++i){
-            Entity entity = tileEntities.get(i);
+        for(Entity entity : tileEntities){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             PositionComponent position = positionComponentComponentMapper.get(entity);
             position.x = tileComponent.tileX * 16;
@@ -73,8 +65,7 @@ public class MapSystem extends EntitySystem {
             entity.remove(UpdateTileComponent.class);
         }
 
-        for(int i = 0; i < selectableEntities.size(); ++i) {
-            Entity entity = selectableEntities.get(i);
+        for(Entity entity : selectableEntities){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             CharacterPropertiesComponent characteristics = characterPropertiesComponentComponentMapper.get(entity);
             ArrayList<int[]> possibleMoves1 = new ArrayList<int[]>();
