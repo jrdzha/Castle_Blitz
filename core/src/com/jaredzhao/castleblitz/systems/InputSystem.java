@@ -14,7 +14,6 @@ import com.jaredzhao.castleblitz.utils.LayerSorter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
 
 public class InputSystem extends EntitySystem implements InputProcessor{
 
@@ -27,7 +26,8 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     private EntityFactory entityFactory;
     private OrthographicCamera orthographicCamera;
     private Entity camera;
-    private Entity settings;
+    private SettingsComponent settingsComponent;
+    private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
 
     private ArrayList<Entity> sortedSelectables;
 
@@ -37,14 +37,15 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     private ComponentMapper<CameraComponent> cameraComponentComponentMapper = ComponentMapper.getFor(CameraComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
 
-    public InputSystem(Engine ashleyEngine, EntityFactory entityFactory, Entity camera, Entity settings){
+    public InputSystem(Engine ashleyEngine, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
         Gdx.input.setInputProcessor(this);
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.scale = camera.getComponent(CameraComponent.class).scale;
         this.ashleyEngine = ashleyEngine;
         this.entityFactory = entityFactory;
         this.camera = camera;
-        this.settings = settings;
+        this.settingsComponent = settings.getComponent(SettingsComponent.class);
+        this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -67,8 +68,10 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
                 removeMoveAndAttackButtons();
 
-                settings.getComponent(SettingsComponent.class).attack = false;
-                settings.getComponent(SettingsComponent.class).move = false;
+                battleMechanicsStatesComponent.characterSelected = false;
+
+                battleMechanicsStatesComponent.attack = false;
+                battleMechanicsStatesComponent.move = false;
             }
 
             if (selectableComponent.addSelection) {
@@ -82,9 +85,11 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
                 ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18));
                 ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18));
+
+                battleMechanicsStatesComponent.characterSelected = true;
             }
 
-            if(settings.getComponent(SettingsComponent.class).move || settings.getComponent(SettingsComponent.class).attack){
+            if(battleMechanicsStatesComponent.move || battleMechanicsStatesComponent.attack){
                 removeMoveAndAttackButtons();
             }
         }
@@ -146,23 +151,23 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                         nothingSelectedYet) {
 
                     if (selectableComponent.name.equals("pause")) {
-                        settings.getComponent(SettingsComponent.class).isPaused = !settings.getComponent(SettingsComponent.class).isPaused;
+                        settingsComponent.isPaused = !settingsComponent.isPaused;
                         nothingSelectedYet = false;
                     }
 
                     if (selectableComponent.name.equals("fastforward")) {
-                        settings.getComponent(SettingsComponent.class).fastForward = true;
+                        settingsComponent.fastForward = true;
                         nothingSelectedYet = false;
                     }
 
                     if (selectableComponent.name.equals("debug")) {
-                        settings.getComponent(SettingsComponent.class).debug = !settings.getComponent(SettingsComponent.class).debug;
+                        settingsComponent.debug = !settingsComponent.debug;
                         nothingSelectedYet = false;
                     }
 
-                    if (selectableComponent.name.equals("character") && !settings.getComponent(SettingsComponent.class).isPaused) {
+                    if (selectableComponent.name.equals("character") && !settingsComponent.isPaused) {
                         if(!selectableComponent.isSelected) {
-                            if(!settings.getComponent(SettingsComponent.class).move && !settings.getComponent(SettingsComponent.class).attack) {
+                            if(!battleMechanicsStatesComponent.move && !battleMechanicsStatesComponent.attack && !battleMechanicsStatesComponent.characterSelected) {
                                 selectableComponent.addSelection = true;
                                 nothingSelectedYet = false;
                             } else {
@@ -174,18 +179,18 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                         }
                     }
 
-                    if (selectableComponent.name.equals("tile") && !settings.getComponent(SettingsComponent.class).isPaused) {
+                    if (selectableComponent.name.equals("tile") && !settingsComponent.isPaused) {
                         selectableComponent.isSelected = true;
-                        settings.getComponent(SettingsComponent.class).move = false;
+                        battleMechanicsStatesComponent.move = false;
                         nothingSelectedYet = true;
                     }
 
-                    if (selectableComponent.name.equals("move") && !settings.getComponent(SettingsComponent.class).isPaused) {
-                        settings.getComponent(SettingsComponent.class).move = true;
+                    if (selectableComponent.name.equals("move") && !settingsComponent.isPaused) {
+                        battleMechanicsStatesComponent.move = true;
                         nothingSelectedYet = false;
                     }
 
-                    if (selectableComponent.name.equals("attack") && !settings.getComponent(SettingsComponent.class).isPaused) {
+                    if (selectableComponent.name.equals("attack") && !settingsComponent.isPaused) {
                         //settings.getComponent(SettingsComponent.class).attack = true;
                         nothingSelectedYet = false;
                     }
@@ -211,7 +216,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { //Move camera when screen is dragged
         beingDragged = true;
-        if(!settings.getComponent(SettingsComponent.class).isPaused) {
+        if(!settingsComponent.isPaused) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(camera);
             CameraComponent cameraComponent = cameraComponentComponentMapper.get(camera);
             positionComponent.x -= ((screenX - lastX) / cameraComponent.scale);

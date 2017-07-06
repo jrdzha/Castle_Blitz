@@ -62,19 +62,20 @@ public class GameScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115));
         ashleyEngine.addEntity(entityFactory.createMusic((String[])levelData[1]));
         Entity settings = entityFactory.createSettings();
+        Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings);
         mapSystem = new MapSystem(map);
-        inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings);
+        inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings, battleMechanics);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem(ashleyEngine);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine, map, settings);
+        highlightSystem = new HighlightSystem(ashleyEngine, map, battleMechanics);
         animationManagerSystem = new AnimationManagerSystem();
-        battleMechanicsSystem = new BattleMechanicsSystem(map, settings);
+        battleMechanicsSystem = new BattleMechanicsSystem(map, battleMechanics);
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);

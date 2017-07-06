@@ -192,6 +192,12 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity createBattleMechanics(){ //Create global settings
+        Entity entity = new Entity();
+        entity.add(new BattleMechanicsStatesComponent());
+        return entity;
+    }
+
     public Entity createInhibitor(int tileX, int tileY){ //Create empty block on map where players can't walk
         Entity entity = new Entity();
         entity.add(new PositionComponent());
