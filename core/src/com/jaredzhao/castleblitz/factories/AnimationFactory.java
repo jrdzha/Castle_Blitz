@@ -40,6 +40,10 @@ public class AnimationFactory {
             sprites.add(spriteRegionForTile(ui, 1, 0, 16, 16));
         } else if(type.equals("debug")){
             sprites.add(spriteRegionForTile(ui, 2, 0, 16, 16));
+        } else if(type.equals("move")){
+            sprites.add(spriteRegionForTile(ui, 3, 0, 16, 16));
+        } else if(type.equals("attack")){
+            sprites.add(spriteRegionForTile(ui, 4, 0, 16, 16));
         }
         sprites.get(0).setScale(scale);
         sprites.get(0).setAlpha(.75f);

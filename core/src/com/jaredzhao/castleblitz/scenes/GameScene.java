@@ -33,6 +33,7 @@ public class GameScene extends Scene {
     private AudioSystem audioSystem; //System for dynamic audio
     private HighlightSystem highlightSystem; //System for handling highlight updates
     private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
+    private BattleMechanicsSystem battleMechanicsSystem;
 
     public GameScene(){
         IDENTIFIER = 1;
@@ -67,12 +68,13 @@ public class GameScene extends Scene {
         cameraSystem = new CameraSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings);
         mapSystem = new MapSystem(map);
-        inputSystem = new InputSystem(camera, settings);
+        inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem(ashleyEngine);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine, map);
+        highlightSystem = new HighlightSystem(ashleyEngine, map, settings);
         animationManagerSystem = new AnimationManagerSystem();
+        battleMechanicsSystem = new BattleMechanicsSystem(map, settings);
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);
@@ -84,6 +86,7 @@ public class GameScene extends Scene {
         ashleyEngine.addSystem(renderSystem);
         ashleyEngine.addSystem(resourceManagementSystem);
         ashleyEngine.addSystem(animationManagerSystem);
+        ashleyEngine.addSystem(battleMechanicsSystem);
     }
 
     @Override

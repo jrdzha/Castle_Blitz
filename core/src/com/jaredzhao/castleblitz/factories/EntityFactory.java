@@ -157,12 +157,32 @@ public class EntityFactory {
         Object[] sprite = animationFactory.createUI(type, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
-        entity.getComponent(LayerComponent.class).layer = 4;
+        entity.getComponent(LayerComponent.class).layer = 5;
         entity.getComponent(SelectableComponent.class).sizeX = 16;
         entity.getComponent(SelectableComponent.class).sizeY = 16;
         entity.getComponent(SelectableComponent.class).name = type;
         entity.getComponent(FixedScreenPositionComponent.class).x = x;
         entity.getComponent(FixedScreenPositionComponent.class).y = y;
+        return entity;
+    }
+
+    public Entity createDynamicPositionUI(String type, float x, float y){ //Create UI elements
+        Entity entity = new Entity();
+        entity.add(new PositionComponent());
+        entity.add(new SpriteComponent());
+        entity.add(new AnimationComponent());
+        entity.add(new SelectableComponent());
+        entity.add(new VisibleComponent());
+        entity.add(new LayerComponent());
+        Object[] sprite = animationFactory.createUI(type, 1);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        entity.getComponent(LayerComponent.class).layer = 4;
+        entity.getComponent(SelectableComponent.class).sizeX = 16;
+        entity.getComponent(SelectableComponent.class).sizeY = 16;
+        entity.getComponent(SelectableComponent.class).name = type;
+        entity.getComponent(PositionComponent.class).x = x;
+        entity.getComponent(PositionComponent.class).y = y;
         return entity;
     }
 
@@ -252,7 +272,7 @@ public class EntityFactory {
             entity.getComponent(SoundEffectComponent.class).boost = .25f;
         }
         if(location.equals("audio/sfx/blop.wav")){
-            entity.getComponent(SoundEffectComponent.class).boost = .75f;
+            entity.getComponent(SoundEffectComponent.class).boost = .6f;
         }
         return entity;
     }

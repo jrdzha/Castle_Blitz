@@ -9,6 +9,7 @@ import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
+import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 
 public class HighlightSystem extends EntitySystem{
@@ -22,11 +23,12 @@ public class HighlightSystem extends EntitySystem{
 
     private Engine ashleyEngine;
 
-    private Entity map;
+    private Entity map, settings;
 
-    public HighlightSystem(Engine ashleyEngine, Entity map){
+    public HighlightSystem(Engine ashleyEngine, Entity map, Entity settings){
         this.ashleyEngine = ashleyEngine;
         this.map = map;
+        this.settings = settings;
     }
 
     public void addedToEngine(Engine engine){
@@ -62,15 +64,11 @@ public class HighlightSystem extends EntitySystem{
             CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
-            if(selectableComponent.isSelected && !selectableComponent.removeSelection) {
+            if(settings.getComponent(SettingsComponent.class).move && selectableComponent.isSelected && !selectableComponent.removeSelection) {
                 for (int[] position : characterPropertiesComponent.possibleMoves) {
                     Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(VisibleComponent.class) == null) {
                         tile.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
-                        tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
                     }
                 }
             }
