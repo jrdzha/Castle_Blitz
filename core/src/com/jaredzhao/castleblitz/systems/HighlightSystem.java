@@ -73,4 +73,8 @@ public class HighlightSystem extends EntitySystem{
             }
         }
     }
+
+    public void dispose() {
+
+    }
 }

@@ -5,6 +5,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
@@ -54,6 +55,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     }
 
     public void update(float deltaTime){
+
         for(Entity entity : selectables){
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
@@ -83,8 +85,8 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                 entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
                 entity.getComponent(HasSoundEffectComponent.class).soundLength = .27f;
 
-                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18));
-                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18));
+                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18, 16, 16));
+                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18, 16, 16));
 
                 battleMechanicsStatesComponent.characterSelected = true;
             }
@@ -132,7 +134,15 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     public boolean touchUp(int screenX, int screenY, int pointer, int button) { //User input for selecting characters
         if(beingTapped && !beingDragged) {
 
-            sortedSelectables = LayerSorter.sortByLayers(selectables);
+            if(GameEngine.currentScene == 1) {
+                sortedSelectables = LayerSorter.sortByLayers(selectables);
+            } else {
+                sortedSelectables = new ArrayList<Entity>();
+                for(Entity entity : selectables){
+                    sortedSelectables.add(entity);
+                }
+            }
+
             Collections.reverse(sortedSelectables);
 
             boolean nothingSelectedYet = true;
@@ -162,6 +172,11 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
                     if (selectableComponent.name.equals("debug")) {
                         settingsComponent.debug = !settingsComponent.debug;
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("facebookLogin")) {
+                        settingsComponent.facebookLogin = true;
                         nothingSelectedYet = false;
                     }
 
@@ -236,5 +251,9 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public void dispose() {
+
     }
 }

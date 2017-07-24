@@ -3,16 +3,14 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.jaredzhao.castleblitz.components.map.MapComponent;
-import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
-import com.jaredzhao.castleblitz.components.player.CameraComponent;
+import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.systems.*;
 
-public class GameScene extends Scene {
+public class LoginScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
 
@@ -23,20 +21,17 @@ public class GameScene extends Scene {
 
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
+    private Entity settings;
 
     private CameraSystem cameraSystem; //System for moving the camera
-    private RenderSystem renderSystem; //System for rendering to the screen
     private MapSystem mapSystem; //System to create screen positions for new map entities
+    private RenderSystem renderSystem; //System for rendering to the screen
     private InputSystem inputSystem; //System for user input
-    private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
-    private LightSystem lightSystem; //System to retrieve light components from new entities to add to ashleyEngine
     private AudioSystem audioSystem; //System for dynamic audio
-    private HighlightSystem highlightSystem; //System for handling highlight updates
-    private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
-    private BattleMechanicsSystem battleMechanicsSystem;
+    private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
 
-    public GameScene(){
-        IDENTIFIER = 1;
+    public LoginScene(){
+        IDENTIFIER = 2;
     }
 
     @Override
@@ -52,66 +47,59 @@ public class GameScene extends Scene {
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Load level data from disk
-        Object[] levelData = mapFactory.loadMap(Gdx.files.internal("levels/test2.lvl"));
+        Object[] levelData = mapFactory.loadMap(Gdx.files.internal("levels/login.lvl"));
 
         //Create entities
         map = (Entity)levelData[0];
         camera = entityFactory.createCamera();
-        camera.getComponent(PositionComponent.class).x = 8 * map.getComponent(MapComponent.class).mapEntities[0].length - 8;
-        camera.getComponent(PositionComponent.class).y = 8 * map.getComponent(MapComponent.class).mapEntities[0][0].length - 8;
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("facebookLogin", 0, -60, 65, 16));
         ashleyEngine.addEntity(entityFactory.createMusic((String[])levelData[1]));
-        Entity settings = entityFactory.createSettings();
+        settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings);
         mapSystem = new MapSystem(map);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings);
         inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings, battleMechanics);
-        resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        lightSystem = new LightSystem(ashleyEngine);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine, map, battleMechanics);
-        animationManagerSystem = new AnimationManagerSystem();
-        battleMechanicsSystem = new BattleMechanicsSystem(map, battleMechanics);
+        resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);
-        ashleyEngine.addSystem(highlightSystem);
         ashleyEngine.addSystem(inputSystem);
         ashleyEngine.addSystem(cameraSystem);
-        ashleyEngine.addSystem(lightSystem);
         ashleyEngine.addSystem(audioSystem);
         ashleyEngine.addSystem(renderSystem);
         ashleyEngine.addSystem(resourceManagementSystem);
-        ashleyEngine.addSystem(animationManagerSystem);
-        ashleyEngine.addSystem(battleMechanicsSystem);
         System.gc();
     }
 
     @Override
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
-        return IDENTIFIER;
+
+        int nextScene;
+        if(settings.getComponent(SettingsComponent.class).facebookLogin){
+            nextScene = 1;
+            this.dispose();
+            this.isRunning = false;
+        } else {
+            nextScene = IDENTIFIER;
+        }
+        return nextScene;
     }
 
     @Override
     public void dispose() {
         mapSystem.dispose();
-        highlightSystem.dispose();
         inputSystem.dispose();
         cameraSystem.dispose();
-        lightSystem.dispose();
         audioSystem.dispose();
         renderSystem.dispose();
-        animationManagerSystem.dispose();
-        battleMechanicsSystem.dispose();
         resourceManagementSystem.disposeAll();
         resourceManagementSystem.dispose();
     }

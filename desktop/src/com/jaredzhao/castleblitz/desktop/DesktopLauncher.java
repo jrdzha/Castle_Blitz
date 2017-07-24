@@ -11,7 +11,7 @@ public class DesktopLauncher{
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		GameEngine engine = new GameEngine();
+		GameEngine engine = new GameEngine(new DesktopFirebaseAccessor(), new DesktopFacebookAccessor());
 
 		config.title = "Castle Blitz - " + GameEngine.version;
 		config.useGL30 = false;

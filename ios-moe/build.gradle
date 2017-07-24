@@ -39,6 +39,10 @@ moe {
         project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
         testTarget 'ios-moe-Test'
+
+        workspace 'xcode/ios-moe.xcworkspace'
+        mainScheme 'ios-moe'
+        testScheme 'ios-moe-Test'
     }
 }
 

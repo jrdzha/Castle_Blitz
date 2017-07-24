@@ -23,6 +23,7 @@ public class CameraSystem extends EntitySystem{
     }
 
     public void update(float deltaTime){
+
         for(Entity entity : cameras){
             PositionComponent position = positionComponentComponentMapper.get(entity);
             CameraComponent camera = cameraComponentComponentMapper.get(entity);
@@ -38,5 +39,9 @@ public class CameraSystem extends EntitySystem{
             }
             camera.camera.position.set((position.x + camera.camera.viewportWidth / 2), (position.y + camera.camera.viewportHeight / 2), 0); //Move camera appropriately
         }
+    }
+
+    public void dispose() {
+
     }
 }

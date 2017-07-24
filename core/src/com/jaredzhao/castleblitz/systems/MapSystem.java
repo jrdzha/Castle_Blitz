@@ -118,4 +118,8 @@ public class MapSystem extends EntitySystem {
             }
         }
     }
+
+    public void dispose() {
+
+    }
 }

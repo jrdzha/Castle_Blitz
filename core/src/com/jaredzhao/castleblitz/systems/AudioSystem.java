@@ -148,4 +148,12 @@ public class AudioSystem extends EntitySystem {
             }
         }
     }
+
+    public void dispose() {
+        for(Entity entity : musicSources){
+            MusicComponent musicComponent = musicComponentComponentMapper.get(entity);
+            musicComponent.currentMusic.stop();
+            musicComponent.currentMusic.dispose();
+        }
+    }
 }

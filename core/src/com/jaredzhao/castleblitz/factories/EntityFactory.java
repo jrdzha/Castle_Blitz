@@ -145,7 +145,7 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createStaticPositionUI(String type, float x, float y){ //Create UI elements
+    public Entity createStaticPositionUI(String type, float x, float y, int sizeX, int sizeY){ //Create UI elements
         Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
@@ -154,19 +154,19 @@ public class EntityFactory {
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
         entity.add(new FixedScreenPositionComponent());
-        Object[] sprite = animationFactory.createUI(type, 1);
+        Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
         entity.getComponent(LayerComponent.class).layer = 5;
-        entity.getComponent(SelectableComponent.class).sizeX = 16;
-        entity.getComponent(SelectableComponent.class).sizeY = 16;
+        entity.getComponent(SelectableComponent.class).sizeX = sizeX;
+        entity.getComponent(SelectableComponent.class).sizeY = sizeY;
         entity.getComponent(SelectableComponent.class).name = type;
         entity.getComponent(FixedScreenPositionComponent.class).x = x;
         entity.getComponent(FixedScreenPositionComponent.class).y = y;
         return entity;
     }
 
-    public Entity createDynamicPositionUI(String type, float x, float y){ //Create UI elements
+    public Entity createDynamicPositionUI(String type, float x, float y, int sizeX, int sizeY){ //Create UI elements
         Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
@@ -174,12 +174,12 @@ public class EntityFactory {
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
-        Object[] sprite = animationFactory.createUI(type, 1);
+        Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
         entity.getComponent(LayerComponent.class).layer = 4;
-        entity.getComponent(SelectableComponent.class).sizeX = 16;
-        entity.getComponent(SelectableComponent.class).sizeY = 16;
+        entity.getComponent(SelectableComponent.class).sizeX = sizeX;
+        entity.getComponent(SelectableComponent.class).sizeY = sizeY;
         entity.getComponent(SelectableComponent.class).name = type;
         entity.getComponent(PositionComponent.class).x = x;
         entity.getComponent(PositionComponent.class).y = y;

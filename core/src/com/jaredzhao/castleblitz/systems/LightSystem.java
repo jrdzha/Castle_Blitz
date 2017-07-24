@@ -28,4 +28,8 @@ public class LightSystem extends EntitySystem{
             entity.remove(AddLightComponent.class);
         }
     }
+
+    public void dispose() {
+
+    }
 }

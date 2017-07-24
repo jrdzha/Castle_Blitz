@@ -46,4 +46,8 @@ public class BattleMechanicsSystem extends EntitySystem{
             }
         }
     }
+
+    public void dispose() {
+
+    }
 }

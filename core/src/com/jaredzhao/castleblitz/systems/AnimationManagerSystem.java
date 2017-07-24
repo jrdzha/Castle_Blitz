@@ -37,4 +37,8 @@ public class AnimationManagerSystem extends EntitySystem{
             }
         }
     }
+
+    public void dispose() {
+
+    }
 }

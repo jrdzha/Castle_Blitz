@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		093EA0331288EEC18D3C79EC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E152A74253836079FA1075F /* main.cpp */; };
 		16479D2CDCAC394B9A9722FE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8084D1F0A307440EC73CBFCA /* main.cpp */; };
+		3DAFED5FD16507F3416F1216 /* libPods-ios-moe-Test.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6019DC8A5B407EE33D2189E /* libPods-ios-moe-Test.a */; };
 		581773911E37A0F0004E28A9 /* Default-375w-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 581773851E37A0F0004E28A9 /* Default-375w-667h@2x.png */; };
 		581773921E37A0F0004E28A9 /* Default-414w-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 581773861E37A0F0004E28A9 /* Default-414w-736h@3x.png */; };
 		581773931E37A0F0004E28A9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 581773871E37A0F0004E28A9 /* Default-568h@2x.png */; };
@@ -29,13 +30,17 @@
 		581773AB1E37A2DB004E28A9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A41E37A2DB004E28A9 /* OpenGLES.framework */; };
 		581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A51E37A2DB004E28A9 /* QuartzCore.framework */; };
 		581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773AD1E37A7EF004E28A9 /* UIKit.framework */; };
+		82478C3C1F1E571400C49BAC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82478C3B1F1E571400C49BAC /* GoogleService-Info.plist */; };
 		C995F7171EAA5D0A003E34E1 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = C995F7161EAA5D0A003E34E1 /* assets */; };
+		EB26AD0E9BCA30B8C86A895C /* Pods_ios_moe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A6DA79F39B13809AD4FB595 /* Pods_ios_moe.framework */; };
 		F0D782D1BA6FB0F14197D438 /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 49D717B4E213ED9D95C106FE /* moe-main-interfaces.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1E152A74253836079FA1075F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		27CC1364EF060AAA6ADA4992 /* Pods-ios-moe-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe-Test/Pods-ios-moe-Test.debug.xcconfig"; sourceTree = "<group>"; };
 		49D717B4E213ED9D95C106FE /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
+		4A6DA79F39B13809AD4FB595 /* Pods_ios_moe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_moe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		581773851E37A0F0004E28A9 /* Default-375w-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-375w-667h@2x.png"; sourceTree = "<group>"; };
 		581773861E37A0F0004E28A9 /* Default-414w-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-414w-736h@3x.png"; sourceTree = "<group>"; };
 		581773871E37A0F0004E28A9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -61,8 +66,13 @@
 		5863B88E1DA682C800E46B6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58C6F5241DA66CB600309CB6 /* Castle_Blitz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Castle_Blitz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		75DF8169A39C19AEB82E5643 /* Pods-ios-moe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe.debug.xcconfig"; sourceTree = "<group>"; };
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		82478C3B1F1E571400C49BAC /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ios-moe/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BBEBC607EAD3DBABD43D0878 /* Pods-ios-moe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe.release.xcconfig"; sourceTree = "<group>"; };
 		C995F7161EAA5D0A003E34E1 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../android/assets; sourceTree = "<group>"; };
+		E6019DC8A5B407EE33D2189E /* libPods-ios-moe-Test.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios-moe-Test.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F54A8E88CA3DE58BB701A96A /* Pods-ios-moe-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe-Test.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe-Test/Pods-ios-moe-Test.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DAFED5FD16507F3416F1216 /* libPods-ios-moe-Test.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,12 +96,24 @@
 				581773AB1E37A2DB004E28A9 /* OpenGLES.framework in Frameworks */,
 				581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */,
 				581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */,
+				EB26AD0E9BCA30B8C86A895C /* Pods_ios_moe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5021ACB8E705C30A8EBA89C9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				27CC1364EF060AAA6ADA4992 /* Pods-ios-moe-Test.debug.xcconfig */,
+				F54A8E88CA3DE58BB701A96A /* Pods-ios-moe-Test.release.xcconfig */,
+				75DF8169A39C19AEB82E5643 /* Pods-ios-moe.debug.xcconfig */,
+				BBEBC607EAD3DBABD43D0878 /* Pods-ios-moe.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5817739E1E37A2DA004E28A9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +125,8 @@
 				581773A31E37A2DB004E28A9 /* OpenAL.framework */,
 				581773A41E37A2DB004E28A9 /* OpenGLES.framework */,
 				581773A51E37A2DB004E28A9 /* QuartzCore.framework */,
+				E6019DC8A5B407EE33D2189E /* libPods-ios-moe-Test.a */,
+				4A6DA79F39B13809AD4FB595 /* Pods_ios_moe.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -126,12 +151,14 @@
 		58C6F51B1DA66CB600309CB6 = {
 			isa = PBXGroup;
 			children = (
+				82478C3B1F1E571400C49BAC /* GoogleService-Info.plist */,
 				C995F7161EAA5D0A003E34E1 /* assets */,
 				58C6F5261DA66CB600309CB6 /* ios-moe */,
 				5863B87C1DA682C800E46B6A /* ios-moe-Test */,
 				58C6F5251DA66CB600309CB6 /* Products */,
 				5817739E1E37A2DA004E28A9 /* Frameworks */,
 				6CD65F95A27532ACA94EE543 /* Multi-OS Engine */,
+				5021ACB8E705C30A8EBA89C9 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -189,10 +216,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5863B88F1DA682C800E46B6A /* Build configuration list for PBXNativeTarget "ios-moe-Test" */;
 			buildPhases = (
+				023E94CEAEABB2E39462E8C2 /* [CP] Check Pods Manifest.lock */,
 				1AE79C4EE6E5C399E50B1E3C /* Compile Sources (MOE) */,
 				5863B8771DA682C800E46B6A /* Sources */,
 				5863B8781DA682C800E46B6A /* Frameworks */,
 				5863B8791DA682C800E46B6A /* Resources */,
+				E7383B5A5451A4E3960FE4CD /* [CP] Embed Pods Frameworks */,
+				3E55B0D58A096662298EE9BA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -207,10 +237,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58C6F53B1DA66CB600309CB6 /* Build configuration list for PBXNativeTarget "ios-moe" */;
 			buildPhases = (
+				6B649951F636B64950C64A43 /* [CP] Check Pods Manifest.lock */,
 				F461487E379A46F550F0C10A /* Compile Sources (MOE) */,
 				58C6F5201DA66CB600309CB6 /* Sources */,
 				58C6F5211DA66CB600309CB6 /* Frameworks */,
 				58C6F5221DA66CB600309CB6 /* Resources */,
+				F832FA758735CBE40A2D2C39 /* [CP] Embed Pods Frameworks */,
+				5B3832866612535CFE97D659 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -270,6 +303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82478C3C1F1E571400C49BAC /* GoogleService-Info.plist in Resources */,
 				C995F7171EAA5D0A003E34E1 /* assets in Resources */,
 				581773961E37A0F0004E28A9 /* Default@2x.png in Resources */,
 				5817739C1E37A0F0004E28A9 /* Icon@2x.png in Resources */,
@@ -289,6 +323,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		023E94CEAEABB2E39462E8C2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		1AE79C4EE6E5C399E50B1E3C /* Compile Sources (MOE) */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -303,6 +352,66 @@
 			shellPath = /bin/bash;
 			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"test\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nexport JAVA_HOME=$(/usr/libexec/java_home -v 1.8)\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n# Copy android CA certificates on demand\nif [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\nfi\n\n# Copy and sign MOE framework\nrsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\nif [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\nfi\n";
 		};
+		3E55B0D58A096662298EE9BA /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios-moe-Test/Pods-ios-moe-Test-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5B3832866612535CFE97D659 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6B649951F636B64950C64A43 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E7383B5A5451A4E3960FE4CD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios-moe-Test/Pods-ios-moe-Test-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		F461487E379A46F550F0C10A /* Compile Sources (MOE) */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -316,6 +425,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "set -e\n\nexport MOE_BUILD_SOURCE_SET=\"main\"\n\n# Check project directory\nif [ ! -d \"$MOE_PROJECT_DIR\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_DIR' doesn't point to a directory!\"; exit 1;\nfi\ncd \"$MOE_PROJECT_DIR\"\n\n# Export JAVA_HOME\nexport JAVA_HOME=$(/usr/libexec/java_home -v 1.8)\n\n# Utility function for finding the Gradle implementation\nfunction findGradle {\n    CD=\"$PWD\"\n    while [ \"$CD\" != \"\" ]; do\n        echo \"Looking for gradlew in $CD\"\n        if [ -x \"$CD/gradlew\" ]; then\n            GRADLE_EXEC=$CD/gradlew\n            return 0\n        fi\n        CD=\"${CD%/*}\"\n    done\n\n    echo \"Checking with 'which'\"\n    GRADLE_EXEC=$(which 'gradle')\n\n    if [ \"$GRADLE_EXEC\" = \"\" ]; then\n        echo \"Failed to locate 'gradle' executable!\"\n        exit 1\n    fi\n}\n\n# Build project with Gradle\nif [ -z \"$MOE_GRADLE_EXTERNAL_BUILD\" ]; then\n    findGradle\n    \"$GRADLE_EXEC\" --no-daemon moeXcodeInternal -s\nfi\n\n# Check output directory\nif [ ! -d \"${MOE_PROJECT_BUILD_DIR}\" ]; then\n    echo \"$0:$LINENO:1: error: 'MOE_PROJECT_BUILD_DIR' doesn't point to a directory!\"; exit 1;\nfi\n\n# Copy some resources\nmkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/application.jar\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\ncp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/preregister.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nif [ \"${MOE_BUILD_SOURCE_SET}\" == \"test\" ]; then\n    cp \"${MOE_PROJECT_BUILD_DIR}/moe/${MOE_BUILD_SOURCE_SET}/classlist.txt\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/\"\nfi\n\n# Copy android CA certificates on demand\nif [ \"${MOE_COPY_ANDROID_CACERTS}\" == \"YES\" ]; then\n    rm -rf \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\n    unzip \"${MOE_SDK_PATH}/sdk/moe-core-certificates.zip\" -d \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/android_root/etc/security/cacerts\"\nfi\n\n# Copy and sign MOE framework\nrsync -av --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \\\n    \"${MOE_FRAMEWORK_PATH}/MOE.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\nif [ -n \"${EXPANDED_CODE_SIGN_IDENTITY}\" -a \"${CODE_SIGNING_REQUIRED}\" != \"NO\" -a \"${CODE_SIGNING_ALLOWED}\" != \"NO\" ]; then\n    /usr/bin/codesign --force --sign $EXPANDED_CODE_SIGN_IDENTITY $OTHER_CODE_SIGN_FLAGS \\\n        --preserve-metadata=identifier,entitlements \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MOE.framework\"\nfi\n";
+		};
+		F832FA758735CBE40A2D2C39 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -342,6 +466,7 @@
 /* Begin XCBuildConfiguration section */
 		5863B8901DA682C800E46B6A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27CC1364EF060AAA6ADA4992 /* Pods-ios-moe-Test.debug.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_BITCODE = NO;
@@ -376,6 +501,7 @@
 		};
 		5863B8911DA682C800E46B6A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F54A8E88CA3DE58BB701A96A /* Pods-ios-moe-Test.release.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_BITCODE = NO;
@@ -447,7 +573,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -483,13 +609,15 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				"GCC_WARN_64_TO_32_BIT_CONVERSION[arch=*64]" = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -498,7 +626,7 @@
 		};
 		58C6F53C1DA66CB600309CB6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
+			baseConfigurationReference = 75DF8169A39C19AEB82E5643 /* Pods-ios-moe.debug.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = L79JFH82EN;
@@ -508,6 +636,7 @@
 					"${MOE_FRAMEWORK_PATH}",
 				);
 				INFOPLIST_FILE = "ios-moe/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
@@ -535,7 +664,7 @@
 		};
 		58C6F53D1DA66CB600309CB6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5817739D1E37A10D004E28A9 /* custom.xcconfig */;
+			baseConfigurationReference = BBEBC607EAD3DBABD43D0878 /* Pods-ios-moe.release.xcconfig */;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = L79JFH82EN;
@@ -545,6 +674,7 @@
 					"${MOE_FRAMEWORK_PATH}",
 				);
 				INFOPLIST_FILE = "ios-moe/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MOE_COPY_ANDROID_CACERTS = NO;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
@@ -558,7 +688,7 @@
 				MOE_SECT_OAT = "-sectcreate __OATDATA __oatdata \"${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat\"";
 				"MOE_SEGPROT[sdk=iphoneos*]" = "-segprot __OATDATA rx rx -segprot __ARTDATA rw rw";
 				"MOE_SEGPROT[sdk=iphonesimulator*]" = "-segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"${MOE_OTHER_LDFLAGS}",

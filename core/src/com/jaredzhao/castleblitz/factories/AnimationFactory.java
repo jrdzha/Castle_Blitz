@@ -26,27 +26,31 @@ public class AnimationFactory {
     }
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
-        Sprite sprite = new Sprite(new TextureRegion(tex, (x * w) + x, (y * h) + y, w, h));
+        Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
         sprite.setScale(1.04f);
         return sprite;
     }
 
-    public Object[] createUI(String type, float scale){ //Create UI elements
+    public Object[] createUI(String type, int sizeX, int sizeY, float scale){ //Create UI elements
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
+        float alpha = 0.75f;
         if(type.equals("pause")) {
-            sprites.add(spriteRegionForTile(ui, 0, 0, 16, 16));
+            sprites.add(spriteRegionForTile(ui, 0, 0, sizeX, sizeY));
         } else if(type.equals("fastforward")){
-            sprites.add(spriteRegionForTile(ui, 1, 0, 16, 16));
+            sprites.add(spriteRegionForTile(ui, 1, 0, sizeX, sizeY));
         } else if(type.equals("debug")){
-            sprites.add(spriteRegionForTile(ui, 2, 0, 16, 16));
+            sprites.add(spriteRegionForTile(ui, 2, 0, sizeX, sizeY));
         } else if(type.equals("move")){
-            sprites.add(spriteRegionForTile(ui, 3, 0, 16, 16));
+            sprites.add(spriteRegionForTile(ui, 3, 0, sizeX, sizeY));
         } else if(type.equals("attack")){
-            sprites.add(spriteRegionForTile(ui, 4, 0, 16, 16));
+            sprites.add(spriteRegionForTile(ui, 4, 0, sizeX, sizeY));
+        } else if(type.equals("facebookLogin")){
+            sprites.add(spriteRegionForTile(ui, 5, 0, sizeX, sizeY));
+            alpha = 1f;
         }
         sprites.get(0).setScale(scale);
-        sprites.get(0).setAlpha(.75f);
+        sprites.get(0).setAlpha(alpha);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));

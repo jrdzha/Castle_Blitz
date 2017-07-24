@@ -5,4 +5,5 @@ public abstract class Scene {
     public boolean isRunning = false; //Tracks if the scene is running or not
     public abstract void init();
     public abstract int render() throws InterruptedException;
+    public abstract void dispose();
 }

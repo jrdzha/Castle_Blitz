@@ -20,7 +20,7 @@ public class ResourceManagementSystem extends EntitySystem{
         toBeRemoved = engine.getEntitiesFor(Family.all(RemoveTagComponent.class).get());
     }
 
-    public void removeAll(){
+    public void disposeAll(){
         while(ashleyEngine.getEntities().size() > 0) {
             ImmutableArray<Entity> removeArray = ashleyEngine.getEntities();
             for (Entity entity : removeArray) {
@@ -35,5 +35,9 @@ public class ResourceManagementSystem extends EntitySystem{
             entity.removeAll();
             ashleyEngine.removeEntity(entity);
         }
+    }
+
+    public void dispose() {
+
     }
 }

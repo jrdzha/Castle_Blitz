@@ -53,8 +53,8 @@ public class OpeningScene extends Scene {
 
         int nextScene;
         timesRendered++;
-        if(timesRendered > 150){
-            nextScene = 1;
+        if(timesRendered > 120){
+            nextScene = 2;
             this.dispose();
             this.isRunning = false;
         } else {
@@ -65,5 +65,7 @@ public class OpeningScene extends Scene {
 
     public void dispose(){
         batch.dispose();
+        fontGenerator.dispose();
+        font.dispose();
     }
 }

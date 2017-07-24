@@ -27,6 +27,7 @@ import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.ShaderBatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RenderSystem extends EntitySystem {
 
@@ -58,7 +59,7 @@ public class RenderSystem extends EntitySystem {
 
         batch = new ShaderBatch(100); //SpriteBatch for rendering entities
         batch.brightness = 0.05f;
-        batch.contrast = 1.3f;
+        batch.contrast = 1.4f;
         uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
         this.ashleyEngine = ashleyEngine;
@@ -96,7 +97,15 @@ public class RenderSystem extends EntitySystem {
         Gdx.gl.glClearColor(.1f, .1f, .2f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear screen
 
-        sortedRenderables = LayerSorter.sortByLayers(renderables);
+        if(GameEngine.currentScene == 1) {
+            sortedRenderables = LayerSorter.sortByLayers(renderables);
+        } else {
+            sortedRenderables = new ArrayList<Entity>();
+            for(Entity entity : renderables){
+                sortedRenderables.add(entity);
+            }
+        }
+
         updateFixedPositionRenderables();
 
         orthographicCamera.update();
@@ -135,7 +144,6 @@ public class RenderSystem extends EntitySystem {
                 entity.add(new RemoveTagComponent());
             }
         }
-
         batch.end();
 
         uiBatch.begin(); //Render UI
@@ -143,6 +151,25 @@ public class RenderSystem extends EntitySystem {
         if(settings.getComponent(SettingsComponent.class).isPaused){
             layout.setText(font, "PAUSED");
             font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+
+            batch.brightness = -0.15f;
+            batch.contrast = 1.1f;
+        } else {
+            batch.brightness = 0.05f;
+            batch.contrast = 1.4f;
+        }
+
+        if(GameEngine.currentScene == 2){
+            fontParameter.size = Gdx.graphics.getHeight() / 15;
+            font = fontGenerator.generateFont(fontParameter);
+
+            layout.setText(font, "SIGN IN");
+            font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
+
+            fontParameter.size = Gdx.graphics.getHeight() / 30;
+            font = fontGenerator.generateFont(fontParameter);
+            layout.setText(font, "IT'S GOOD FOR YOU");
+            font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
         }
 
         if(settings.getComponent(SettingsComponent.class).debug) {
@@ -168,11 +195,13 @@ public class RenderSystem extends EntitySystem {
         uiBatch.end();
 
         lifetime += Gdx.graphics.getDeltaTime();
+    }
 
-        /*
-        if((int)(lifetime * 10f) % 300 == 0){
-            System.gc();
-        }
-        */
+    public void dispose() {
+        batch.dispose();
+        uiBatch.dispose();
+        fontGenerator.dispose();
+        font.dispose();
+        debugFont.dispose();
     }
 }
