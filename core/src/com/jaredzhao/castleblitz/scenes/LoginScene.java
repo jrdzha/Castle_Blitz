@@ -9,6 +9,8 @@ import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.systems.*;
+import com.jaredzhao.castleblitz.utils.FacebookAccessor;
+import com.jaredzhao.castleblitz.utils.FirebaseAccessor;
 
 public class LoginScene extends Scene {
 
@@ -30,7 +32,12 @@ public class LoginScene extends Scene {
     private AudioSystem audioSystem; //System for dynamic audio
     private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
 
-    public LoginScene(){
+    private FirebaseAccessor firebaseAccessor;
+    private FacebookAccessor facebookAccessor;
+
+    public LoginScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor){
+        this.firebaseAccessor = firebaseAccessor;
+        this.facebookAccessor = facebookAccessor;
         IDENTIFIER = 2;
     }
 
@@ -84,6 +91,10 @@ public class LoginScene extends Scene {
 
         int nextScene;
         if(settings.getComponent(SettingsComponent.class).facebookLogin){
+            facebookAccessor.login();
+            settings.getComponent(SettingsComponent.class).facebookLogin = false;
+        }
+        if(facebookAccessor.gdxFacebook.isSignedIn()){
             nextScene = 1;
             this.dispose();
             this.isRunning = false;

@@ -40,7 +40,7 @@ public class RenderSystem extends EntitySystem {
 
     private FreeTypeFontGenerator fontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont debugFont, font;
+    private BitmapFont debugFont, pausedFont, signInFont1, signInFont2;
     private GlyphLayout layout;
 
     private Engine ashleyEngine;
@@ -66,15 +66,19 @@ public class RenderSystem extends EntitySystem {
         this.settings = settings;
 
         debugFont = new BitmapFont();
-        font = new BitmapFont();
-        font.setColor(Color.WHITE);
+        //font = new BitmapFont();
+        //font.setColor(Color.WHITE);
 
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/slkscrb.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         fontParameter.color = Color.WHITE;
         fontParameter.size = Gdx.graphics.getHeight() / 25;
-        font = fontGenerator.generateFont(fontParameter);
+        pausedFont = fontGenerator.generateFont(fontParameter);
+        fontParameter.size = Gdx.graphics.getHeight() / 15;
+        signInFont1 = fontGenerator.generateFont(fontParameter);
+        fontParameter.size = Gdx.graphics.getHeight() / 35;
+        signInFont2 = fontGenerator.generateFont(fontParameter);
         layout = new GlyphLayout();
     }
 
@@ -149,27 +153,16 @@ public class RenderSystem extends EntitySystem {
         uiBatch.begin(); //Render UI
 
         if(settings.getComponent(SettingsComponent.class).isPaused){
-            layout.setText(font, "PAUSED");
-            font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
-
-            batch.brightness = -0.15f;
-            batch.contrast = 1.1f;
-        } else {
-            batch.brightness = 0.05f;
-            batch.contrast = 1.4f;
+            layout.setText(pausedFont, "PAUSED");
+            pausedFont.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
         }
 
         if(GameEngine.currentScene == 2){
-            fontParameter.size = Gdx.graphics.getHeight() / 15;
-            font = fontGenerator.generateFont(fontParameter);
+            layout.setText(signInFont1, "SIGN IN");
+            signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
 
-            layout.setText(font, "SIGN IN");
-            font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
-
-            fontParameter.size = Gdx.graphics.getHeight() / 30;
-            font = fontGenerator.generateFont(fontParameter);
-            layout.setText(font, "IT'S GOOD FOR YOU");
-            font.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
+            layout.setText(signInFont2, "IT'S GOOD FOR YOU");
+            signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
         }
 
         if(settings.getComponent(SettingsComponent.class).debug) {
@@ -201,7 +194,9 @@ public class RenderSystem extends EntitySystem {
         batch.dispose();
         uiBatch.dispose();
         fontGenerator.dispose();
-        font.dispose();
+        pausedFont.dispose();
+        signInFont1.dispose();
+        signInFont2.dispose();
         debugFont.dispose();
     }
 }

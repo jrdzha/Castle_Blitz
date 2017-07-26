@@ -11,11 +11,6 @@ target 'ios-moe' do
   pod "Firebase/Auth"
   pod "Firebase/Database"
 
-  pod "FBSDKCoreKit";
-  pod "FBSDKLoginKit";
-  pod "FBSDKShareKit";
-  pod "FBSDKMessengerShareKit";
-
 end
 
 target 'ios-moe-Test' do

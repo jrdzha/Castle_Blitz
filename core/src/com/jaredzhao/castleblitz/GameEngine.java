@@ -1,6 +1,7 @@
 package com.jaredzhao.castleblitz;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.scenes.GameScene;
 import com.jaredzhao.castleblitz.scenes.LoginScene;
 import com.jaredzhao.castleblitz.scenes.OpeningScene;
@@ -16,25 +17,25 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static int currentScene; //Current scene number
 
-	public static String version = "Build 31"; //Current build version
+	public static String version = "Build 32"; //Current build version
 
 	public FirebaseAccessor firebaseAccessor;
 	public FacebookAccessor facebookAccessor;
 
 
-	public GameEngine(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor){
+	public GameEngine(FirebaseAccessor firebaseAccessor){
 		this.firebaseAccessor = firebaseAccessor;
-		firebaseAccessor.init();
-		this.facebookAccessor = facebookAccessor;
-		facebookAccessor.init();
+		facebookAccessor = new FacebookAccessor();
 	}
 
 	@Override
 	public void create () { //Called once when the game is started
+		firebaseAccessor.init();
+		facebookAccessor.init();
 		sceneList = new ArrayList<Scene>();
 		Scene gameScene = new GameScene(); //Create new GameScene
 		Scene openingScene = new OpeningScene();
-		Scene loginScene = new LoginScene();
+		Scene loginScene = new LoginScene(firebaseAccessor, facebookAccessor);
 		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 		sceneList.add(loginScene);
 		sceneList.add(openingScene);

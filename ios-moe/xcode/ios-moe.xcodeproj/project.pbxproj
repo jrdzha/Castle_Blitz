@@ -31,6 +31,10 @@
 		581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773A51E37A2DB004E28A9 /* QuartzCore.framework */; };
 		581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581773AD1E37A7EF004E28A9 /* UIKit.framework */; };
 		82478C3C1F1E571400C49BAC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82478C3B1F1E571400C49BAC /* GoogleService-Info.plist */; };
+		82CD46651F270CCC0064A208 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CD46611F270CCC0064A208 /* Bolts.framework */; };
+		82CD46661F270CCC0064A208 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CD46621F270CCC0064A208 /* FBSDKCoreKit.framework */; };
+		82CD46671F270CCC0064A208 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CD46631F270CCC0064A208 /* FBSDKLoginKit.framework */; };
+		82CD46681F270CCC0064A208 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CD46641F270CCC0064A208 /* FBSDKShareKit.framework */; };
 		C995F7171EAA5D0A003E34E1 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = C995F7161EAA5D0A003E34E1 /* assets */; };
 		EB26AD0E9BCA30B8C86A895C /* Pods_ios_moe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A6DA79F39B13809AD4FB595 /* Pods_ios_moe.framework */; };
 		F0D782D1BA6FB0F14197D438 /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = 49D717B4E213ED9D95C106FE /* moe-main-interfaces.m */; };
@@ -69,6 +73,10 @@
 		75DF8169A39C19AEB82E5643 /* Pods-ios-moe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe.debug.xcconfig"; sourceTree = "<group>"; };
 		8084D1F0A307440EC73CBFCA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		82478C3B1F1E571400C49BAC /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ios-moe/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		82CD46611F270CCC0064A208 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		82CD46621F270CCC0064A208 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		82CD46631F270CCC0064A208 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		82CD46641F270CCC0064A208 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		BBEBC607EAD3DBABD43D0878 /* Pods-ios-moe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-moe.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios-moe/Pods-ios-moe.release.xcconfig"; sourceTree = "<group>"; };
 		C995F7161EAA5D0A003E34E1 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../android/assets; sourceTree = "<group>"; };
 		E6019DC8A5B407EE33D2189E /* libPods-ios-moe-Test.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios-moe-Test.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,9 +98,13 @@
 			files = (
 				581773A61E37A2DB004E28A9 /* AudioToolbox.framework in Frameworks */,
 				581773A71E37A2DB004E28A9 /* AVFoundation.framework in Frameworks */,
+				82CD46671F270CCC0064A208 /* FBSDKLoginKit.framework in Frameworks */,
 				581773A81E37A2DB004E28A9 /* CoreGraphics.framework in Frameworks */,
+				82CD46681F270CCC0064A208 /* FBSDKShareKit.framework in Frameworks */,
+				82CD46661F270CCC0064A208 /* FBSDKCoreKit.framework in Frameworks */,
 				581773A91E37A2DB004E28A9 /* CoreMotion.framework in Frameworks */,
 				581773AA1E37A2DB004E28A9 /* OpenAL.framework in Frameworks */,
+				82CD46651F270CCC0064A208 /* Bolts.framework in Frameworks */,
 				581773AB1E37A2DB004E28A9 /* OpenGLES.framework in Frameworks */,
 				581773AC1E37A2DB004E28A9 /* QuartzCore.framework in Frameworks */,
 				581773AE1E37A7EF004E28A9 /* UIKit.framework in Frameworks */,
@@ -117,6 +129,10 @@
 		5817739E1E37A2DA004E28A9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				82CD46611F270CCC0064A208 /* Bolts.framework */,
+				82CD46621F270CCC0064A208 /* FBSDKCoreKit.framework */,
+				82CD46631F270CCC0064A208 /* FBSDKLoginKit.framework */,
+				82CD46641F270CCC0064A208 /* FBSDKShareKit.framework */,
 				581773AD1E37A7EF004E28A9 /* UIKit.framework */,
 				5817739F1E37A2DB004E28A9 /* AudioToolbox.framework */,
 				581773A01E37A2DB004E28A9 /* AVFoundation.framework */,
@@ -634,11 +650,12 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${MOE_FRAMEWORK_PATH}",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "ios-moe/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MOE_COPY_ANDROID_CACERTS = NO;
+				MOE_COPY_ANDROID_CACERTS = YES;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
 				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lstdc++ -framework MOE";
 				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
@@ -672,11 +689,12 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${MOE_FRAMEWORK_PATH}",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "ios-moe/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MOE_COPY_ANDROID_CACERTS = NO;
+				MOE_COPY_ANDROID_CACERTS = YES;
 				MOE_FRAMEWORK_PATH = "${MOE_SDK_PATH}/sdk/${PLATFORM_NAME}";
 				MOE_OTHER_LDFLAGS = "${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lstdc++ -framework MOE";
 				"MOE_PAGEZERO[sdk=iphoneos*]" = "";
