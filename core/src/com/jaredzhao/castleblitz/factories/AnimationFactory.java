@@ -54,6 +54,7 @@ public class AnimationFactory {
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));
+        animations.add(Integer.valueOf(-1));
         completeAnimation[1] = animations;
         return completeAnimation;
     }

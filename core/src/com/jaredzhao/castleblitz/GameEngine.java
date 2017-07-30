@@ -17,7 +17,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static int currentScene; //Current scene number
 
-	public static String version = "Build 32"; //Current build version
+	public static String version = "Build 33"; //Current build version
 
 	public FirebaseAccessor firebaseAccessor;
 	public FacebookAccessor facebookAccessor;

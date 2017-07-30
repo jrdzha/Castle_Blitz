@@ -127,11 +127,76 @@ public class InputSystem extends EntitySystem implements InputProcessor{
         beingTapped = true;
         lastX = screenX;
         lastY = screenY;
+
+
+        if(GameEngine.currentScene == 1) {
+            sortedSelectables = LayerSorter.sortByLayers(selectables);
+        } else {
+            sortedSelectables = new ArrayList<Entity>();
+            for(Entity entity : selectables){
+                sortedSelectables.add(entity);
+            }
+        }
+
+        Collections.reverse(sortedSelectables);
+
+        boolean nothingSelectedYet = true;
+
+        for (Entity entity : sortedSelectables){
+            PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
+            SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+
+            selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth + selectableComponent.sizeX / 2);
+            selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y + selectableComponent.sizeY / 2);
+
+            if (selectedX > positionComponent.x &&
+                    selectedX < positionComponent.x + selectableComponent.sizeX &&
+                    selectedY > positionComponent.y &&
+                    selectedY < positionComponent.y + selectableComponent.sizeY &&
+                    nothingSelectedYet) {
+
+                if (selectableComponent.name.equals("pause")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("fastforward")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("debug")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("facebookLogin")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("move") && !settingsComponent.isPaused) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("attack") && !settingsComponent.isPaused) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+            }
+        }
+
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) { //User input for selecting characters
+        for (Entity entity : sortedSelectables){
+            SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+
+            selectableComponent.touchDown = false;
+        }
         if(beingTapped && !beingDragged) {
 
             if(GameEngine.currentScene == 1) {
@@ -150,6 +215,8 @@ public class InputSystem extends EntitySystem implements InputProcessor{
             for (Entity entity : sortedSelectables){
                 PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+
+                selectableComponent.touchDown = false;
 
                 selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth + selectableComponent.sizeX / 2);
                 selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y + selectableComponent.sizeY / 2);

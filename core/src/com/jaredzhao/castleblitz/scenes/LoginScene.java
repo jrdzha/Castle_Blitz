@@ -31,6 +31,7 @@ public class LoginScene extends Scene {
     private InputSystem inputSystem; //System for user input
     private AudioSystem audioSystem; //System for dynamic audio
     private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
+    private AnimationManagerSystem animationManagerSystem;
 
     private FirebaseAccessor firebaseAccessor;
     private FacebookAccessor facebookAccessor;
@@ -74,6 +75,7 @@ public class LoginScene extends Scene {
         inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings, battleMechanics);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
+        animationManagerSystem = new AnimationManagerSystem();
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);
@@ -82,6 +84,7 @@ public class LoginScene extends Scene {
         ashleyEngine.addSystem(audioSystem);
         ashleyEngine.addSystem(renderSystem);
         ashleyEngine.addSystem(resourceManagementSystem);
+        ashleyEngine.addSystem(animationManagerSystem);
         System.gc();
     }
 
