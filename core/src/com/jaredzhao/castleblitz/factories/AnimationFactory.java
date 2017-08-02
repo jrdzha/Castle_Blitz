@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture textures2, textures4, texture5, light, highlight, ui;
+    private Texture textures2, textures4, texture5, light, highlight, ui, ui2;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
@@ -19,6 +19,7 @@ public class AnimationFactory {
         light = new Texture(Gdx.files.internal("graphics/light.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
+        ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
@@ -48,6 +49,9 @@ public class AnimationFactory {
         } else if(type.equals("facebookLogin")){
             sprites.add(spriteRegionForTile(ui, 5, 0, sizeX, sizeY));
             alpha = 1f;
+        } else if(type.equals("battle")){
+            sprites.add(spriteRegionForTile(ui, 13, 0, sizeX, sizeY));
+            alpha = 1f;
         } else if(type.equals("sfxOn")){
             sprites.add(spriteRegionForTile(ui, 9, 0, sizeX, sizeY));
         } else if(type.equals("sfxOff")){
@@ -56,6 +60,36 @@ public class AnimationFactory {
             sprites.add(spriteRegionForTile(ui, 11, 0, sizeX, sizeY));
         } else if(type.equals("soundOff")){
             sprites.add(spriteRegionForTile(ui, 12, 0, sizeX, sizeY));
+        } else if(type.equals("homeCastleOff")){
+            sprites.add(spriteRegionForTile(ui2, 0, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeCastleOn")){
+            sprites.add(spriteRegionForTile(ui2, 1, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeTeamOff")){
+            sprites.add(spriteRegionForTile(ui2, 2, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeTeamOn")){
+            sprites.add(spriteRegionForTile(ui2, 3, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeShopOff")){
+            sprites.add(spriteRegionForTile(ui2, 4, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeShopOn")){
+            sprites.add(spriteRegionForTile(ui2, 5, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeArmoryOff")){
+            sprites.add(spriteRegionForTile(ui2, 6, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeArmoryOn")){
+            sprites.add(spriteRegionForTile(ui2, 7, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeBrigadeOff")){
+            sprites.add(spriteRegionForTile(ui2, 8, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeBrigadeOn")){
+            sprites.add(spriteRegionForTile(ui2, 9, 0, sizeX, sizeY));
+            alpha = 1f;
         }
         sprites.get(0).setScale(scale);
         sprites.get(0).setAlpha(alpha);

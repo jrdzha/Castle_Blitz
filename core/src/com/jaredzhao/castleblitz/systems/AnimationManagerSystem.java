@@ -5,6 +5,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 
@@ -82,6 +83,78 @@ public class AnimationManagerSystem extends EntitySystem{
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("homeCastle")){
+                    if(settingsComponent.homeScreen.equals("homeCastle")){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("homeTeam")){
+                    if(settingsComponent.homeScreen.equals("homeTeam")){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("homeShop")){
+                    if(settingsComponent.homeScreen.equals("homeShop")){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("homeArmory")){
+                    if(settingsComponent.homeScreen.equals("homeArmory")){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("homeBrigade")){
+                    if(settingsComponent.homeScreen.equals("homeBrigade")){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("battle")){
+                    if(settingsComponent.homeScreen.equals("homeCastle")){
+                        if(entity.getComponent(VisibleComponent.class) == null){
+                            entity.add(new VisibleComponent());
+                        }
+                    } else {
+                        if(entity.getComponent(VisibleComponent.class) != null){
+                            entity.remove(VisibleComponent.class);
+                        }
                     }
                 }
             }

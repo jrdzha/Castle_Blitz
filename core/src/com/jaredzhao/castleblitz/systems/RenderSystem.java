@@ -27,7 +27,6 @@ import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.ShaderBatch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class RenderSystem extends EntitySystem {
 
@@ -44,7 +43,8 @@ public class RenderSystem extends EntitySystem {
     private GlyphLayout layout;
 
     private Engine ashleyEngine;
-    private Entity settings;
+
+    private SettingsComponent settingsComponent;
 
     private ImmutableArray<Entity> renderables;
     private ArrayList<Entity> sortedRenderables;
@@ -63,7 +63,7 @@ public class RenderSystem extends EntitySystem {
         uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
         this.ashleyEngine = ashleyEngine;
-        this.settings = settings;
+        this.settingsComponent = settings.getComponent(SettingsComponent.class);
 
         debugFont = new BitmapFont();
         //font = new BitmapFont();
@@ -152,7 +152,7 @@ public class RenderSystem extends EntitySystem {
 
         uiBatch.begin(); //Render UI
 
-        if(settings.getComponent(SettingsComponent.class).isPaused){
+        if(settingsComponent.isPaused){
             layout.setText(pausedFont, "PAUSED");
             pausedFont.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
         }
@@ -163,9 +163,26 @@ public class RenderSystem extends EntitySystem {
 
             layout.setText(signInFont2, "IT'S GOOD FOR YOU");
             signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
+        } else if(GameEngine.currentScene == 3){
+            if(settingsComponent.homeScreen.equals("homeShop")){
+                layout.setText(signInFont1, "Shop");
+                signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+            } else if(settingsComponent.homeScreen.equals("homeArmory")){
+                layout.setText(signInFont1, "Armory");
+                signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+            } else if(settingsComponent.homeScreen.equals("homeCastle")){
+                layout.setText(signInFont1, "Castle");
+                signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+            } else if(settingsComponent.homeScreen.equals("homeTeam")){
+                layout.setText(signInFont1, "Team");
+                signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+            } else if(settingsComponent.homeScreen.equals("homeBrigade")){
+                layout.setText(signInFont1, "Brigade");
+                signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+            }
         }
 
-        if(settings.getComponent(SettingsComponent.class).debug) {
+        if(settingsComponent.debug) {
 
             debugFont.draw(uiBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
             debugFont.draw(uiBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);

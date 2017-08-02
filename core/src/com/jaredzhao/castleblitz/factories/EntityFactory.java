@@ -171,6 +171,46 @@ public class EntityFactory {
             sprite = animationFactory.createUI("sfxOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("homeCastle")){
+            Object[] sprite = animationFactory.createUI("homeCastleOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("homeCastleOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("homeTeam")){
+            Object[] sprite = animationFactory.createUI("homeTeamOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("homeTeamOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("homeShop")){
+            Object[] sprite = animationFactory.createUI("homeShopOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("homeShopOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("homeArmory")){
+            Object[] sprite = animationFactory.createUI("homeArmoryOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("homeArmoryOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("homeBrigade")){
+            Object[] sprite = animationFactory.createUI("homeBrigadeOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("homeBrigadeOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
         } else {
             Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);

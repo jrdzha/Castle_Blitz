@@ -9,4 +9,6 @@ public class SettingsComponent implements Component {
     public boolean facebookLogin = false;
     public boolean soundOn = true;
     public boolean sfxOn = true;
+    public String homeScreen = "homeCastle";
+    public boolean battle = false;
 }

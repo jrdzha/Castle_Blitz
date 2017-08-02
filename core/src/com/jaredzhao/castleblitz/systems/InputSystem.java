@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -55,7 +56,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
     @SuppressWarnings("unchecked")
     public void addedToEngine(Engine engine){
-        selectables = engine.getEntitiesFor(Family.all(SelectableComponent.class, PositionComponent.class, LayerComponent.class).get());
+        selectables = engine.getEntitiesFor(Family.all(SelectableComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class).get());
     }
 
     public void update(float deltaTime){
@@ -159,42 +160,26 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                     selectedY < positionComponent.y + selectableComponent.sizeY &&
                     nothingSelectedYet) {
 
-                if (selectableComponent.name.equals("pause")) {
+                if (selectableComponent.name.equals("pause")
+                        || selectableComponent.name.equals("fastforward")
+                        || selectableComponent.name.equals("debug")
+                        || selectableComponent.name.equals("facebookLogin")
+                        || selectableComponent.name.equals("sound")
+                        || selectableComponent.name.equals("sfx")
+                        || selectableComponent.name.equals("homeCastle")
+                        || selectableComponent.name.equals("homeTeam")
+                        || selectableComponent.name.equals("homeShop")
+                        || selectableComponent.name.equals("homeArmory")
+                        || selectableComponent.name.equals("homeBrigade")
+                        || selectableComponent.name.equals("battle")) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
 
-                if (selectableComponent.name.equals("fastforward")) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("debug")) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("facebookLogin")) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("sound")) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("sfx")) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("move") && !settingsComponent.isPaused) {
-                    selectableComponent.touchDown = true;
-                    nothingSelectedYet = false;
-                }
-
-                if (selectableComponent.name.equals("attack") && !settingsComponent.isPaused) {
+                if(!settingsComponent.isPaused && (
+                        selectableComponent.name.equals("move")
+                        || selectableComponent.name.equals("attack")
+                        )){
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
@@ -268,8 +253,22 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                         nothingSelectedYet = false;
                     }
 
+                    if (selectableComponent.name.equals("battle")) {
+                        settingsComponent.battle = true;
+                        nothingSelectedYet = false;
+                    }
+
                     if (selectableComponent.name.equals("facebookLogin")) {
                         settingsComponent.facebookLogin = true;
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("homeCastle")
+                            || selectableComponent.name.equals("homeTeam")
+                            || selectableComponent.name.equals("homeShop")
+                            || selectableComponent.name.equals("homeArmory")
+                            || selectableComponent.name.equals("homeBrigade")) {
+                        settingsComponent.homeScreen = selectableComponent.name;
                         nothingSelectedYet = false;
                     }
 

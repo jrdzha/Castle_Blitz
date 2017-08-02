@@ -13,7 +13,9 @@ import com.jaredzhao.castleblitz.utils.FacebookAccessor;
 import com.jaredzhao.castleblitz.utils.FirebaseAccessor;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
-public class LoginScene extends Scene {
+import java.util.Set;
+
+public class HomeScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
 
@@ -38,8 +40,8 @@ public class LoginScene extends Scene {
     private FacebookAccessor facebookAccessor;
     private PreferencesAccessor preferencesAccessor;
 
-    public LoginScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor, PreferencesAccessor preferencesAccessor){
-        IDENTIFIER = 2;
+    public HomeScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor, PreferencesAccessor preferencesAccessor){
+        IDENTIFIER = 3;
         this.firebaseAccessor = firebaseAccessor;
         this.facebookAccessor = facebookAccessor;
         this.preferencesAccessor = preferencesAccessor;
@@ -58,14 +60,19 @@ public class LoginScene extends Scene {
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Load level data from disk
-        Object[] levelData = mapFactory.loadMap(Gdx.files.internal("levels/login.lvl"));
+        Object[] levelData = mapFactory.loadMap(Gdx.files.internal("levels/home.lvl"));
 
         //Create entities
         map = (Entity)levelData[0];
         camera = entityFactory.createCamera();
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("facebookLogin", 0, -60, 65, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", -36, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory", -18, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle", 0, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam", 18, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade", 36, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
         ashleyEngine.addEntity(entityFactory.createMusic((String[])levelData[1]));
         settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
@@ -101,12 +108,8 @@ public class LoginScene extends Scene {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
         int nextScene;
-        if(settings.getComponent(SettingsComponent.class).facebookLogin){
-            facebookAccessor.login();
-            settings.getComponent(SettingsComponent.class).facebookLogin = false;
-        }
-        if(facebookAccessor.gdxFacebook.isSignedIn()){
-            nextScene = 3;
+        if(settings.getComponent(SettingsComponent.class).battle){
+            nextScene = 1;
             this.dispose();
             this.isRunning = false;
         } else {
