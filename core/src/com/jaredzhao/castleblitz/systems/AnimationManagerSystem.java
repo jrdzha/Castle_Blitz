@@ -6,8 +6,10 @@ import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
+import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 
 public class AnimationManagerSystem extends EntitySystem{
+
     private ImmutableArray<Entity> selectableHighlights;
     private ImmutableArray<Entity> selectableUI;
 
@@ -16,8 +18,10 @@ public class AnimationManagerSystem extends EntitySystem{
     private ComponentMapper<AnimationComponent> animationComponentComponentMapper = ComponentMapper.getFor(AnimationComponent.class);
     private ComponentMapper<SpriteComponent> spriteComponentComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
 
-    public AnimationManagerSystem(){
+    private SettingsComponent settingsComponent;
 
+    public AnimationManagerSystem(Entity settings){
+        this.settingsComponent = settings.getComponent(SettingsComponent.class);
     }
 
     public void addedToEngine(Engine engine){
@@ -45,16 +49,41 @@ public class AnimationManagerSystem extends EntitySystem{
             if(entity.getComponent(HighlightComponent.class) == null) {
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
                 SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
-                if (selectableComponent.touchDown) {
-                    if(spriteComponent.spriteList.get(0).get(0).getScaleX() > .95f) {
-                        spriteComponent.spriteList.get(0).get(0).scale(-.025f);
+                AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);
+
+                if(selectableComponent.touchDown) {
+                    if(spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).getScaleX() > .93f) {
+                        spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).scale(-.03f);
                     }
                 } else {
-                    if(spriteComponent.spriteList.get(0).get(0).getScaleX() < 1f) {
-                        spriteComponent.spriteList.get(0).get(0).scale(.025f);
+                    if(spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).getScaleX() < 1f) {
+                        spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).scale(.03f);
                     }
                 }
-                //System.out.println(spriteComponent.spriteList.get(0).get(0).getScaleX());
+
+                if(selectableComponent.name.equals("sound")){
+                    if(settingsComponent.soundOn){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
+
+                if(selectableComponent.name.equals("sfx")){
+                    if(settingsComponent.sfxOn){
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 0;
+                        animationComponent.framesDisplayed = 0;
+                    } else {
+                        animationComponent.currentFrame = 0;
+                        animationComponent.currentTrack = 1;
+                        animationComponent.framesDisplayed = 0;
+                    }
+                }
             }
         }
     }

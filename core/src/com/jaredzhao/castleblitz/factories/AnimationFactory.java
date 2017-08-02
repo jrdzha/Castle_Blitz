@@ -48,6 +48,14 @@ public class AnimationFactory {
         } else if(type.equals("facebookLogin")){
             sprites.add(spriteRegionForTile(ui, 5, 0, sizeX, sizeY));
             alpha = 1f;
+        } else if(type.equals("sfxOn")){
+            sprites.add(spriteRegionForTile(ui, 9, 0, sizeX, sizeY));
+        } else if(type.equals("sfxOff")){
+            sprites.add(spriteRegionForTile(ui, 10, 0, sizeX, sizeY));
+        } else if(type.equals("soundOn")){
+            sprites.add(spriteRegionForTile(ui, 11, 0, sizeX, sizeY));
+        } else if(type.equals("soundOff")){
+            sprites.add(spriteRegionForTile(ui, 12, 0, sizeX, sizeY));
         }
         sprites.get(0).setScale(scale);
         sprites.get(0).setAlpha(alpha);

@@ -154,9 +154,29 @@ public class EntityFactory {
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
         entity.add(new FixedScreenPositionComponent());
-        Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
-        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
-        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+        if(type.equals("sound")){
+            Object[] sprite = animationFactory.createUI("soundOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("soundOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else if(type.equals("sfx")){
+            Object[] sprite = animationFactory.createUI("sfxOn", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            sprite = animationFactory.createUI("sfxOff", sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        } else {
+            Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
+            entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+            entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        }
+
         entity.getComponent(LayerComponent.class).layer = 5;
         entity.getComponent(SelectableComponent.class).sizeX = sizeX;
         entity.getComponent(SelectableComponent.class).sizeY = sizeY;

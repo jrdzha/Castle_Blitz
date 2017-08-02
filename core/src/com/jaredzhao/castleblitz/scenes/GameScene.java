@@ -5,16 +5,20 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
+import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.systems.*;
+import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
 public class GameScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
+
+    private PreferencesAccessor preferencesAccessor;
 
     private EntityFactory entityFactory; //Entity factory used for creating all entities
     private AudioFactory audioFactory; //Audio factory for loading audio files
@@ -35,8 +39,9 @@ public class GameScene extends Scene {
     private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
     private BattleMechanicsSystem battleMechanicsSystem;
 
-    public GameScene(){
+    public GameScene(PreferencesAccessor preferencesAccessor){
         IDENTIFIER = 1;
+        this.preferencesAccessor = preferencesAccessor;
     }
 
     @Override
@@ -62,23 +67,30 @@ public class GameScene extends Scene {
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28, 115, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64, 115, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createMusic((String[])levelData[1]));
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
+        //Load settings
+        boolean[] localSettings = preferencesAccessor.loadLocalSettings();
+        settings.getComponent(SettingsComponent.class).soundOn = localSettings[0];
+        settings.getComponent(SettingsComponent.class).sfxOn = localSettings[1];
+
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings);
         mapSystem = new MapSystem(map);
-        inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings, battleMechanics);
+        inputSystem = new InputSystem(ashleyEngine, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem(ashleyEngine);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         highlightSystem = new HighlightSystem(ashleyEngine, map, battleMechanics);
-        animationManagerSystem = new AnimationManagerSystem();
+        animationManagerSystem = new AnimationManagerSystem(settings);
         battleMechanicsSystem = new BattleMechanicsSystem(map, battleMechanics);
 
         //Add systems to ashleyEngine

@@ -11,6 +11,7 @@ import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.FacebookAccessor;
 import com.jaredzhao.castleblitz.utils.FirebaseAccessor;
+import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
 public class LoginScene extends Scene {
 
@@ -35,11 +36,13 @@ public class LoginScene extends Scene {
 
     private FirebaseAccessor firebaseAccessor;
     private FacebookAccessor facebookAccessor;
+    private PreferencesAccessor preferencesAccessor;
 
-    public LoginScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor){
+    public LoginScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor, PreferencesAccessor preferencesAccessor){
+        IDENTIFIER = 2;
         this.firebaseAccessor = firebaseAccessor;
         this.facebookAccessor = facebookAccessor;
-        IDENTIFIER = 2;
+        this.preferencesAccessor = preferencesAccessor;
     }
 
     @Override
@@ -68,14 +71,19 @@ public class LoginScene extends Scene {
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
+        //Load settings
+        boolean[] localSettings = preferencesAccessor.loadLocalSettings();
+        settings.getComponent(SettingsComponent.class).soundOn = localSettings[0];
+        settings.getComponent(SettingsComponent.class).sfxOn = localSettings[1];
+
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         mapSystem = new MapSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings);
-        inputSystem = new InputSystem(ashleyEngine, entityFactory, camera, settings, battleMechanics);
+        inputSystem = new InputSystem(ashleyEngine, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        animationManagerSystem = new AnimationManagerSystem();
+        animationManagerSystem = new AnimationManagerSystem(settings);
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);

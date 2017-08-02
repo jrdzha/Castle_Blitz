@@ -9,7 +9,6 @@ public class MusicComponent implements Component{
     public Music currentMusic;
     public String currentMusicName;
     public int currentMusicIndex = -1;
-    public boolean isPlaying = false;
     public float volume = 0f;
     public boolean shouldLoop = false;
     public boolean playRandom = false;

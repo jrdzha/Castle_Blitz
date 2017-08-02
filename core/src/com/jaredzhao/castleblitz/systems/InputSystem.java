@@ -12,6 +12,7 @@ import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.utils.LayerSorter;
+import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,8 @@ import java.util.Collections;
 public class InputSystem extends EntitySystem implements InputProcessor{
 
     private ImmutableArray<Entity> selectables;
+
+    private PreferencesAccessor preferencesAccessor;
 
     private boolean beingDragged, beingTapped;
     private int lastX, lastY, selectedX, selectedY;
@@ -38,8 +41,9 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     private ComponentMapper<CameraComponent> cameraComponentComponentMapper = ComponentMapper.getFor(CameraComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
 
-    public InputSystem(Engine ashleyEngine, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
+    public InputSystem(Engine ashleyEngine, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
         Gdx.input.setInputProcessor(this);
+        this.preferencesAccessor = preferencesAccessor;
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.scale = camera.getComponent(CameraComponent.class).scale;
         this.ashleyEngine = ashleyEngine;
@@ -175,6 +179,16 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                     nothingSelectedYet = false;
                 }
 
+                if (selectableComponent.name.equals("sound")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
+                if (selectableComponent.name.equals("sfx")) {
+                    selectableComponent.touchDown = true;
+                    nothingSelectedYet = false;
+                }
+
                 if (selectableComponent.name.equals("move") && !settingsComponent.isPaused) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
@@ -234,6 +248,18 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
                     if (selectableComponent.name.equals("fastforward")) {
                         settingsComponent.fastForward = true;
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("sound")) {
+                        settingsComponent.soundOn = !settingsComponent.soundOn;
+                        preferencesAccessor.putBoolean("soundOn", settingsComponent.soundOn);
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("sfx")) {
+                        settingsComponent.sfxOn = !settingsComponent.sfxOn;
+                        preferencesAccessor.putBoolean("sfxOn", settingsComponent.sfxOn);
                         nothingSelectedYet = false;
                     }
 
