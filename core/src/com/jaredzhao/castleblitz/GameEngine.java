@@ -46,7 +46,7 @@ public class GameEngine extends ApplicationAdapter {
 		sceneList.add(homeScene);
 		sceneList.add(gameScene);
 
-		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
+		currentScene = homeScene.IDENTIFIER; //Current scene is openingScene
 	}
 
 	@Override

@@ -155,6 +155,11 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new FixedScreenPositionComponent());
 
+        int centerOffsetX = 0;
+        int centerOffsetY = 0;
+        int selectionSizeX = sizeX;
+        int selectionSizeY = sizeY;
+
         if(type.equals("sound")){
             Object[] sprite = animationFactory.createUI("soundOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -179,6 +184,9 @@ public class EntityFactory {
             sprite = animationFactory.createUI("homeCastleOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            centerOffsetY = -8;
+            selectionSizeY = 16;
         } else if(type.equals("homeTeam")){
             Object[] sprite = animationFactory.createUI("homeTeamOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -187,6 +195,9 @@ public class EntityFactory {
             sprite = animationFactory.createUI("homeTeamOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            centerOffsetY = -8;
+            selectionSizeY = 16;
         } else if(type.equals("homeShop")){
             Object[] sprite = animationFactory.createUI("homeShopOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -195,6 +206,9 @@ public class EntityFactory {
             sprite = animationFactory.createUI("homeShopOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            centerOffsetY = -8;
+            selectionSizeY = 16;
         } else if(type.equals("homeArmory")){
             Object[] sprite = animationFactory.createUI("homeArmoryOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -203,6 +217,9 @@ public class EntityFactory {
             sprite = animationFactory.createUI("homeArmoryOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            centerOffsetY = -8;
+            selectionSizeY = 16;
         } else if(type.equals("homeBrigade")){
             Object[] sprite = animationFactory.createUI("homeBrigadeOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -211,6 +228,9 @@ public class EntityFactory {
             sprite = animationFactory.createUI("homeBrigadeOn", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+
+            centerOffsetY = -8;
+            selectionSizeY = 16;
         } else {
             Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -218,8 +238,10 @@ public class EntityFactory {
         }
 
         entity.getComponent(LayerComponent.class).layer = 5;
-        entity.getComponent(SelectableComponent.class).sizeX = sizeX;
-        entity.getComponent(SelectableComponent.class).sizeY = sizeY;
+        entity.getComponent(SelectableComponent.class).sizeX = selectionSizeX;
+        entity.getComponent(SelectableComponent.class).sizeY = selectionSizeY;
+        entity.getComponent(SelectableComponent.class).centerOffsetX = centerOffsetX;
+        entity.getComponent(SelectableComponent.class).centerOffsetY = centerOffsetY;
         entity.getComponent(SelectableComponent.class).name = type;
         entity.getComponent(FixedScreenPositionComponent.class).x = x;
         entity.getComponent(FixedScreenPositionComponent.class).y = y;

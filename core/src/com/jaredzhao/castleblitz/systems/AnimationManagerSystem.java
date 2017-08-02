@@ -2,12 +2,15 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+
+import java.util.ArrayList;
 
 public class AnimationManagerSystem extends EntitySystem{
 
@@ -52,13 +55,21 @@ public class AnimationManagerSystem extends EntitySystem{
                 SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
                 AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);
 
+                Sprite currentFrame = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
+
                 if(selectableComponent.touchDown) {
-                    if(spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).getScaleX() > .93f) {
-                        spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).scale(-.03f);
+                    if(currentFrame.getScaleX() > .93f) {
+                        currentFrame.scale(-.03f);
                     }
                 } else {
-                    if(spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).getScaleX() < 1f) {
-                        spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame).scale(.03f);
+                    if(currentFrame.getScaleX() < 1f) {
+                        currentFrame.scale(.03f);
+                    }
+                }
+
+                for(ArrayList<Sprite> track : spriteComponent.spriteList){
+                    for(Sprite frame : track){
+                        frame.setScale(currentFrame.getScaleX());
                     }
                 }
 

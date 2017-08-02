@@ -147,17 +147,17 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
         boolean nothingSelectedYet = true;
 
+        selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth);
+        selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y);
+
         for (Entity entity : sortedSelectables){
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
-            selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth + selectableComponent.sizeX / 2);
-            selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y + selectableComponent.sizeY / 2);
-
-            if (selectedX > positionComponent.x &&
-                    selectedX < positionComponent.x + selectableComponent.sizeX &&
-                    selectedY > positionComponent.y &&
-                    selectedY < positionComponent.y + selectableComponent.sizeY &&
+            if (selectedX > positionComponent.x - selectableComponent.sizeX / 2 + selectableComponent.centerOffsetX &&
+                    selectedX < positionComponent.x + selectableComponent.sizeX / 2 + selectableComponent.centerOffsetX &&
+                    selectedY > positionComponent.y - selectableComponent.sizeY / 2 + selectableComponent.centerOffsetY &&
+                    selectedY < positionComponent.y + selectableComponent.sizeY / 2 + selectableComponent.centerOffsetY &&
                     nothingSelectedYet) {
 
                 if (selectableComponent.name.equals("pause")
@@ -211,19 +211,19 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
             boolean nothingSelectedYet = true;
 
+            selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth);
+            selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y);
+
             for (Entity entity : sortedSelectables){
                 PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
                 selectableComponent.touchDown = false;
 
-                selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth + selectableComponent.sizeX / 2);
-                selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y + selectableComponent.sizeY / 2);
-
-                if (selectedX > positionComponent.x &&
-                        selectedX < positionComponent.x + selectableComponent.sizeX &&
-                        selectedY > positionComponent.y &&
-                        selectedY < positionComponent.y + selectableComponent.sizeY &&
+                if (selectedX > positionComponent.x - selectableComponent.sizeX / 2 + selectableComponent.centerOffsetX &&
+                        selectedX < positionComponent.x + selectableComponent.sizeX / 2 + selectableComponent.centerOffsetX &&
+                        selectedY > positionComponent.y - selectableComponent.sizeY / 2 + selectableComponent.centerOffsetY &&
+                        selectedY < positionComponent.y + selectableComponent.sizeY / 2 + selectableComponent.centerOffsetY &&
                         nothingSelectedYet) {
 
                     if (selectableComponent.name.equals("pause")) {
