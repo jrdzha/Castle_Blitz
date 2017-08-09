@@ -7,10 +7,6 @@ target 'ios-moe' do
 
   # Pods for ios-moe
 
-  pod "Firebase/Core"
-  pod "Firebase/Auth"
-  pod "Firebase/Database"
-
 end
 
 target 'ios-moe-Test' do

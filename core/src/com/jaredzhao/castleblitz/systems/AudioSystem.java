@@ -8,6 +8,7 @@ import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
 import com.jaredzhao.castleblitz.components.audio.SoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.StopSoundComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -40,7 +41,7 @@ public class AudioSystem extends EntitySystem {
     }
 
     public void addedToEngine(Engine engine){
-        soundEffectsSources = engine.getEntitiesFor(Family.all(HasSoundEffectComponent.class, PositionComponent.class).get());
+        soundEffectsSources = engine.getEntitiesFor(Family.all(HasSoundEffectComponent.class, PositionComponent.class, VisibleComponent.class).get());
         musicSources = engine.getEntitiesFor(Family.all(MusicComponent.class).get());
     }
 

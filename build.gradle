@@ -74,10 +74,6 @@ project(":android") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.1"
         compile "de.tomgrill.gdxfacebook:gdx-facebook-android:1.4.0"
-
-        compile 'com.google.firebase:firebase-core:11.0.2'
-        compile 'com.google.firebase:firebase-database:11.0.2'
-        compile 'com.google.firebase:firebase-auth:11.0.2'
     }
 
     apply plugin: 'com.google.gms.google-services'

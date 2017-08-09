@@ -10,7 +10,7 @@ public class MapEditorLauncher {
     public static void main (String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-        GameEngine engine = new GameEngine(new DesktopFirebaseAccessor());
+        GameEngine engine = new GameEngine();
 
         config.title = "Castle Blitz - Map Editor - " + GameEngine.version;
         config.useGL30 = false;

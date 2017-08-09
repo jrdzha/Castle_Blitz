@@ -2,37 +2,73 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.map.UpdateTileComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
+import com.jaredzhao.castleblitz.servers.GameServer;
+import com.jaredzhao.castleblitz.utils.Console;
 
 import java.util.ArrayList;
 
 public class MapSystem extends EntitySystem {
 
-    private ImmutableArray<Entity> tileEntities, selectableEntities, selectableTiles;
+    private ImmutableArray<Entity> fogOfWarEntities, updateTileEntities, selectableEntities, selectableTiles, visibleCharacters;
 
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
+    private ComponentMapper<FogOfWarComponent> fogOfWarComponentComponentMapper = ComponentMapper.getFor(FogOfWarComponent.class);
 
     private Entity map;
 
-    public MapSystem(Entity map){
+    private GameServer gameServer;
+
+    public MapSystem(GameServer gameServer, Entity map){
+        this.gameServer = gameServer;
         this.map = map;
     }
 
     public void addedToEngine(Engine engine){
-        tileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
+        fogOfWarEntities = engine.getEntitiesFor(Family.all(FogOfWarComponent.class).get());
+        updateTileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
         selectableEntities = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
         selectableTiles = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class).get());
+        visibleCharacters = engine.getEntitiesFor(Family.all(CharacterPropertiesComponent.class).get());
     }
 
     public void update(float deltaTime){ //Updates new map entities
+
+        Console console = gameServer.getConsole();
+        if (console.peekConsoleNewEntries() != null) {
+            String nextEntry = console.peekConsoleNewEntries();
+
+            if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("client")) {
+                nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
+                if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("move")) {
+                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
+                    int fromX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
+                    nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
+                    int fromY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
+                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
+                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
+                    int toX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
+                    nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
+                    int toY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
+
+                    map.getComponent(MapComponent.class).mapEntities[1][toX][toY] = map.getComponent(MapComponent.class).mapEntities[1][fromX][fromY];
+                    map.getComponent(MapComponent.class).mapEntities[1][fromX][fromY] = null;
+                    map.getComponent(MapComponent.class).mapEntities[1][toX][toY].add(new UpdateTileComponent());
+                    map.getComponent(MapComponent.class).mapEntities[1][toX][toY].getComponent(TileComponent.class).tileX = toX;
+                    map.getComponent(MapComponent.class).mapEntities[1][toX][toY].getComponent(TileComponent.class).tileY = toY;
+                    console.pollConsoleNewEntries();
+                }
+            }
+        }
 
         int[] moveTo = {-1, -1};
 
@@ -49,15 +85,53 @@ public class MapSystem extends EntitySystem {
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             if(selectableComponent.isSelected && moveTo[0] != -1){
+                gameServer.getConsole().putConsoleNewEntries("client.move." + tileComponent.tileX + "," + tileComponent.tileY + ".to." + moveTo[0] + "," + moveTo[1] + ".");
+                gameServer.getConsole().putConsoleNewEntries("server.move." + tileComponent.tileX + "," + tileComponent.tileY + ".to." + moveTo[0] + "," + moveTo[1] + ".");
+                /*
                 entity.add(new UpdateTileComponent());
                 map.getComponent(MapComponent.class).mapEntities[1][tileComponent.tileX][tileComponent.tileY] = null;
                 tileComponent.tileX = moveTo[0];
                 tileComponent.tileY = moveTo[1];
                 map.getComponent(MapComponent.class).mapEntities[1][tileComponent.tileX][tileComponent.tileY] = entity;
+                */
             }
         }
 
-        for(Entity entity : tileEntities){
+        for(Entity entity : fogOfWarEntities){
+            FogOfWarComponent fogOfWarComponent = fogOfWarComponentComponentMapper.get(entity);
+            TileComponent tileComponent = tileComponentComponentMapper.get(fogOfWarComponent.highlight);
+            boolean[][] playerViewMap = gameServer.retrieveViewMap();
+            if(playerViewMap[tileComponent.tileX][tileComponent.tileY]){
+                if(entity.getComponent(FogOfWarComponent.class) != null) {
+                    fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack = 2;
+                }
+            }
+            if(!playerViewMap[tileComponent.tileX][tileComponent.tileY]){
+                if(entity.getComponent(FogOfWarComponent.class) != null
+                        && fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack == 2) {
+                    fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack = 1;
+                }
+            }
+        }
+
+        for(Entity entity : visibleCharacters){
+            TileComponent tileComponent = tileComponentComponentMapper.get(entity);
+            boolean[][] playerViewMap = gameServer.retrieveViewMap();
+            if(playerViewMap[tileComponent.tileX][tileComponent.tileY]){
+                if(entity.getComponent(VisibleComponent.class) == null) {
+                    entity.add(new VisibleComponent());
+                    entity.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
+                }
+            }
+            if(!playerViewMap[tileComponent.tileX][tileComponent.tileY]){
+                if(entity.getComponent(VisibleComponent.class) != null) {
+                    entity.remove(VisibleComponent.class);
+                    entity.getComponent(HighlightComponent.class).highlight.remove(VisibleComponent.class);
+                }
+            }
+        }
+
+        for(Entity entity : updateTileEntities){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             PositionComponent position = positionComponentComponentMapper.get(entity);
             position.x = tileComponent.tileX * 16;
@@ -77,17 +151,18 @@ public class MapSystem extends EntitySystem {
                         if ((Math.pow(Math.pow(x, 2) + Math.pow(y, 2), .5)) <= characteristics.movementRange) {
                             int[] availableSpot = {x + tileComponent.tileX, y + tileComponent.tileY};
                             Entity tileCheck = map.getComponent(MapComponent.class).mapEntities[0][availableSpot[0]][availableSpot[1]];
-                            if (tileCheck != null && map.getComponent(MapComponent.class).mapEntities[1][availableSpot[0]][availableSpot[1]] == null &&
-                                    ((tileCheck.getComponent(TileComponent.class).type >= 0 && tileCheck.getComponent(TileComponent.class).type <= 11) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 0 && tileCheck.getComponent(TileComponent.class).type <= 11) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 21 && tileCheck.getComponent(TileComponent.class).type <= 26) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 28 && tileCheck.getComponent(TileComponent.class).type <= 32) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 42 && tileCheck.getComponent(TileComponent.class).type <= 52) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 63 && tileCheck.getComponent(TileComponent.class).type <= 70) ||
-                                            (tileCheck.getComponent(TileComponent.class).type >= 84 && tileCheck.getComponent(TileComponent.class).type <= 89) ||
-                                            (tileCheck.getComponent(TileComponent.class).type == 91)
-                                    )) {
-                                possibleMoves1.add(availableSpot);
+                            if(tileCheck != null && map.getComponent(MapComponent.class).mapEntities[1][availableSpot[0]][availableSpot[1]] == null) {
+                                int type = Integer.parseInt(tileCheck.getComponent(TileComponent.class).type);
+                                if ((type >= 0 && type <= 11) ||
+                                        (type >= 0 && type <= 11) ||
+                                        (type >= 21 && type <= 26) ||
+                                        (type >= 28 && type <= 32) ||
+                                        (type >= 42 && type <= 52) ||
+                                        (type >= 63 && type <= 70) ||
+                                        (type >= 84 && type <= 89) ||
+                                        (type == 91)) {
+                                    possibleMoves1.add(availableSpot);
+                                }
                             }
                         }
                     }

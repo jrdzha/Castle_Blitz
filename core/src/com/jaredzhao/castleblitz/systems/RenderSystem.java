@@ -19,12 +19,14 @@ import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
 import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
+import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.FixedScreenPositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.ShaderBatch;
+import com.jaredzhao.castleblitz.utils.TeamColorDecoder;
 
 import java.util.ArrayList;
 
@@ -35,8 +37,6 @@ public class RenderSystem extends EntitySystem {
     private OrthographicCamera orthographicCamera;
     private Sprite currentSprite;
 
-    private float lifetime;
-
     private FreeTypeFontGenerator fontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
     private BitmapFont debugFont, pausedFont, signInFont1, signInFont2;
@@ -45,6 +45,7 @@ public class RenderSystem extends EntitySystem {
     private Engine ashleyEngine;
 
     private SettingsComponent settingsComponent;
+    private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
 
     private ImmutableArray<Entity> renderables;
     private ArrayList<Entity> sortedRenderables;
@@ -54,16 +55,16 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<FixedScreenPositionComponent> fixedScreenPositionComponentComponentMapper = ComponentMapper.getFor(FixedScreenPositionComponent.class);
 
-    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings){
-        lifetime = 0;
+    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics){
 
         batch = new ShaderBatch(100); //SpriteBatch for rendering entities
-        batch.brightness = 0.05f;
-        batch.contrast = 1.4f;
+        batch.brightness = 0.12f;
+        batch.contrast = 1.6f;
         uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
         this.ashleyEngine = ashleyEngine;
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
+        this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
 
         debugFont = new BitmapFont();
         //font = new BitmapFont();
@@ -98,7 +99,7 @@ public class RenderSystem extends EntitySystem {
     }
 
     public void update(float deltaTime){
-        Gdx.gl.glClearColor(.1f, .1f, .2f, 1f); //Background color
+        Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear screen
 
         if(GameEngine.currentScene == 1) {
@@ -118,30 +119,30 @@ public class RenderSystem extends EntitySystem {
         batch.begin(); //Render entities
 
         for(Entity entity : sortedRenderables){
-            PositionComponent position = positionComponentComponentMapper.get(entity);
-            SpriteComponent sprite = spriteComponentComponentMapper.get(entity);
-            AnimationComponent animation = animationComponentComponentMapper.get(entity);
-            if (animation.framesDisplayed != -1) {
-                if (0 > animation.animationTimeList.get(animation.currentTrack).get(animation.currentFrame)) {
-                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
-                } else if (animation.framesDisplayed <= animation.animationTimeList.get(animation.currentTrack).get(animation.currentFrame)) {
-                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
-                    animation.framesDisplayed++;
+            PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
+            SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
+            AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);
+            if (animationComponent.framesDisplayed != -1) {
+                if (0 > animationComponent.animationTimeList.get(animationComponent.currentTrack).get(animationComponent.currentFrame)) {
+                    currentSprite = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
+                } else if (animationComponent.framesDisplayed <= animationComponent.animationTimeList.get(animationComponent.currentTrack).get(animationComponent.currentFrame)) {
+                    currentSprite = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
+                    animationComponent.framesDisplayed++;
                 } else {
-                    animation.framesDisplayed = 0;
-                    if (animation.currentFrame < animation.animationTimeList.get(animation.currentTrack).size() - 1) {
-                        animation.currentFrame++;
+                    animationComponent.framesDisplayed = 0;
+                    if (animationComponent.currentFrame < animationComponent.animationTimeList.get(animationComponent.currentTrack).size() - 1) {
+                        animationComponent.currentFrame++;
                     } else {
-                        animation.currentFrame = 0;
+                        animationComponent.currentFrame = 0;
                     }
-                    currentSprite = sprite.spriteList.get(animation.currentTrack).get(animation.currentFrame);
+                    currentSprite = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
                 }
                 if (entity.getComponent(TileComponent.class) != null) {
-                    currentSprite.setPosition((position.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),
-                            (position.y - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
+                    currentSprite.setPosition((positionComponent.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),
+                            (positionComponent.y - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
                 } else {
-                    currentSprite.setPosition((position.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),
-                            (position.y - orthographicCamera.position.y - (currentSprite.getHeight() / 2) + (orthographicCamera.viewportHeight / 2)));
+                    currentSprite.setPosition((positionComponent.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),
+                            (positionComponent.y - orthographicCamera.position.y - (currentSprite.getHeight() / 2) + (orthographicCamera.viewportHeight / 2)));
                 }
                 currentSprite.draw(batch);
             } else {
@@ -157,7 +158,15 @@ public class RenderSystem extends EntitySystem {
             pausedFont.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
         }
 
-        if(GameEngine.currentScene == 2){
+        if(GameEngine.currentScene == 1){
+            if(battleMechanicsStatesComponent.isMyTurn) {
+                layout.setText(signInFont2, "YOUR TURN");
+                signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
+            } else {
+                layout.setText(signInFont2, "OPPONENT'S TURN");
+                signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
+            }
+        } else if(GameEngine.currentScene == 2){
             layout.setText(signInFont1, "SIGN IN");
             signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
 
@@ -187,7 +196,7 @@ public class RenderSystem extends EntitySystem {
             debugFont.draw(uiBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
             debugFont.draw(uiBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);
             debugFont.draw(uiBatch, "Y: " + (orthographicCamera.position.y - (orthographicCamera.viewportHeight / 2)), 10, Gdx.graphics.getHeight() - 70);
-            debugFont.draw(uiBatch, "Lifetime: " + ((int) (lifetime * 10f)) / 10f + " s", 10, Gdx.graphics.getHeight() - 110);
+            debugFont.draw(uiBatch, "Lifetime: " + ((int) (GameEngine.lifetime * 10f)) / 10f + " s", 10, Gdx.graphics.getHeight() - 110);
             debugFont.draw(uiBatch, "Render Calls: " + (float) ((int) (((float) (batch.totalRenderCalls)) / 100)) / 10 + " x 1000", 10, Gdx.graphics.getHeight() - 130);
             debugFont.draw(uiBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 150);
             debugFont.draw(uiBatch, "Entities: " + ashleyEngine.getEntities().size(), 10, Gdx.graphics.getHeight() - 170);
@@ -203,8 +212,6 @@ public class RenderSystem extends EntitySystem {
         }
 
         uiBatch.end();
-
-        lifetime += Gdx.graphics.getDeltaTime();
     }
 
     public void dispose() {

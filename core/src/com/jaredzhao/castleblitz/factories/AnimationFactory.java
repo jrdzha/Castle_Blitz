@@ -28,7 +28,7 @@ public class AnimationFactory {
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
         Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
-        sprite.setScale(1.04f);
+        sprite.setScale(1f);
         return sprite;
     }
 
@@ -125,12 +125,12 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createHighlight(float r, float g, float b, float a){ //Generate highlight under characters when clicked
+    public Object[] createHighlight(float r, float g, float b, float a, float scale){ //Generate highlight under characters when clicked
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         Sprite tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
         tile.setColor(r, g, b, a);
-        tile.setScale(0.95f);
+        tile.setScale(scale);
         sprites.add(tile);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();

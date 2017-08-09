@@ -8,9 +8,8 @@ import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
+import com.jaredzhao.castleblitz.servers.EmptyServer;
 import com.jaredzhao.castleblitz.systems.*;
-import com.jaredzhao.castleblitz.utils.FacebookAccessor;
-import com.jaredzhao.castleblitz.utils.FirebaseAccessor;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
 import java.util.Set;
@@ -29,21 +28,17 @@ public class HomeScene extends Scene {
     private Entity settings;
 
     private CameraSystem cameraSystem; //System for moving the camera
-    private MapSystem mapSystem; //System to create screen positions for new map entities
+    //private MapSystem mapSystem; //System to create screen positions for new map entities
     private RenderSystem renderSystem; //System for rendering to the screen
     private InputSystem inputSystem; //System for user input
     private AudioSystem audioSystem; //System for dynamic audio
     private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
     private AnimationManagerSystem animationManagerSystem;
 
-    private FirebaseAccessor firebaseAccessor;
-    private FacebookAccessor facebookAccessor;
     private PreferencesAccessor preferencesAccessor;
 
-    public HomeScene(FirebaseAccessor firebaseAccessor, FacebookAccessor facebookAccessor, PreferencesAccessor preferencesAccessor){
+    public HomeScene(PreferencesAccessor preferencesAccessor){
         IDENTIFIER = 3;
-        this.firebaseAccessor = firebaseAccessor;
-        this.facebookAccessor = facebookAccessor;
         this.preferencesAccessor = preferencesAccessor;
     }
 
@@ -59,11 +54,8 @@ public class HomeScene extends Scene {
         entityFactory = new EntityFactory(animationFactory, audioFactory, camera);
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
-        //Load level data from disk
-        Object[] levelData = mapFactory.loadMap(Gdx.files.internal("levels/home.lvl"));
-
         //Create entities
-        map = (Entity)levelData[0];
+        map = mapFactory.loadMap(mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl")));
         camera = entityFactory.createCamera();
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
@@ -73,7 +65,7 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam", 18, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade", 36, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
-        ashleyEngine.addEntity(entityFactory.createMusic((String[])levelData[1]));
+        ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/home.lvl"))));
         settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
@@ -85,15 +77,15 @@ public class HomeScene extends Scene {
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        mapSystem = new MapSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings);
-        inputSystem = new InputSystem(ashleyEngine, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
+        //mapSystem = new MapSystem(map);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics);
+        inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         animationManagerSystem = new AnimationManagerSystem(settings);
 
         //Add systems to ashleyEngine
-        ashleyEngine.addSystem(mapSystem);
+        //ashleyEngine.addSystem(mapSystem);
         ashleyEngine.addSystem(inputSystem);
         ashleyEngine.addSystem(cameraSystem);
         ashleyEngine.addSystem(audioSystem);
@@ -120,7 +112,7 @@ public class HomeScene extends Scene {
 
     @Override
     public void dispose() {
-        mapSystem.dispose();
+        //mapSystem.dispose();
         inputSystem.dispose();
         cameraSystem.dispose();
         audioSystem.dispose();

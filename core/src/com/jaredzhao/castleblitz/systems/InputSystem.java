@@ -12,6 +12,8 @@ import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
+import com.jaredzhao.castleblitz.scenes.SinglePlayerGameScene;
+import com.jaredzhao.castleblitz.servers.GameServer;
 import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
@@ -36,14 +38,18 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
     private ArrayList<Entity> sortedSelectables;
 
+    private GameServer gameServer;
+
     private float scale;
 
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<CameraComponent> cameraComponentComponentMapper = ComponentMapper.getFor(CameraComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
+    private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
 
-    public InputSystem(Engine ashleyEngine, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
+    public InputSystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
         Gdx.input.setInputProcessor(this);
+        this.gameServer = gameServer;
         this.preferencesAccessor = preferencesAccessor;
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.scale = camera.getComponent(CameraComponent.class).scale;
@@ -217,6 +223,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
             for (Entity entity : sortedSelectables){
                 PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+                CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
 
                 selectableComponent.touchDown = false;
 
@@ -272,7 +279,10 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                         nothingSelectedYet = false;
                     }
 
-                    if (selectableComponent.name.equals("character") && !settingsComponent.isPaused) {
+                    if (selectableComponent.name.equals("character")
+                            && battleMechanicsStatesComponent.isMyTurn
+                            && characterPropertiesComponent.team.equals(SinglePlayerGameScene.team)
+                            && !settingsComponent.isPaused) {
                         if(!selectableComponent.isSelected) {
                             if(!battleMechanicsStatesComponent.move && !battleMechanicsStatesComponent.attack && !battleMechanicsStatesComponent.characterSelected) {
                                 selectableComponent.addSelection = true;
@@ -286,18 +296,24 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                         }
                     }
 
-                    if (selectableComponent.name.equals("tile") && !settingsComponent.isPaused) {
+                    if (selectableComponent.name.equals("tile")
+                            && battleMechanicsStatesComponent.isMyTurn
+                            && !settingsComponent.isPaused) {
                         selectableComponent.isSelected = true;
                         battleMechanicsStatesComponent.move = false;
                         nothingSelectedYet = true;
                     }
 
-                    if (selectableComponent.name.equals("move") && !settingsComponent.isPaused) {
+                    if (selectableComponent.name.equals("move")
+                            && battleMechanicsStatesComponent.isMyTurn
+                            && !settingsComponent.isPaused) {
                         battleMechanicsStatesComponent.move = true;
                         nothingSelectedYet = false;
                     }
 
-                    if (selectableComponent.name.equals("attack") && !settingsComponent.isPaused) {
+                    if (selectableComponent.name.equals("attack")
+                            && battleMechanicsStatesComponent.isMyTurn
+                            && !settingsComponent.isPaused) {
                         //settings.getComponent(SettingsComponent.class).attack = true;
                         nothingSelectedYet = false;
                     }

@@ -7,7 +7,8 @@ import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
-import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+import com.jaredzhao.castleblitz.servers.GameServer;
+import com.jaredzhao.castleblitz.utils.Console;
 
 public class BattleMechanicsSystem extends EntitySystem{
     private ImmutableArray<Entity> selectedCharacters;
@@ -18,9 +19,11 @@ public class BattleMechanicsSystem extends EntitySystem{
     private Entity map;
 
     private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
+    private GameServer gameServer;
 
-    public BattleMechanicsSystem(Entity map, Entity battleMechanics){
+    public BattleMechanicsSystem(Entity map, GameServer gameServer, Entity battleMechanics){
         this.map = map;
+        this.gameServer = gameServer;
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
     }
 
@@ -28,12 +31,21 @@ public class BattleMechanicsSystem extends EntitySystem{
         selectedCharacters = engine.getEntitiesFor(Family.all(SelectableComponent.class, CharacterPropertiesComponent.class).get());
     }
 
-    public void update(float deltaTime){
-        for(Entity entity : selectedCharacters){
+    public void update(float deltaTime) {
+        Console console = gameServer.getConsole();
+        if (console != null && console.peekConsoleNewEntries() != null) {
+            String nextEntry = console.peekConsoleNewEntries();
+            if (nextEntry.equals("client.turn.")) {
+                battleMechanicsStatesComponent.isMyTurn = true;
+                console.pollConsoleNewEntries();
+            }
+        }
+
+        for (Entity entity : selectedCharacters) {
             CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
-            if(battleMechanicsStatesComponent.move && selectableComponent.isSelected && !selectableComponent.removeSelection) {
+            if (battleMechanicsStatesComponent.move && selectableComponent.isSelected && !selectableComponent.removeSelection) {
                 for (int[] position : characterPropertiesComponent.possibleMoves) {
                     Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) == null) {

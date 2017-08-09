@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 public class CharacterPropertiesComponent implements Component{
     public String team = "";
-    public int movementRange = 5;
+    public int movementRange = 4;
     public ArrayList<int[]> possibleMoves;
 }
