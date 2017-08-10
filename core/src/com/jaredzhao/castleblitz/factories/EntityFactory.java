@@ -296,14 +296,6 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createFogOfWar(int tileX, int tileY){
-        Entity entity = new Entity();
-        entity.add(new FogOfWarComponent());
-        entity.add(new AddFogOfWarComponent());
-        entity.getComponent(FogOfWarComponent.class).highlight = createHighlight("fogOfWar", .15f, .15f, .25f, 1f, tileX, tileY);
-        return entity;
-    }
-
     public Entity createTile(int tileX, int tileY, int type, int layer){ //Create tile entity
         Entity entity = new Entity();
         entity.add(new TileComponent());
@@ -338,6 +330,34 @@ public class EntityFactory {
 
         entity.getComponent(HighlightComponent.class).highlight = createHighlight("move", 1, 1, 1, .95f, tileX, tileY);
         entity.getComponent(HighlightComponent.class).highlight.remove(VisibleComponent.class);
+
+        return entity;
+    }
+
+    public Entity createFogOfWar(float r, float g, float b, int viewMapSizeX, int viewMapSizeY) {
+        Entity entity = new Entity();
+        entity.add(new PositionComponent());
+        entity.add(new SpriteComponent());
+        entity.add(new AnimationComponent());
+        entity.add(new LayerComponent());
+        entity.add(new VisibleComponent());
+        entity.add(new FogOfWarComponent());
+
+        entity.getComponent(FogOfWarComponent.class).viewMap = new int[viewMapSizeX][viewMapSizeY];
+
+        entity.getComponent(LayerComponent.class).layer = 4;
+
+        Object[] tileSprite = animationFactory.createHighlight(r, g, b, 1f, 1);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
+
+        tileSprite = animationFactory.createHighlight(r, g, b, .6f, 1);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
+
+        tileSprite = animationFactory.createHighlight(r, g, b, 0f, 1);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
         return entity;
     }

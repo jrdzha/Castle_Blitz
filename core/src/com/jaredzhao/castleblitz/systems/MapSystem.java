@@ -16,25 +16,25 @@ import java.util.ArrayList;
 
 public class MapSystem extends EntitySystem {
 
-    private ImmutableArray<Entity> fogOfWarEntities, updateTileEntities, selectableEntities, selectableTiles, visibleCharacters;
+    private ImmutableArray<Entity> updateTileEntities, selectableEntities, selectableTiles, visibleCharacters;
 
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
-    private ComponentMapper<FogOfWarComponent> fogOfWarComponentComponentMapper = ComponentMapper.getFor(FogOfWarComponent.class);
 
     private Entity map;
+    private FogOfWarComponent fogOfWarComponent;
 
     private GameServer gameServer;
 
-    public MapSystem(GameServer gameServer, Entity map){
+    public MapSystem(GameServer gameServer, Entity map, Entity fogOfWar){
         this.gameServer = gameServer;
         this.map = map;
+        this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
     }
 
     public void addedToEngine(Engine engine){
-        fogOfWarEntities = engine.getEntitiesFor(Family.all(FogOfWarComponent.class).get());
         updateTileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
         selectableEntities = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
         selectableTiles = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class).get());
@@ -96,27 +96,20 @@ public class MapSystem extends EntitySystem {
                 */
             }
         }
-
-        for(Entity entity : fogOfWarEntities){
-            FogOfWarComponent fogOfWarComponent = fogOfWarComponentComponentMapper.get(entity);
-            TileComponent tileComponent = tileComponentComponentMapper.get(fogOfWarComponent.highlight);
-            boolean[][] playerViewMap = gameServer.retrieveViewMap();
-            if(playerViewMap[tileComponent.tileX][tileComponent.tileY]){
-                if(entity.getComponent(FogOfWarComponent.class) != null) {
-                    fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack = 2;
+        boolean[][] playerViewMap = gameServer.retrieveViewMap();
+        for(int i = 0; i < playerViewMap.length; i++){
+            for(int j = 0; j < playerViewMap[0].length; j++){
+                if(fogOfWarComponent.viewMap[i][j] == 2){
+                    fogOfWarComponent.viewMap[i][j] = 1;
                 }
-            }
-            if(!playerViewMap[tileComponent.tileX][tileComponent.tileY]){
-                if(entity.getComponent(FogOfWarComponent.class) != null
-                        && fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack == 2) {
-                    fogOfWarComponent.highlight.getComponent(AnimationComponent.class).currentTrack = 1;
+                if(playerViewMap[i][j]){
+                    fogOfWarComponent.viewMap[i][j] = 2;
                 }
             }
         }
 
         for(Entity entity : visibleCharacters){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
-            boolean[][] playerViewMap = gameServer.retrieveViewMap();
             if(playerViewMap[tileComponent.tileX][tileComponent.tileY]){
                 if(entity.getComponent(VisibleComponent.class) == null) {
                     entity.add(new VisibleComponent());

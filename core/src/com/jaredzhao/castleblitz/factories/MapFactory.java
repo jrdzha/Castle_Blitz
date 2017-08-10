@@ -60,7 +60,6 @@ public class MapFactory {
                         mapEntities[i][j][k] = entityFactory.createTile(j, k, Integer.parseInt(entityType), i); //Create tile entity
                         ashleyEngine.addEntity(mapEntities[i][j][k]); //Add new tile entity to ashelyEngine
                     }
-                    ashleyEngine.addEntity(entityFactory.createFogOfWar(j, k));
                 }
             }
         }

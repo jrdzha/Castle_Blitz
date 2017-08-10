@@ -73,19 +73,20 @@ public class SinglePlayerGameScene extends Scene {
 
         //Create entities
         camera = entityFactory.createCamera();
+        Entity settings = entityFactory.createSettings();
+        Entity battleMechanics = entityFactory.createBattleMechanics();
+        Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, rawMap[0].length, rawMap[0][0].length);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
+        ashleyEngine.addEntity(settings);
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82, 115, 16, 16));
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
-        Entity settings = entityFactory.createSettings();
-        Entity battleMechanics = entityFactory.createBattleMechanics();
-        ashleyEngine.addEntity(settings);
 
         //Load settings
         boolean[] localSettings = preferencesAccessor.loadLocalSettings();
@@ -94,8 +95,8 @@ public class SinglePlayerGameScene extends Scene {
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics);
-        mapSystem = new MapSystem(singlePlayerGameServer, map);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar);
+        mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar);
         inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem(ashleyEngine);

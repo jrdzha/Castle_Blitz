@@ -55,8 +55,10 @@ public class HomeScene extends Scene {
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Create entities
-        map = mapFactory.loadMap(mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl")));
+        String[][][] rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl"));
+        map = mapFactory.loadMap(rawMap);
         camera = entityFactory.createCamera();
+        Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, rawMap[0].length, rawMap[0][0].length);
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", -36, -90, 16, 32));
@@ -78,7 +80,7 @@ public class HomeScene extends Scene {
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         //mapSystem = new MapSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar);
         inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);

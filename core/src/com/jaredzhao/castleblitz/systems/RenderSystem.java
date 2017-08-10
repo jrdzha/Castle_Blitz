@@ -14,10 +14,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.RemoveTagComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
-import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
-import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
-import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
-import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
+import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.FixedScreenPositionComponent;
@@ -29,6 +26,7 @@ import com.jaredzhao.castleblitz.utils.ShaderBatch;
 import com.jaredzhao.castleblitz.utils.TeamColorDecoder;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class RenderSystem extends EntitySystem {
 
@@ -46,25 +44,32 @@ public class RenderSystem extends EntitySystem {
 
     private SettingsComponent settingsComponent;
     private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
+    private FogOfWarComponent fogOfWarComponent;
+    private Entity fogOfWar;
 
     private ImmutableArray<Entity> renderables;
-    private ArrayList<Entity> sortedRenderables;
+
+    private LayerSorter layerSorter;
 
     private ComponentMapper<AnimationComponent> animationComponentComponentMapper = ComponentMapper.getFor(AnimationComponent.class);
     private ComponentMapper<SpriteComponent> spriteComponentComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
+    private ComponentMapper<LayerComponent> layerComponentComponentMapper = ComponentMapper.getFor(LayerComponent.class);
     private ComponentMapper<FixedScreenPositionComponent> fixedScreenPositionComponentComponentMapper = ComponentMapper.getFor(FixedScreenPositionComponent.class);
 
-    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics){
+    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar){
 
         batch = new ShaderBatch(100); //SpriteBatch for rendering entities
         batch.brightness = 0.12f;
         batch.contrast = 1.6f;
         uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
+
         this.ashleyEngine = ashleyEngine;
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
+        this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
+        this.fogOfWar = fogOfWar;
 
         debugFont = new BitmapFont();
         //font = new BitmapFont();
@@ -81,6 +86,8 @@ public class RenderSystem extends EntitySystem {
         fontParameter.size = Gdx.graphics.getHeight() / 35;
         signInFont2 = fontGenerator.generateFont(fontParameter);
         layout = new GlyphLayout();
+
+        layerSorter = new LayerSorter();
     }
 
     public void addedToEngine(Engine engine){
@@ -88,7 +95,7 @@ public class RenderSystem extends EntitySystem {
     }
 
     public void updateFixedPositionRenderables(){
-        for(Entity entity : sortedRenderables){
+        for(Entity entity : renderables){
             PositionComponent position = positionComponentComponentMapper.get(entity);
             FixedScreenPositionComponent fixedScreenPositionComponent = fixedScreenPositionComponentComponentMapper.get(entity);
             if(fixedScreenPositionComponent != null) {
@@ -98,30 +105,38 @@ public class RenderSystem extends EntitySystem {
         }
     }
 
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
         Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //Clear screen
 
-        if(GameEngine.currentScene == 1) {
-            sortedRenderables = LayerSorter.sortByLayers(renderables);
-        } else {
-            sortedRenderables = new ArrayList<Entity>();
-            for(Entity entity : renderables){
-                sortedRenderables.add(entity);
-            }
-        }
-
         updateFixedPositionRenderables();
+
+        boolean didRenderFogOfWar = false;
 
         orthographicCamera.update();
         batch.setProjectionMatrix(orthographicCamera.projection);
 
         batch.begin(); //Render entities
 
-        for(Entity entity : sortedRenderables){
+        for (Entity entity : layerSorter.sortByLayers(renderables).values()) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
             AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);
+
+            LayerComponent layerComponent = layerComponentComponentMapper.get(entity);
+            LayerComponent fogOfWarLayerComponent = layerComponentComponentMapper.get(fogOfWar);
+            if(!didRenderFogOfWar && layerComponent.layer > fogOfWarLayerComponent.layer){
+                SpriteComponent fogOfWarSpriteComponent = spriteComponentComponentMapper.get(fogOfWar);
+                for (int i = 0; i < fogOfWarComponent.viewMap.length; i++) {
+                    for (int j = 0; j < fogOfWarComponent.viewMap[0].length; j++) {
+                        fogOfWarSpriteComponent.spriteList.get(fogOfWarComponent.viewMap[i][j]).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
+                                (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
+                        fogOfWarSpriteComponent.spriteList.get(fogOfWarComponent.viewMap[i][j]).get(0).draw(batch);
+                    }
+                }
+                didRenderFogOfWar = true;
+            }
+
             if (animationComponent.framesDisplayed != -1) {
                 if (0 > animationComponent.animationTimeList.get(animationComponent.currentTrack).get(animationComponent.currentFrame)) {
                     currentSprite = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
@@ -149,49 +164,50 @@ public class RenderSystem extends EntitySystem {
                 entity.add(new RemoveTagComponent());
             }
         }
+
         batch.end();
 
         uiBatch.begin(); //Render UI
 
-        if(settingsComponent.isPaused){
+        if (settingsComponent.isPaused) {
             layout.setText(pausedFont, "PAUSED");
             pausedFont.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
         }
 
-        if(GameEngine.currentScene == 1){
-            if(battleMechanicsStatesComponent.isMyTurn) {
+        if (GameEngine.currentScene == 1) {
+            if (battleMechanicsStatesComponent.isMyTurn) {
                 layout.setText(signInFont2, "YOUR TURN");
                 signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
             } else {
                 layout.setText(signInFont2, "OPPONENT'S TURN");
                 signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
             }
-        } else if(GameEngine.currentScene == 2){
+        } else if (GameEngine.currentScene == 2) {
             layout.setText(signInFont1, "SIGN IN");
             signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
 
             layout.setText(signInFont2, "IT'S GOOD FOR YOU");
             signInFont2.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
-        } else if(GameEngine.currentScene == 3){
-            if(settingsComponent.homeScreen.equals("homeShop")){
+        } else if (GameEngine.currentScene == 3) {
+            if (settingsComponent.homeScreen.equals("homeShop")) {
                 layout.setText(signInFont1, "Shop");
                 signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-            } else if(settingsComponent.homeScreen.equals("homeArmory")){
+            } else if (settingsComponent.homeScreen.equals("homeArmory")) {
                 layout.setText(signInFont1, "Armory");
                 signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-            } else if(settingsComponent.homeScreen.equals("homeCastle")){
+            } else if (settingsComponent.homeScreen.equals("homeCastle")) {
                 layout.setText(signInFont1, "Castle");
                 signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-            } else if(settingsComponent.homeScreen.equals("homeTeam")){
+            } else if (settingsComponent.homeScreen.equals("homeTeam")) {
                 layout.setText(signInFont1, "Team");
                 signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-            } else if(settingsComponent.homeScreen.equals("homeBrigade")){
+            } else if (settingsComponent.homeScreen.equals("homeBrigade")) {
                 layout.setText(signInFont1, "Brigade");
                 signInFont1.draw(uiBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
             }
         }
 
-        if(settingsComponent.debug) {
+        if (settingsComponent.debug) {
 
             debugFont.draw(uiBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
             debugFont.draw(uiBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);

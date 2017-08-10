@@ -18,6 +18,7 @@ public class DesktopLauncher{
 		config.width = 750 / 2;
 		config.height = 1334 / 2;
 		config.fullscreen = false;
+		config.vSyncEnabled = false;
 
 		new LwjglApplication(engine, config);
 	}

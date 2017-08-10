@@ -28,7 +28,7 @@ public class AnimationFactory {
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
         Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
-        sprite.setScale(1f);
+        sprite.setScale(1.005f);
         return sprite;
     }
 

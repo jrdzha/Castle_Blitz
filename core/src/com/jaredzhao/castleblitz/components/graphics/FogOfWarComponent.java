@@ -4,5 +4,5 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 
 public class FogOfWarComponent implements Component {
-    public Entity highlight;
+    public int[][] viewMap;
 }

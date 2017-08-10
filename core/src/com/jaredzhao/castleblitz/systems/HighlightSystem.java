@@ -9,10 +9,9 @@ import com.jaredzhao.castleblitz.factories.EntityFactory;
 
 public class HighlightSystem extends EntitySystem{
 
-    private ImmutableArray<Entity> newHighlights, newFogOfWar, selectedCharacters, highlights;
+    private ImmutableArray<Entity> newHighlights, selectedCharacters, highlights;
 
     private ComponentMapper<HighlightComponent> highlightComponentComponentMapper = ComponentMapper.getFor(HighlightComponent.class);
-    private ComponentMapper<FogOfWarComponent> fogOfWarComponentComponentMapper = ComponentMapper.getFor(FogOfWarComponent.class);
     private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -30,7 +29,6 @@ public class HighlightSystem extends EntitySystem{
     }
 
     public void addedToEngine(Engine engine){
-        newFogOfWar = engine.getEntitiesFor(Family.all(FogOfWarComponent.class, AddFogOfWarComponent.class).get());
         newHighlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, AddHighlightComponent.class).get());
         selectedCharacters = engine.getEntitiesFor(Family.all(SelectableComponent.class, CharacterPropertiesComponent.class).get());
         highlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, PositionComponent.class).get());
@@ -48,12 +46,6 @@ public class HighlightSystem extends EntitySystem{
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             ashleyEngine.addEntity(highlightComponent.highlight);
             entity.remove(AddHighlightComponent.class);
-        }
-
-        for(Entity entity : newFogOfWar){
-            FogOfWarComponent fogOfWarComponent = fogOfWarComponentComponentMapper.get(entity);
-            ashleyEngine.addEntity(fogOfWarComponent.highlight);
-            entity.remove(AddFogOfWarComponent.class);
         }
 
         for (Entity[] column : map.getComponent(MapComponent.class).mapEntities[0]) {

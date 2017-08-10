@@ -36,8 +36,6 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     private SettingsComponent settingsComponent;
     private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
 
-    private ArrayList<Entity> sortedSelectables;
-
     private GameServer gameServer;
 
     private float scale;
@@ -46,6 +44,8 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     private ComponentMapper<CameraComponent> cameraComponentComponentMapper = ComponentMapper.getFor(CameraComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
     private ComponentMapper<CharacterPropertiesComponent> characterPropertiesComponentComponentMapper = ComponentMapper.getFor(CharacterPropertiesComponent.class);
+
+    private LayerSorter layerSorter;
 
     public InputSystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
         Gdx.input.setInputProcessor(this);
@@ -58,6 +58,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
         this.camera = camera;
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
+        layerSorter = new LayerSorter();
     }
 
     @SuppressWarnings("unchecked")
@@ -66,6 +67,8 @@ public class InputSystem extends EntitySystem implements InputProcessor{
     }
 
     public void update(float deltaTime){
+
+        //System.out.println(settingsComponent.sfxOn + " " + settingsComponent.soundOn);
 
         for(Entity entity : selectables){
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
@@ -139,16 +142,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
         lastX = screenX;
         lastY = screenY;
 
-
-        if(GameEngine.currentScene == 1) {
-            sortedSelectables = LayerSorter.sortByLayers(selectables);
-        } else {
-            sortedSelectables = new ArrayList<Entity>();
-            for(Entity entity : selectables){
-                sortedSelectables.add(entity);
-            }
-        }
-
+        ArrayList<Entity> sortedSelectables = new ArrayList<Entity>(layerSorter.sortByLayers(selectables).values());
         Collections.reverse(sortedSelectables);
 
         boolean nothingSelectedYet = true;
@@ -197,22 +191,14 @@ public class InputSystem extends EntitySystem implements InputProcessor{
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) { //User input for selecting characters
-        for (Entity entity : sortedSelectables){
+        for (Entity entity : selectables){
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
             selectableComponent.touchDown = false;
         }
         if(beingTapped && !beingDragged) {
 
-            if(GameEngine.currentScene == 1) {
-                sortedSelectables = LayerSorter.sortByLayers(selectables);
-            } else {
-                sortedSelectables = new ArrayList<Entity>();
-                for(Entity entity : selectables){
-                    sortedSelectables.add(entity);
-                }
-            }
-
+            ArrayList<Entity> sortedSelectables = new ArrayList<Entity>(layerSorter.sortByLayers(selectables).values());
             Collections.reverse(sortedSelectables);
 
             boolean nothingSelectedYet = true;
