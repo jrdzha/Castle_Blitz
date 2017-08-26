@@ -63,7 +63,7 @@ public class SinglePlayerGameScene extends Scene {
         //Initialize factories
         audioFactory = new AudioFactory();
         animationFactory = new AnimationFactory();
-        entityFactory = new EntityFactory(animationFactory, audioFactory, camera);
+        entityFactory = new EntityFactory(animationFactory, audioFactory);
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Load level data from disk

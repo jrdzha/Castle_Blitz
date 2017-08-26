@@ -129,9 +129,12 @@ public class RenderSystem extends EntitySystem {
                 SpriteComponent fogOfWarSpriteComponent = spriteComponentComponentMapper.get(fogOfWar);
                 for (int i = 0; i < fogOfWarComponent.viewMap.length; i++) {
                     for (int j = 0; j < fogOfWarComponent.viewMap[0].length; j++) {
-                        fogOfWarSpriteComponent.spriteList.get(fogOfWarComponent.viewMap[i][j]).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
-                                (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
-                        fogOfWarSpriteComponent.spriteList.get(fogOfWarComponent.viewMap[i][j]).get(0).draw(batch);
+                        for(Integer tileTypeInteger : fogOfWarComponent.viewMap[i][j]) {
+                            int tileTypeInt = tileTypeInteger.intValue();
+                            fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
+                                    (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
+                            fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).draw(batch);
+                        }
                     }
                 }
                 didRenderFogOfWar = true;

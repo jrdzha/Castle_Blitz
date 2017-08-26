@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.jaredzhao.castleblitz.GameEngine;
+import com.jaredzhao.castleblitz.components.player.CameraComponent;
 
 public class OpeningScene extends Scene {
 

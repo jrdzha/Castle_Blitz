@@ -1,8 +1,10 @@
 package com.jaredzhao.castleblitz.components.graphics;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
+
+import java.util.Set;
 
 public class FogOfWarComponent implements Component {
-    public int[][] viewMap;
+    public Set<Integer>[][] viewMap;
+    public int[][] rawViewMap;
 }

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -51,7 +52,7 @@ public class HomeScene extends Scene {
         //Initialize factories
         audioFactory = new AudioFactory();
         animationFactory = new AnimationFactory();
-        entityFactory = new EntityFactory(animationFactory, audioFactory, camera);
+        entityFactory = new EntityFactory(animationFactory, audioFactory);
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Create entities

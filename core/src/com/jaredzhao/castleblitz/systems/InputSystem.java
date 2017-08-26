@@ -80,7 +80,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                 entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/blop.wav";
                 entity.getComponent(HasSoundEffectComponent.class).continuous = false;
                 entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
-                entity.getComponent(HasSoundEffectComponent.class).soundLength = .27f;
+                entity.getComponent(HasSoundEffectComponent.class).soundLength = .038f;
 
                 removeMoveAndAttackButtons();
 
@@ -97,7 +97,7 @@ public class InputSystem extends EntitySystem implements InputProcessor{
                 entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/blop.wav";
                 entity.getComponent(HasSoundEffectComponent.class).continuous = false;
                 entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
-                entity.getComponent(HasSoundEffectComponent.class).soundLength = .27f;
+                entity.getComponent(HasSoundEffectComponent.class).soundLength = .038f;
 
                 ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18, 16, 16));
                 ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18, 16, 16));

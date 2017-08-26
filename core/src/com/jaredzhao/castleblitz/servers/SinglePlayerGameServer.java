@@ -16,6 +16,7 @@ public class SinglePlayerGameServer implements GameServer{
         playerViewMaps = new HashMap<String, boolean[][]>();
 
         console = new Console();
+        //initialization sequence
         console.putConsoleNewEntries("client.turn.");
 
         new Thread(new Runnable() {
@@ -64,8 +65,8 @@ public class SinglePlayerGameServer implements GameServer{
         return "G";
     }
 
-    public int viewRange(){
-        return 6;
+    public double viewRange(){
+        return 6.5;
     }
 
     public void updateViewMap() {
@@ -73,10 +74,10 @@ public class SinglePlayerGameServer implements GameServer{
         for (int j = 0; j < playerViewMap.length; j++) {
             for (int k = 0; k < playerViewMap[0].length; k++) {
                 if (rawMap[1][j][k].substring(1, 2).equals(getTeam())) {
-                    for (int x = viewRange() * -1; x <= viewRange(); x++) {
-                        for (int y = viewRange() * -1; y <= viewRange(); y++) {
+                    for (double x = viewRange() * -1; x <= viewRange(); x++) {
+                        for (double y = viewRange() * -1; y <= viewRange(); y++) {
                             if ((Math.pow(Math.pow(x, 2) + Math.pow(y, 2), .5)) <= viewRange()) {
-                                playerViewMap[x + j][y + k] = true;
+                                playerViewMap[(int)x + j][(int)y + k] = true;
                             }
                         }
                     }

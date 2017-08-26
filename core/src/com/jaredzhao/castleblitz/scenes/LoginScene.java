@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -27,7 +28,6 @@ public class LoginScene extends Scene {
     private Entity settings;
 
     private CameraSystem cameraSystem; //System for moving the camera
-    //private MapSystem mapSystem; //System to create screen positions for new map entities
     private RenderSystem renderSystem; //System for rendering to the screen
     private InputSystem inputSystem; //System for user input
     private AudioSystem audioSystem; //System for dynamic audio
@@ -52,7 +52,7 @@ public class LoginScene extends Scene {
         //Initialize factories
         audioFactory = new AudioFactory();
         animationFactory = new AnimationFactory();
-        entityFactory = new EntityFactory(animationFactory, audioFactory, camera);
+        entityFactory = new EntityFactory(animationFactory, audioFactory);
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Create entities
@@ -75,7 +75,6 @@ public class LoginScene extends Scene {
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        //mapSystem = new MapSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar);
         inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
@@ -83,7 +82,6 @@ public class LoginScene extends Scene {
         animationManagerSystem = new AnimationManagerSystem(settings);
 
         //Add systems to ashleyEngine
-        //ashleyEngine.addSystem(mapSystem);
         ashleyEngine.addSystem(inputSystem);
         ashleyEngine.addSystem(cameraSystem);
         ashleyEngine.addSystem(audioSystem);
@@ -114,7 +112,6 @@ public class LoginScene extends Scene {
 
     @Override
     public void dispose() {
-        //mapSystem.dispose();
         inputSystem.dispose();
         cameraSystem.dispose();
         audioSystem.dispose();
