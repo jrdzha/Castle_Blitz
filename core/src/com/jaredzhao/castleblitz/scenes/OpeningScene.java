@@ -39,7 +39,7 @@ public class OpeningScene extends Scene {
 
     @Override
     public int render() throws InterruptedException {
-        Gdx.gl.glClearColor(.1f, .1f, .2f, 1f);
+        Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         batch.begin();

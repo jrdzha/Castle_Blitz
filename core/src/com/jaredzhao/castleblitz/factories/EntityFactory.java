@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.factories;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
 import com.jaredzhao.castleblitz.components.audio.SoundEffectComponent;
@@ -42,6 +43,7 @@ public class EntityFactory {
         return entity;
     }
 
+    /*
     public Entity createLight(int x, int y){ //Creates light source
         Entity entity = new Entity();
         entity.add(new PositionComponent());
@@ -57,6 +59,7 @@ public class EntityFactory {
         entity.getComponent(PositionComponent.class).y = y;
         return entity;
     }
+    */
 
     public Entity createTorch(int tileX, int tileY){ //Create torch entity
         Entity entity = new Entity();
@@ -67,7 +70,6 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new UpdateTileComponent());
         entity.add(new LightComponent());
-        entity.add(new AddLightComponent());
         entity.add(new HasSoundEffectComponent());
         entity.add(new VisibleComponent());
         Object[] sprite = animationFactory.createTorch();
@@ -77,7 +79,11 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
         entity.getComponent(TileComponent.class).type = "TO";
+        /*
         entity.getComponent(LightComponent.class).light = createLight(tileX * 16, (tileY * 16) + 8);
+        */
+        entity.getComponent(LightComponent.class).x = tileX * 16;
+        entity.getComponent(LightComponent.class).y = tileY * 16 + 6;
         entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/torch.wav";
         entity.getComponent(HasSoundEffectComponent.class).continuous = true;
         entity.getComponent(HasSoundEffectComponent.class).soundLength = 5.12f;
@@ -97,6 +103,7 @@ public class EntityFactory {
         entity.add(new AddHighlightComponent());
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
+        //entity.add(new LightComponent());
         Object[] sprite = animationFactory.createCharacter(type);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -109,6 +116,12 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).type = type;
         entity.getComponent(CharacterPropertiesComponent.class).team = team;
         float[] decodedColor = TeamColorDecoder.decodeColor(team);
+        //entity.getComponent(LightComponent.class).x = tileX * 16;
+        //entity.getComponent(LightComponent.class).y = tileY * 16;
+        //entity.getComponent(LightComponent.class).r = decodedColor[0];
+        //entity.getComponent(LightComponent.class).g = decodedColor[1];
+        //entity.getComponent(LightComponent.class).b = decodedColor[2];
+        //entity.getComponent(LightComponent.class).intensity = 10.0f;
         entity.getComponent(HighlightComponent.class).highlight = createHighlight("team", decodedColor[0], decodedColor[1], decodedColor[2], .95f, tileX, tileY);
         return entity;
     }
@@ -335,7 +348,7 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createFogOfWar(float r, float g, float b, int viewMapSizeX, int viewMapSizeY) {
+    public Entity createFogOfWar(float r, float g, float b, float a, int viewMapSizeX, int viewMapSizeY) {
         Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
@@ -360,7 +373,7 @@ public class EntityFactory {
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .6f, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, a, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
@@ -368,19 +381,19 @@ public class EntityFactory {
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(2, r, g, b, .6f, 1, 0);
+        tileSprite = animationFactory.createFogCorner(2, r, g, b, a, 1, 0);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(2, r, g, b, .6f, 1, 270);
+        tileSprite = animationFactory.createFogCorner(2, r, g, b, a, 1, 270);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(2, r, g, b, .6f, 1, 180);
+        tileSprite = animationFactory.createFogCorner(2, r, g, b, a, 1, 180);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(2, r, g, b, .6f, 1, 90);
+        tileSprite = animationFactory.createFogCorner(2, r, g, b, a, 1, 90);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
@@ -400,19 +413,19 @@ public class EntityFactory {
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(1, r, g, b, .6f, 1, 0);
+        tileSprite = animationFactory.createFogCorner(1, r, g, b, a, 1, 0);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(1, r, g, b, .6f, 1, 270);
+        tileSprite = animationFactory.createFogCorner(1, r, g, b, a, 1, 270);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(1, r, g, b, .6f, 1, 180);
+        tileSprite = animationFactory.createFogCorner(1, r, g, b, a, 1, 180);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createFogCorner(1, r, g, b, .6f, 1, 90);
+        tileSprite = animationFactory.createFogCorner(1, r, g, b, a, 1, 90);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 

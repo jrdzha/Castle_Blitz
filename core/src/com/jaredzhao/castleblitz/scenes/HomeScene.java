@@ -59,7 +59,8 @@ public class HomeScene extends Scene {
         String[][][] rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl"));
         map = mapFactory.loadMap(rawMap);
         camera = entityFactory.createCamera();
-        Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, rawMap[0].length, rawMap[0][0].length);
+        //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
+        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", -36, -90, 16, 32));

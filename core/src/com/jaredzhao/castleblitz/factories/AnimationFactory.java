@@ -107,6 +107,7 @@ public class AnimationFactory {
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         sprites.add(spriteRegionForTile(textures4, type % 21, type / 21, 16, 16));
+        sprites.get(0).setScale(1.01f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));
@@ -161,6 +162,7 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
+    /*
     public Object[] createLight(int size){ //Generate randomly flickering light animation
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -176,6 +178,7 @@ public class AnimationFactory {
         completeAnimation[1] = animations;
         return completeAnimation;
     }
+    */
 
     public Object[] createTorch(){ //Generate torch animation
         Object[] completeAnimation = new Object[2];

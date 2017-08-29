@@ -75,7 +75,8 @@ public class SinglePlayerGameScene extends Scene {
         camera = entityFactory.createCamera();
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
-        Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, rawMap[0].length, rawMap[0][0].length);
+        //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
+        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
         ashleyEngine.addEntity(camera);
