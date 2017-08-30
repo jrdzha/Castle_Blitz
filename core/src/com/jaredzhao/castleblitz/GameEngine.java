@@ -15,7 +15,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static int currentScene; //Current scene number
 
-	public static String version = "Build 40"; //Current build version
+	public static String version = "Build 41"; //Current build version
 
 	public static float lifetime;
 
@@ -33,6 +33,9 @@ public class GameEngine extends ApplicationAdapter {
 	@Override
 	public void create () { //Called once when the game is started
 		lifetime = 0;
+
+		//Gdx.graphics.setVSync(false);
+		Gdx.graphics.setResizable(false);
 
 		facebookAccessor.init();
 		preferencesAccessor.init();

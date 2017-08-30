@@ -66,18 +66,24 @@ public class RenderSystem extends EntitySystem {
 
     public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar){
 
-        batch = new ShaderBatch(Gdx.files.internal("graphics/shaders/default.vert").readString(), Gdx.files.internal("graphics/shaders/default.frag").readString(), 100); //SpriteBatch for rendering entities
-        fogOfWarBatch = new ShaderBatch(Gdx.files.internal("graphics/shaders/default.vert").readString(), Gdx.files.internal("graphics/shaders/fog_of_war.frag").readString(), 100); //SpriteBatch for rendering entities
-        uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
-
-        orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
-
         this.ashleyEngine = ashleyEngine;
         this.cameraComponent = camera.getComponent(CameraComponent.class);
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
         this.fogOfWar = fogOfWar;
+
+        batch = new ShaderBatch(
+                Gdx.files.internal("graphics/shaders/default.vert").readString(),
+                Gdx.files.internal("graphics/shaders/default.frag").readString()
+                        .replaceAll("MAXLIGHTMARKER", "30")
+                        .replaceAll("SCALEMARKER", "" + cameraComponent.scale), 100); //SpriteBatch for rendering entities
+        fogOfWarBatch = new ShaderBatch(
+                Gdx.files.internal("graphics/shaders/default.vert").readString(),
+                Gdx.files.internal("graphics/shaders/fog_of_war.frag").readString(), 100); //SpriteBatch for rendering entities
+        uiBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
+
+        orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
 
         debugFont = new BitmapFont();
         //font = new BitmapFont();
