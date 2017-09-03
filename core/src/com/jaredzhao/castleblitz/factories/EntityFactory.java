@@ -2,7 +2,6 @@ package com.jaredzhao.castleblitz.factories;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
 import com.jaredzhao.castleblitz.components.audio.SoundEffectComponent;
@@ -15,10 +14,7 @@ import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.utils.TeamColorDecoder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class EntityFactory {
 
@@ -43,24 +39,6 @@ public class EntityFactory {
         return entity;
     }
 
-    /*
-    public Entity createLight(int x, int y){ //Creates light source
-        Entity entity = new Entity();
-        entity.add(new PositionComponent());
-        entity.add(new SpriteComponent());
-        entity.add(new AnimationComponent());
-        entity.add(new LayerComponent());
-        entity.add(new VisibleComponent());
-        Object[] sprite = animationFactory.createLight(80);
-        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
-        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
-        entity.getComponent(LayerComponent.class).layer = 3;
-        entity.getComponent(PositionComponent.class).x = x;
-        entity.getComponent(PositionComponent.class).y = y;
-        return entity;
-    }
-    */
-
     public Entity createTorch(int tileX, int tileY){ //Create torch entity
         Entity entity = new Entity();
         entity.add(new PositionComponent());
@@ -72,6 +50,7 @@ public class EntityFactory {
         entity.add(new LightComponent());
         entity.add(new HasSoundEffectComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         Object[] sprite = animationFactory.createTorch();
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -79,9 +58,6 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
         entity.getComponent(TileComponent.class).type = "TO";
-        /*
-        entity.getComponent(LightComponent.class).light = createLight(tileX * 16, (tileY * 16) + 8);
-        */
         entity.getComponent(LightComponent.class).x = tileX * 16;
         entity.getComponent(LightComponent.class).y = tileY * 16 + 6;
         entity.getComponent(HasSoundEffectComponent.class).soundName = "audio/sfx/torch.wav";
@@ -103,6 +79,7 @@ public class EntityFactory {
         entity.add(new AddHighlightComponent());
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         //entity.add(new LightComponent());
         Object[] sprite = animationFactory.createCharacter(type);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -116,12 +93,14 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).type = type;
         entity.getComponent(CharacterPropertiesComponent.class).team = team;
         float[] decodedColor = TeamColorDecoder.decodeColor(team);
-        //entity.getComponent(LightComponent.class).x = tileX * 16;
-        //entity.getComponent(LightComponent.class).y = tileY * 16;
-        //entity.getComponent(LightComponent.class).r = decodedColor[0];
-        //entity.getComponent(LightComponent.class).g = decodedColor[1];
-        //entity.getComponent(LightComponent.class).b = decodedColor[2];
-        //entity.getComponent(LightComponent.class).intensity = 10.0f;
+        /*
+        entity.getComponent(LightComponent.class).x = tileX * 16;
+        entity.getComponent(LightComponent.class).y = tileY * 16;
+        entity.getComponent(LightComponent.class).r = decodedColor[0];
+        entity.getComponent(LightComponent.class).g = decodedColor[1];
+        entity.getComponent(LightComponent.class).b = decodedColor[2];
+        entity.getComponent(LightComponent.class).intensity = 2.0f;
+        */
         entity.getComponent(HighlightComponent.class).highlight = createHighlight("team", decodedColor[0], decodedColor[1], decodedColor[2], .95f, tileX, tileY);
         return entity;
     }
@@ -135,6 +114,7 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new UpdateTileComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         Object[] sprite = animationFactory.createProp(type);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -154,6 +134,7 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new UpdateTileComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         Object[] sprite = animationFactory.createCastle();
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -172,7 +153,7 @@ public class EntityFactory {
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
-        entity.add(new FixedScreenPositionComponent());
+        entity.add(new StaticScreenPositionComponent());
 
         int centerOffsetX = 0;
         int centerOffsetY = 0;
@@ -262,8 +243,8 @@ public class EntityFactory {
         entity.getComponent(SelectableComponent.class).centerOffsetX = centerOffsetX;
         entity.getComponent(SelectableComponent.class).centerOffsetY = centerOffsetY;
         entity.getComponent(SelectableComponent.class).name = type;
-        entity.getComponent(FixedScreenPositionComponent.class).x = x;
-        entity.getComponent(FixedScreenPositionComponent.class).y = y;
+        entity.getComponent(StaticScreenPositionComponent.class).x = x;
+        entity.getComponent(StaticScreenPositionComponent.class).y = y;
         return entity;
     }
 
@@ -275,6 +256,7 @@ public class EntityFactory {
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
+        entity.add(new DynamicScreenPositionComponent());
         Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -321,6 +303,7 @@ public class EntityFactory {
         entity.add(new HighlightComponent());
         entity.add(new AddHighlightComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
 
@@ -356,7 +339,7 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new VisibleComponent());
         entity.add(new FogOfWarComponent());
-
+        entity.add(new DynamicScreenPositionComponent());
         entity.getComponent(FogOfWarComponent.class).viewMap = new TreeSet[viewMapSizeX][viewMapSizeY];
         entity.getComponent(FogOfWarComponent.class).rawViewMap = new int[viewMapSizeX][viewMapSizeY];
 
@@ -457,6 +440,7 @@ public class EntityFactory {
         entity.add(new AnimationComponent());
         entity.add(new LayerComponent());
         entity.add(new VisibleComponent());
+        entity.add(new DynamicScreenPositionComponent());
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
 

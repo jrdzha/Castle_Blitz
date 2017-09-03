@@ -1,15 +1,13 @@
 #ifdef GL_ES
 #define LOWP lowp
-#define HIGHP highp
 precision mediump float;
 #else
 #define LOWP
-#define HIGHP
 #endif
 
-varying HIGHP vec4 v_color;
-varying HIGHP vec2 v_texCoords;
-uniform HIGHP sampler2D u_texture;
+varying LOWP vec4 v_color;
+varying LOWP vec2 v_texCoords;
+uniform LOWP sampler2D u_texture;
 
 uniform float brightness;
 uniform float contrast;
@@ -17,10 +15,10 @@ uniform float contrast;
 const int maxLights = MAXLIGHTMARKER;
 const float scale = SCALEMARKER;
 
-//Supports 100 point lights
-uniform HIGHP vec3 pointLightRGB[maxLights];
-uniform HIGHP vec2 pointLightXY[maxLights];
-uniform HIGHP float pointLightIntensity[maxLights];
+//Supports [maxLights] point lights
+uniform LOWP vec3 pointLightRGB[maxLights];
+uniform LOWP vec2 pointLightXY[maxLights];
+uniform LOWP float pointLightIntensity[maxLights];
 
 void main(){
 

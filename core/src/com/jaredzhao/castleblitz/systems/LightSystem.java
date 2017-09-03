@@ -12,10 +12,8 @@ public class LightSystem extends EntitySystem{
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
 
-    private Engine ashleyEngine;
+    public LightSystem(){
 
-    public LightSystem(Engine ashleyEngine){
-        this.ashleyEngine = ashleyEngine;
     }
 
     public void addedToEngine(Engine engine){

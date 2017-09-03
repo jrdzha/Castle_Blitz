@@ -21,6 +21,8 @@ public class IOSMoeLauncher extends IOSApplication.Delegate {
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
         config.useAccelerometer = false;
+        config.useCompass = false;
+        config.preventScreenDimming = true;
         return new IOSApplication(new GameEngine(), config);
     }
 

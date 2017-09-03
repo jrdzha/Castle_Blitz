@@ -100,7 +100,7 @@ public class SinglePlayerGameScene extends Scene {
         mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar);
         inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        lightSystem = new LightSystem(ashleyEngine);
+        lightSystem = new LightSystem();
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         highlightSystem = new HighlightSystem(ashleyEngine, map, battleMechanics);
         animationManagerSystem = new AnimationManagerSystem(settings);
