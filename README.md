@@ -1,5 +1,4 @@
 # Castle_Blitz
-[![GitHub version](https://badge.fury.io/gh/boennemann%2Fbadges.svg)](http://badge.fury.io/gh/boennemann%2Fbadges)
 
 Mobile turn-based mutliplayer strategy game.
 
