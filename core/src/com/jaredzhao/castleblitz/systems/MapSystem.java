@@ -2,7 +2,9 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.jaredzhao.castleblitz.components.graphics.*;
+import com.jaredzhao.castleblitz.components.graphics.FogOfWarComponent;
+import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.map.UpdateTileComponent;
@@ -28,12 +30,24 @@ public class MapSystem extends EntitySystem {
 
     private GameServer gameServer;
 
+    /**
+     * Initialize MapSystem
+     *
+     * @param gameServer    Server used to provide gameplay data
+     * @param map           Map to be used in gameplay
+     * @param fogOfWar      Entity used to store fog of war data
+     */
     public MapSystem(GameServer gameServer, Entity map, Entity fogOfWar){
         this.gameServer = gameServer;
         this.map = map;
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
     }
 
+    /**
+     * Load entities as they are added to the Ashley Engine
+     *
+     * @param engine
+     */
     public void addedToEngine(Engine engine){
         updateTileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
         selectableEntities = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
@@ -41,6 +55,11 @@ public class MapSystem extends EntitySystem {
         visibleCharacters = engine.getEntitiesFor(Family.all(CharacterPropertiesComponent.class).get());
     }
 
+    /**
+     * Update map for new game console entries, update console for selected tiles and entities, update fog of war
+     *
+     * @param deltaTime
+     */
     public void update(float deltaTime){ //Updates new map entities
 
         Console console = gameServer.getConsole();
@@ -90,6 +109,7 @@ public class MapSystem extends EntitySystem {
             }
         }
         boolean[][] playerViewMap = gameServer.retrieveViewMap();
+        int[][] playerPositions = gameServer.retrieveTeamPositions();
         for(int i = 0; i < playerViewMap.length; i++){
             for(int j = 0; j < playerViewMap[0].length; j++){
                 if(fogOfWarComponent.rawViewMap[i][j] == 2){
@@ -98,108 +118,20 @@ public class MapSystem extends EntitySystem {
                 if(playerViewMap[i][j]){
                     fogOfWarComponent.rawViewMap[i][j] = 2;
                 }
+                // 0 for black, 1 for gray, 2 for visible
             }
         }
         for(int i = 0; i < playerViewMap.length; i++){
             for(int j = 0; j < playerViewMap[0].length; j++){
-
-                for(int k = 0; k <= 18; k++){
-                    fogOfWarComponent.viewMap[i][j].remove(k);
-                }
-
-                fogOfWarComponent.viewMap[i][j].add(fogOfWarComponent.rawViewMap[i][j]);
-
-                if(i > 0 && i < playerViewMap.length - 1 && j > 0 && j < playerViewMap[0].length - 1){
-                    if(fogOfWarComponent.rawViewMap[i][j] != 0) {
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j - 1] == 0) {
-                            fogOfWarComponent.viewMap[i][j].add(15);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j + 1] == 0) {
-                            fogOfWarComponent.viewMap[i][j].add(16);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j - 1] == 0) {
-                            fogOfWarComponent.viewMap[i][j].add(18);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j + 1] == 0) {
-                            fogOfWarComponent.viewMap[i][j].add(17);
-                        }
-                    }
-                    if(fogOfWarComponent.rawViewMap[i][j] == 2) {
-                        if ((fogOfWarComponent.rawViewMap[i - 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j - 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i - 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j - 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i - 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j - 1] == 0)) {
-                            fogOfWarComponent.viewMap[i][j].add(11);
-                        }
-                        if ((fogOfWarComponent.rawViewMap[i - 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j + 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i - 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j + 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i - 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j + 1] == 0)) {
-                            fogOfWarComponent.viewMap[i][j].add(12);
-                        }
-                        if ((fogOfWarComponent.rawViewMap[i + 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j - 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i + 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j - 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i + 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j - 1] == 0)) {
-                            fogOfWarComponent.viewMap[i][j].add(14);
-                        }
-                        if ((fogOfWarComponent.rawViewMap[i + 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j + 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i + 1][j] == 0 && fogOfWarComponent.rawViewMap[i][j + 1] == 1) ||
-                                (fogOfWarComponent.rawViewMap[i + 1][j] == 1 && fogOfWarComponent.rawViewMap[i][j + 1] == 0)) {
-                            fogOfWarComponent.viewMap[i][j].add(13);
-                        }
-                    }
-                    if(fogOfWarComponent.rawViewMap[i][j] == 0) {
-                        boolean didMakeChange = false;
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] != 0 && fogOfWarComponent.rawViewMap[i][j - 1] != 0) {
-                            fogOfWarComponent.viewMap[i][j].add(7);
-                            fogOfWarComponent.viewMap[i][j].remove(0);
-                            didMakeChange = true;
-                        }
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] != 0 && fogOfWarComponent.rawViewMap[i][j + 1] != 0) {
-                            fogOfWarComponent.viewMap[i][j].add(8);
-                            fogOfWarComponent.viewMap[i][j].remove(0);
-                            didMakeChange = true;
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] != 0 && fogOfWarComponent.rawViewMap[i][j - 1] != 0) {
-                            fogOfWarComponent.viewMap[i][j].add(10);
-                            fogOfWarComponent.viewMap[i][j].remove(0);
-                            didMakeChange = true;
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] != 0 && fogOfWarComponent.rawViewMap[i][j + 1] != 0) {
-                            fogOfWarComponent.viewMap[i][j].add(9);
-                            fogOfWarComponent.viewMap[i][j].remove(0);
-                            didMakeChange = true;
-                        }
-                        if(didMakeChange){
-                            if (fogOfWarComponent.rawViewMap[i + 1][j] == 1) {
-                                fogOfWarComponent.viewMap[i][j].add(1);
-                            }
-                            if (fogOfWarComponent.rawViewMap[i - 1][j] == 1) {
-                                fogOfWarComponent.viewMap[i][j].add(1);
-                            }
-                            if (fogOfWarComponent.rawViewMap[i][j + 1] == 1) {
-                                fogOfWarComponent.viewMap[i][j].add(1);
-                            }
-                            if (fogOfWarComponent.rawViewMap[i][j - 1] == 1) {
-                                fogOfWarComponent.viewMap[i][j].add(1);
-                            }
-                        }
-                    }
-                    if(fogOfWarComponent.rawViewMap[i][j] == 1) {
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] == 2 && fogOfWarComponent.rawViewMap[i][j - 1] == 2) {
-                            fogOfWarComponent.viewMap[i][j].add(3);
-                            fogOfWarComponent.viewMap[i][j].remove(1);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i - 1][j] == 2 && fogOfWarComponent.rawViewMap[i][j + 1] == 2) {
-                            fogOfWarComponent.viewMap[i][j].add(4);
-                            fogOfWarComponent.viewMap[i][j].remove(1);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] == 2 && fogOfWarComponent.rawViewMap[i][j - 1] == 2) {
-                            fogOfWarComponent.viewMap[i][j].add(6);
-                            fogOfWarComponent.viewMap[i][j].remove(1);
-                        }
-                        if (fogOfWarComponent.rawViewMap[i + 1][j] == 2 && fogOfWarComponent.rawViewMap[i][j + 1] == 2) {
-                            fogOfWarComponent.viewMap[i][j].add(5);
-                            fogOfWarComponent.viewMap[i][j].remove(1);
-                        }
+                if(fogOfWarComponent.rawViewMap[i][j] == 0){
+                    fogOfWarComponent.viewMap[i][j] = 0;
+                } else if(fogOfWarComponent.rawViewMap[i][j] == 1){
+                    fogOfWarComponent.viewMap[i][j] = 1;
+                } else if(fogOfWarComponent.rawViewMap[i][j] == 2){
+                    double scale = 0;
+                    for(int k = 0; k < playerPositions.length; k++){
+                        scale += (1.5 / Math.pow(Math.pow((playerPositions[k][0] - i), 2) + Math.pow((playerPositions[k][1] - j), 2), 0.5));
+                        fogOfWarComponent.viewMap[i][j] = Math.max(Math.min((int)(scale * 15.0 / 6.0), 4), 1);
                     }
                 }
             }
@@ -212,8 +144,7 @@ public class MapSystem extends EntitySystem {
                     entity.add(new VisibleComponent());
                     entity.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
                 }
-            }
-            if(!playerViewMap[tileComponent.tileX][tileComponent.tileY]){
+            } else {
                 if(entity.getComponent(VisibleComponent.class) != null) {
                     entity.remove(VisibleComponent.class);
                     entity.getComponent(HighlightComponent.class).highlight.remove(VisibleComponent.class);

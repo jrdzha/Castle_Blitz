@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
-import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -96,11 +95,12 @@ public class LoginScene extends Scene {
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        int nextScene;
+        int nextScene = -1;
         if(settings.getComponent(SettingsComponent.class).facebookLogin){
-            facebookAccessor.login();
+            //facebookAccessor.login();
             settings.getComponent(SettingsComponent.class).facebookLogin = false;
         }
+        /*
         if(facebookAccessor.gdxFacebook.isSignedIn()){
             nextScene = 3;
             this.dispose();
@@ -108,6 +108,7 @@ public class LoginScene extends Scene {
         } else {
             nextScene = IDENTIFIER;
         }
+        */
         return nextScene;
     }
 

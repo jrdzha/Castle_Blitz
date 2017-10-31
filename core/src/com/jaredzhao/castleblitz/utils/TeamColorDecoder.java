@@ -1,6 +1,16 @@
 package com.jaredzhao.castleblitz.utils;
 
+/**
+ * Utility for decoding team colors
+ */
 public class TeamColorDecoder {
+
+    /**
+     * Returns r, g, b values for given team
+     *
+     * @param color String for team color
+     * @return      float[] representing r, g, b
+     */
     public static float[] decodeColor(String color){
         float r = 0, g = 0, b = 0;
         if(color.equals("R")){

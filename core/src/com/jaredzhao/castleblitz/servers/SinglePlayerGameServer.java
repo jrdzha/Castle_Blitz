@@ -2,9 +2,10 @@ package com.jaredzhao.castleblitz.servers;
 
 import com.jaredzhao.castleblitz.utils.Console;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SinglePlayerGameServer implements GameServer{
+public class SinglePlayerGameServer implements GameServer {
 
     private boolean running;
     private Console console;
@@ -77,7 +78,7 @@ public class SinglePlayerGameServer implements GameServer{
                     for (double x = viewRange() * -1; x <= viewRange(); x++) {
                         for (double y = viewRange() * -1; y <= viewRange(); y++) {
                             if ((Math.pow(Math.pow(x, 2) + Math.pow(y, 2), .5)) <= viewRange()) {
-                                playerViewMap[(int)x + j][(int)y + k] = true;
+                                playerViewMap[(int) x + j][(int) y + k] = true;
                             }
                         }
                     }
@@ -85,6 +86,23 @@ public class SinglePlayerGameServer implements GameServer{
             }
         }
         playerViewMaps.put("client", playerViewMap);
+    }
+
+    public int[][] retrieveTeamPositions(){
+        ArrayList<int[]> teamPositionArrayList = new ArrayList<int[]>();
+        for (int j = 0; j < rawMap[0].length; j++) {
+            for (int k = 0; k < rawMap[0][0].length; k++) {
+                if (rawMap[1][j][k].substring(1, 2).equals(getTeam())) {
+                    int[] position = {j, k};
+                    teamPositionArrayList.add(position);
+                }
+            }
+        }
+        int[][] teamPositionArray = new int[teamPositionArrayList.size()][2];
+        for(int i = 0; i < teamPositionArrayList.size(); i++){
+            teamPositionArray[i] = teamPositionArrayList.get(i);
+        }
+        return teamPositionArray;
     }
 
     public boolean[][] retrieveViewMap(){

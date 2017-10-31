@@ -5,7 +5,6 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
@@ -20,7 +19,7 @@ import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class InputSystem extends EntitySystem implements InputProcessor{
+public class InputSystem extends EntitySystem implements InputProcessor {
 
     private ImmutableArray<Entity> selectables;
 

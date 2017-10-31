@@ -7,19 +7,35 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.jaredzhao.castleblitz.components.RemoveTagComponent;
 
+/**
+ * Resource management system used to fully dispose of entities that are no longer needed
+ */
 public class ResourceManagementSystem extends EntitySystem{
 
     private ImmutableArray<Entity> toBeRemoved;
     private Engine ashleyEngine;
 
+    /**
+     * Initialize ResourceManagementSystem
+     *
+     * @param ashleyEngine      Ashley Engine
+     */
     public ResourceManagementSystem(Engine ashleyEngine){
         this.ashleyEngine = ashleyEngine;
     }
 
+    /**
+     * Load entities as they are added to the Ashley Engine
+     *
+     * @param engine
+     */
     public void addedToEngine(Engine engine){
         toBeRemoved = engine.getEntitiesFor(Family.all(RemoveTagComponent.class).get());
     }
 
+    /**
+     * Disposes all entities
+     */
     public void disposeAll(){
         while(ashleyEngine.getEntities().size() > 0) {
             ImmutableArray<Entity> removeArray = ashleyEngine.getEntities();
@@ -30,6 +46,11 @@ public class ResourceManagementSystem extends EntitySystem{
         }
     }
 
+    /**
+     * Remove all entities that have the RemoveTagComponent
+     *
+     * @param deltaTime
+     */
     public void update(float deltaTime){
         for(Entity entity : toBeRemoved){
             entity.removeAll();
@@ -37,6 +58,9 @@ public class ResourceManagementSystem extends EntitySystem{
         }
     }
 
+    /**
+     * Dispose the system
+     */
     public void dispose() {
 
     }

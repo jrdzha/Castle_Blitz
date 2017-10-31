@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
-import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -12,8 +11,6 @@ import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.servers.EmptyServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
-
-import java.util.Set;
 
 public class HomeScene extends Scene {
 

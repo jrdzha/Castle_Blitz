@@ -2,10 +2,14 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.jaredzhao.castleblitz.components.graphics.*;
+import com.jaredzhao.castleblitz.components.graphics.AddHighlightComponent;
+import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
-import com.jaredzhao.castleblitz.components.mechanics.*;
-import com.jaredzhao.castleblitz.factories.EntityFactory;
+import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
+import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
+import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
+import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 
 public class HighlightSystem extends EntitySystem{
 

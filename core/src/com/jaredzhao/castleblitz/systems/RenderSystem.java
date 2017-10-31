@@ -4,7 +4,10 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -60,6 +63,15 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<StaticScreenPositionComponent> fixedScreenPositionComponentComponentMapper = ComponentMapper.getFor(StaticScreenPositionComponent.class);
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
 
+    /**
+     * System used to render entities in the correct order with the correct shaders
+     *
+     * @param ashleyEngine      AshleyEngine
+     * @param camera            Orthographic Camera
+     * @param settings          Game Settings
+     * @param battleMechanics   Entity used to store game states
+     * @param fogOfWar          Entity used to store fog of war data
+     */
     public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar){
 
         this.ashleyEngine = ashleyEngine;
@@ -101,12 +113,20 @@ public class RenderSystem extends EntitySystem {
         layerSorter = new LayerSorter();
     }
 
+    /**
+     * Load entities as they are added to the Ashley Engine
+     *
+     * @param engine
+     */
     public void addedToEngine(Engine engine){
         renderables = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, DynamicScreenPositionComponent.class).get());
         staticUI = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, StaticScreenPositionComponent.class).get());
         lights = engine.getEntitiesFor(Family.all(LightComponent.class).get());
     }
 
+    /**
+     * Update position of entities that should have a fixed position on the screen relative to camera movement
+     */
     public void updateFixedPositionRenderables(){
         for(Entity entity : staticUI){
             PositionComponent position = positionComponentComponentMapper.get(entity);
@@ -118,8 +138,14 @@ public class RenderSystem extends EntitySystem {
         }
     }
 
+    /**
+     * Cleans screen, renders in appropriate layers
+     *
+     * @param deltaTime
+     */
     public void update(float deltaTime) {
         Gdx.gl.glClearColor(.0f, .0f, .0f, 1f); //Background color
+        //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
 
         updateFixedPositionRenderables();
@@ -131,6 +157,7 @@ public class RenderSystem extends EntitySystem {
         if(settingsComponent.isPaused && !this.isPaused){
             frameBuffer.begin();
             Gdx.gl.glClearColor(.0f, .0f, .0f, 1f); //Background color
+            //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
         }
         drawEntities(renderables);
@@ -160,6 +187,11 @@ public class RenderSystem extends EntitySystem {
         drawUI();
     }
 
+    /**
+     * Draw in-game entities that should be rendered with the ShaderBatch
+     *
+     * @param entities      List of entities to be rendered
+     */
     public void drawEntities(ImmutableArray<Entity> entities){
         shaderBatch.begin(); //Render entities
 
@@ -226,6 +258,9 @@ public class RenderSystem extends EntitySystem {
         shaderBatch.end();
     }
 
+    /**
+     * Render fog of war using standard ShaderBatch
+     */
     public void drawFogOfWar() {
 
         fogOfWarBatch.begin();
@@ -234,17 +269,18 @@ public class RenderSystem extends EntitySystem {
         SpriteComponent fogOfWarSpriteComponent = spriteComponentComponentMapper.get(fogOfWar);
         for (int i = 0; i < fogOfWarComponent.viewMap.length; i++) {
             for (int j = 0; j < fogOfWarComponent.viewMap[0].length; j++) {
-                for (Integer tileTypeInteger : fogOfWarComponent.viewMap[i][j]) {
-                    int tileTypeInt = tileTypeInteger.intValue();
-                    fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
-                            (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
-                    fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).draw(fogOfWarBatch);
-                }
+                int tileTypeInt = fogOfWarComponent.viewMap[i][j];
+                fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
+                        (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
+                fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).draw(fogOfWarBatch);
             }
         }
         fogOfWarBatch.end();
     }
 
+    /**
+     * Render static UI
+     */
     public void drawUI(){
 
         spriteBatch.begin(); //Render UI
@@ -311,6 +347,9 @@ public class RenderSystem extends EntitySystem {
         spriteBatch.end();
     }
 
+    /**
+     * Dispose the system
+     */
     public void dispose() {
         shaderBatch.dispose();
         spriteBatch.dispose();

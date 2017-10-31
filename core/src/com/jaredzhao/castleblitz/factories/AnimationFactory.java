@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture textures2, textures4, texture5, light, highlight, corner1, corner2, ui, ui2;
+    private Texture textures2, textures4, texture5, light, highlight, corners, ui, ui2;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
@@ -18,8 +18,7 @@ public class AnimationFactory {
         texture5 = new Texture(Gdx.files.internal("graphics/castle1.png"));
         light = new Texture(Gdx.files.internal("graphics/light.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
-        corner1 = new Texture(Gdx.files.internal("graphics/corner1.png"));
-        corner2 = new Texture(Gdx.files.internal("graphics/corner2.png"));
+        corners = new Texture(Gdx.files.internal("graphics/corners.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
     }
@@ -146,11 +145,7 @@ public class AnimationFactory {
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         Sprite tile = null;
-        if(cornerType == 1) {
-            tile = spriteRegionForTile(corner1, 0, 0, 16, 16);
-        } else if(cornerType == 2){
-            tile = spriteRegionForTile(corner2, 0, 0, 16, 16);
-        }
+        tile = spriteRegion(corners, cornerType, 0, 16, 16);
         tile.setColor(r, g, b, a);
         tile.setScale(scale);
         tile.setRotation(rotation);
@@ -225,7 +220,7 @@ public class AnimationFactory {
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else {
-            return null;
+            return null; //git remote set-url origin git://
         }
         for(Sprite s : sprites){
             s.setScale(.7f);

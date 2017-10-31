@@ -1,43 +1,12 @@
 package com.jaredzhao.castleblitz.utils;
 
-import java.nio.ByteBuffer;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.nio.ByteBuffer;
 
 public class BlurUtils {
-	/*
-	 * Copyright (c) 2007, Romain Guy All rights reserved.
-	 *
-	 * Redistribution and use in source and binary forms, with or without
-	 * modification, are permitted provided that the following conditions are
-	 * met:
-	 *
-	 * * Redistributions of source code must retain the above copyright notice,
-	 * this list of conditions and the following disclaimer. * Redistributions
-	 * in binary form must reproduce the above copyright notice, this list of
-	 * conditions and the following disclaimer in the documentation and/or other
-	 * materials provided with the distribution. * Neither the name of the
-	 * TimingFramework project nor the names of its contributors may be used to
-	 * endorse or promote products derived from this software without specific
-	 * prior written permission.
-	 *
-	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-	 * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-	 * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-	 * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-	 * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-	 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-	 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-	 * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-	 * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-	 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-	 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-	 */
     /**
      * <p>
      * Blurs the source pixels into the destination pixels. The force of the
@@ -340,79 +309,4 @@ public class BlurUtils {
             pixmap.dispose();
         return newPixmap;
     }
-
-    /*
-
-    /**
-     * Blurs the mipmaps of the currently bound texture with the given settings.
-     *
-     * For each mipmap level, the image will be scaled to half (using
-     * nearest-neighbour scaling) and then blurred in software, before sending
-     * the bytes to GL.
-     *
-     * The first mipmap level should already be uploaded to GL, i.e. through the
-     * Texture constructor. No blur will be applied to it.
-     *
-     * The texture needs to have been created with format RGBA8888 to work
-     * correctly on all devices.
-     *
-     * @param pixmap
-     *            the original pixmap to work with
-     * @param textureWidth
-     *            the width of the texture
-     * @param textureHeight
-     *            the height of the texture
-     * @param radius
-     *            the radius of the blur to use at each level
-     * @param iterations
-     *            the number of iterations to blur at each level
-     * @param disposePixmap
-     *            whether to dispose the specified pixmap after building the
-     *            mipmaps
-     *
-    public static void generateBlurredMipmaps(Pixmap pixmap, int textureWidth,
-                                              int textureHeight, int radius, int iterations,
-                                              boolean disposePixmap) {
-        if (textureWidth != textureHeight)
-            throw new GdxRuntimeException(
-                    "texture width and height must be square when using mipmapping.");
-
-        Pixmap origPixmap = pixmap;
-        int width = pixmap.getWidth() / 2;
-        int height = pixmap.getHeight() / 2;
-        int level = 1;
-        Blending blending = Pixmap.getBlending();
-        Pixmap.setBlending(Blending.None);
-        // for each mipmap level > 0 ...
-        while (width > 0 && height > 0) {
-            // apply blur
-            pixmap = blur(origPixmap, 0, 0, origPixmap.getWidth(), origPixmap.getHeight(),
-                    0, 0, width, height, radius, iterations, false);
-
-            // upload pixels
-            Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D, level,
-                    pixmap.getGLInternalFormat(), pixmap.getWidth(),
-                    pixmap.getHeight(), 0, pixmap.getGLFormat(),
-                    pixmap.getGLType(), pixmap.getPixels());
-
-            // reduce size for next level
-            width = pixmap.getWidth() / 2;
-            height = pixmap.getHeight() / 2;
-            level++;
-
-            //dispose pixmap at this level
-            pixmap.dispose();
-
-            // NOTE: We can play with the radius and iterations here, e.g.
-            // increment them for
-            // each level.
-            // radius++;
-        }
-        Pixmap.setBlending(blending);
-
-        if (disposePixmap) {
-            origPixmap.dispose();
-        }
-    }
-    */
 }

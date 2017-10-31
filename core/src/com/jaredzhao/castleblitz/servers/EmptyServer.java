@@ -29,6 +29,11 @@ public class EmptyServer implements GameServer {
     }
 
     @Override
+    public int[][] retrieveTeamPositions() {
+        return new int[0][];
+    }
+
+    @Override
     public String getTeam() {
         return null;
     }

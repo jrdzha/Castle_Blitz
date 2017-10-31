@@ -7,9 +7,10 @@ import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.jaredzhao.castleblitz.GameEngine;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class SocketAccessor {
 
@@ -18,6 +19,9 @@ public class SocketAccessor {
     private int lastPing;
     private boolean isConnected = false;
 
+    /**
+     * Initializes SocketAccessor and attempts to connect to server
+     */
     public void init(){
         lastPing = -1;
 
@@ -27,6 +31,9 @@ public class SocketAccessor {
         connectToServer();
     }
 
+    /**
+     * Attempt to connect to server
+     */
     public void connectToServer(){
         new Thread(new Runnable() {
             @Override
@@ -50,6 +57,9 @@ public class SocketAccessor {
         }).start();
     }
 
+    /**
+     * Multi-threaded send / receive data from server
+     */
     public void update(){
         //Ping
 

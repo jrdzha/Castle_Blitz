@@ -13,14 +13,14 @@ uniform float brightness;
 uniform float contrast;
 
 void main(){
-    vec4 color = v_color * texture2D(u_texture, v_texCoords);
-    if(color.a != 0.0){
+    //vec4 color = v_color * texture2D(u_texture, v_texCoords);
+    //if(color.a != 0.0){
         //color.rgb /= color.a;
 
         //color.rgb *= color.a;
-    }
-    color.rgb = ((color.rgb - 0.5) * max(contrast, 0.0)) + 0.5;
-    color.rgb += brightness;
+    //}
+    //color.rgb = ((color.rgb - 0.5) * max(contrast, 0.0)) + 0.5;
+    //color.rgb += brightness;
 
-    gl_FragColor = color;
+    gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
 }

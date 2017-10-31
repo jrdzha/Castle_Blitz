@@ -6,8 +6,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 
-import java.awt.event.HierarchyBoundsAdapter;
-
 public class MapFactory {
 
     private Engine ashleyEngine;

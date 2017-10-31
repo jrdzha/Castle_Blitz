@@ -8,5 +8,6 @@ public interface GameServer {
     void killServer();
     Console getConsole();
     boolean[][] retrieveViewMap();
+    int[][] retrieveTeamPositions();
     String getTeam();
 }

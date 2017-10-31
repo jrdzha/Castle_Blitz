@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.jaredzhao.castleblitz.GameEngine;
-import com.jaredzhao.castleblitz.components.player.CameraComponent;
 
 public class OpeningScene extends Scene {
 
@@ -39,7 +38,8 @@ public class OpeningScene extends Scene {
 
     @Override
     public int render() throws InterruptedException {
-        Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+        //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         batch.begin();
@@ -55,7 +55,7 @@ public class OpeningScene extends Scene {
         int nextScene;
         timesRendered++;
         if(timesRendered > 120){
-            nextScene = 2;
+            nextScene = 3;
             this.dispose();
             this.isRunning = false;
         } else {
