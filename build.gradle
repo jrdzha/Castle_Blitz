@@ -9,9 +9,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.3'
         classpath 'org.multi-os-engine:moe-gradle:1.4.0'
-        
-
     }
 }
 
@@ -22,8 +21,8 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Castle Blitz"
-        gdxVersion = '1.9.6'
-        roboVMVersion = '2.3.1'
+        gdxVersion = '1.9.8-SNAPSHOT'
+        roboVMVersion = '2.3.3'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
@@ -51,7 +50,7 @@ project(":desktop") {
         
     }
 }
-/*
+
 project(":android") {
     apply plugin: "android"
 
@@ -76,7 +75,24 @@ project(":android") {
         
     }
 }
-*/
+
+project(":ios") {
+    apply plugin: "java"
+    apply plugin: "robovm"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
+        compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-ios:1.2.5"
+
+    }
+}
+
 project(":core") {
     apply plugin: "java"
 
@@ -90,7 +106,7 @@ project(":core") {
         
     }
 }
-/*
+
 project(":ios-moe") {
     apply plugin: "moe"
 
@@ -105,7 +121,7 @@ project(":ios-moe") {
         
     }
 }
-*/
+
 tasks.eclipse.doLast {
     delete ".project"
 }

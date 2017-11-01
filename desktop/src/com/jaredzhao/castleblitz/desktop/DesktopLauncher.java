@@ -10,8 +10,10 @@ public class DesktopLauncher {
 		config.title = "Castle Blitz - " + GameEngine.version;
 		config.width = 750 / 2;
 		config.height = 1334 / 2;
+		/*
 		config.width = 1920;
 		config.height = 1080;
+		*/
 		new LwjglApplication(new GameEngine(), config);
 	}
 }
