@@ -9,6 +9,7 @@ import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+import com.jaredzhao.castleblitz.components.mechanics.UIComponent;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class AnimationManagerSystem extends EntitySystem{
         }
 
         for(Entity entity : selectableUI){
-            if(entity.getComponent(HighlightComponent.class) == null) {
+            if(entity.getComponent(UIComponent.class) != null) {
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
                 SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
                 AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);

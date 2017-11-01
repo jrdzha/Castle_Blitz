@@ -153,6 +153,7 @@ public class EntityFactory {
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
         entity.add(new StaticScreenPositionComponent());
+        entity.add(new UIComponent());
 
         int centerOffsetX = 0;
         int centerOffsetY = 0;
@@ -256,6 +257,7 @@ public class EntityFactory {
         entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
         entity.add(new DynamicScreenPositionComponent());
+        entity.add(new UIComponent());
         Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -352,23 +354,23 @@ public class EntityFactory {
 
         Object[] tileSprite;
 
-        tileSprite = animationFactory.createHighlight(r, g, b, 1, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, 1, 1, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .75f, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, .75f, 1, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .5f, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, .5f, 1, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .25f, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, .25f, 1, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, 0, 1);
+        tileSprite = animationFactory.createHighlight(r, g, b, 0, 1, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
@@ -385,37 +387,38 @@ public class EntityFactory {
         entity.add(new LayerComponent());
         entity.add(new VisibleComponent());
         entity.add(new DynamicScreenPositionComponent());
+
         entity.getComponent(TileComponent.class).tileX = tileX;
         entity.getComponent(TileComponent.class).tileY = tileY;
 
         if(type.equals("move")) {
             entity.getComponent(LayerComponent.class).layer = 1;
 
-            Object[] tileSprite = animationFactory.createHighlight(r, g, b, .15f, scale);
+            Object[] tileSprite = animationFactory.createHighlight(r, g, b, .15f, scale, true);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
         } else if(type.equals("team")) {
             entity.getComponent(LayerComponent.class).layer = 1;
 
-            Object[] tileSprite = animationFactory.createHighlight(r, g, b, .15f, scale);
+            Object[] tileSprite = animationFactory.createHighlight(r, g, b, .15f, scale, false);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-            tileSprite = animationFactory.createHighlight(r, g, b, .4f, scale);
+            tileSprite = animationFactory.createHighlight(r, g, b, .4f, scale, false);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
         } else if(type.equals("fogOfWar")){
             entity.getComponent(LayerComponent.class).layer = 4;
 
-            Object[] tileSprite = animationFactory.createHighlight(r, g, b, 1f, scale);
+            Object[] tileSprite = animationFactory.createHighlight(r, g, b, 1f, scale, false);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-            tileSprite = animationFactory.createHighlight(r, g, b, .5f, scale);
+            tileSprite = animationFactory.createHighlight(r, g, b, .5f, scale, false);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-            tileSprite = animationFactory.createHighlight(r, g, b, 0f, scale);
+            tileSprite = animationFactory.createHighlight(r, g, b, 0f, scale, false);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
         }

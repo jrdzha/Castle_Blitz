@@ -18,6 +18,11 @@ public class LayerSorter {
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private Map<Long, Entity> sortedMapLayers;
     private int lastSortablesSize = -1;
+    private long height;
+
+    public LayerSorter(int height){
+        this.height = height;
+    }
 
     /**
      * Returns correctly sorted map of entities
@@ -60,7 +65,7 @@ public class LayerSorter {
     public long generateSortCode(Entity entity){
         LayerComponent layerComponent = layerComponentComponentMapper.get(entity);
         PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
-        return layerComponent.layer * (long)Math.pow(10, 14) + lengthResizer((long)positionComponent.x, 7) * (long)Math.pow(10, 7) + lengthResizer((long)positionComponent.y, 7);
+        return layerComponent.layer * (long)Math.pow(10, 14) + lengthResizer((long)positionComponent.x, 7) + lengthResizer(this.height - (long)positionComponent.y, 7) * (long)Math.pow(10, 7);
     }
 
     /**

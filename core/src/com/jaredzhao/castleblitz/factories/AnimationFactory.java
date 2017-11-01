@@ -10,15 +10,13 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture textures2, textures4, texture5, light, highlight, corners, ui, ui2;
+    private Texture textures2, textures4, texture5, highlight, ui, ui2;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
         textures4 = new Texture(Gdx.files.internal("graphics/dungeon_textures4.png"));
         texture5 = new Texture(Gdx.files.internal("graphics/castle1.png"));
-        light = new Texture(Gdx.files.internal("graphics/light.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
-        corners = new Texture(Gdx.files.internal("graphics/corners.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
     }
@@ -127,20 +125,36 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createHighlight(float r, float g, float b, float a, float scale){ //Generate highlight under characters when clicked
+    public Object[] createHighlight(float r, float g, float b, float a, float scale, boolean flash){ //Generate highlight under characters when clicked
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        Sprite tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
-        tile.setColor(r, g, b, a);
-        tile.setScale(scale);
-        sprites.add(tile);
-        completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(Integer.valueOf(-1));
+
+        Sprite tile;
+
+        if(flash) {
+            for (double i = 0; i <= Math.PI; i += 0.1) {
+                tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
+                tile.setColor(r, g, b, a * (float)Math.sin(i));
+                tile.setScale(scale * 0.75f + scale * (float)Math.sin(i) * 0.25f);
+                sprites.add(tile);
+                animations.add(Integer.valueOf(1));
+            }
+        } else {
+            tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
+            tile.setColor(r, g, b, a);
+            tile.setScale(scale);
+
+            sprites.add(tile);
+            animations.add(Integer.valueOf(-1));
+        }
+
+        completeAnimation[0] = sprites;
         completeAnimation[1] = animations;
         return completeAnimation;
     }
 
+    /*
     public Object[] createFogCorner(int cornerType, float r, float g, float b, float a, float scale, float rotation){ //Generate highlight under characters when clicked
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -157,7 +171,6 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    /*
     public Object[] createLight(int size){ //Generate randomly flickering light animation
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();

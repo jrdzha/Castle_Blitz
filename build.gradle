@@ -51,7 +51,7 @@ project(":desktop") {
         
     }
 }
-
+/*
 project(":android") {
     apply plugin: "android"
 
@@ -76,7 +76,7 @@ project(":android") {
         
     }
 }
-
+*/
 project(":core") {
     apply plugin: "java"
 
@@ -90,7 +90,7 @@ project(":core") {
         
     }
 }
-
+/*
 project(":ios-moe") {
     apply plugin: "moe"
 
@@ -105,7 +105,7 @@ project(":ios-moe") {
         
     }
 }
-
+*/
 tasks.eclipse.doLast {
     delete ".project"
 }

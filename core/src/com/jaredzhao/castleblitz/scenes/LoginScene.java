@@ -75,8 +75,8 @@ public class LoginScene extends Scene {
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar);
-        inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, 0);
+        inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics, 0);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         animationManagerSystem = new AnimationManagerSystem(settings);

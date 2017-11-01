@@ -72,7 +72,7 @@ public class RenderSystem extends EntitySystem {
      * @param battleMechanics   Entity used to store game states
      * @param fogOfWar          Entity used to store fog of war data
      */
-    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar){
+    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar, int mapHeight){
 
         this.ashleyEngine = ashleyEngine;
         this.cameraComponent = camera.getComponent(CameraComponent.class);
@@ -110,7 +110,7 @@ public class RenderSystem extends EntitySystem {
         signInFont2 = fontGenerator.generateFont(fontParameter);
         layout = new GlyphLayout();
 
-        layerSorter = new LayerSorter();
+        layerSorter = new LayerSorter(mapHeight);
     }
 
     /**

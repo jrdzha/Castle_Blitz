@@ -2,7 +2,9 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
+import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
@@ -41,6 +43,17 @@ public class BattleMechanicsSystem extends EntitySystem{
             }
         }
 
+        if (!battleMechanicsStatesComponent.move) {
+            for (Entity[] column : map.getComponent(MapComponent.class).mapEntities[0]) {
+                for (Entity tile : column) {
+                    if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) != null) {
+                        tile.getComponent(HighlightComponent.class).highlight.remove(VisibleComponent.class);
+                        tile.getComponent(HighlightComponent.class).highlight.remove(SelectableComponent.class);
+                    }
+                }
+            }
+        }
+
         for (Entity entity : selectedCharacters) {
             CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
@@ -53,6 +66,9 @@ public class BattleMechanicsSystem extends EntitySystem{
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
+
+                        tile.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(AnimationComponent.class).currentFrame = 0;
                     }
                 }
             }

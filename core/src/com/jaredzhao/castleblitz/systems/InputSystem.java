@@ -46,7 +46,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
     private LayerSorter layerSorter;
 
-    public InputSystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics){
+    public InputSystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
         Gdx.input.setInputProcessor(this);
         this.gameServer = gameServer;
         this.preferencesAccessor = preferencesAccessor;
@@ -57,7 +57,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
         this.camera = camera;
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
-        layerSorter = new LayerSorter();
+        layerSorter = new LayerSorter(mapHeight);
     }
 
     @SuppressWarnings("unchecked")

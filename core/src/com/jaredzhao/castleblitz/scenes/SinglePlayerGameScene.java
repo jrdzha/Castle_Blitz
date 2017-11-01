@@ -3,6 +3,7 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -94,15 +95,17 @@ public class SinglePlayerGameScene extends Scene {
         settings.getComponent(SettingsComponent.class).soundOn = localSettings[0];
         settings.getComponent(SettingsComponent.class).sfxOn = localSettings[1];
 
+        int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
+
         //Initialize systems
         cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight);
         mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar);
-        inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics);
+        inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem();
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine, map, battleMechanics);
+        highlightSystem = new HighlightSystem(ashleyEngine);
         animationManagerSystem = new AnimationManagerSystem(settings);
         battleMechanicsSystem = new BattleMechanicsSystem(map, singlePlayerGameServer, battleMechanics);
 

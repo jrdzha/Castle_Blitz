@@ -52,6 +52,7 @@ public class Console {
      * @param nextEntry     New console entry
      */
     public void putConsoleNewEntries(String nextEntry){
+        System.out.println(nextEntry);
         consoleNewEntries.add(nextEntry);
     }
 
