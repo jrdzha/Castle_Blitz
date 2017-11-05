@@ -2,11 +2,11 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
-import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
-import com.jaredzhao.castleblitz.components.graphics.SpriteComponent;
-import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
+import com.jaredzhao.castleblitz.GameEngine;
+import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.mechanics.UIComponent;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 
 public class AnimationManagerSystem extends EntitySystem{
 
-    private ImmutableArray<Entity> selectableHighlights;
-    private ImmutableArray<Entity> selectableUI;
+    private ImmutableArray<Entity> selectableHighlights, selectableUI, pointLights;
 
     private ComponentMapper<HighlightComponent> highlightComponentComponentMapper = ComponentMapper.getFor(HighlightComponent.class);
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
     private ComponentMapper<AnimationComponent> animationComponentComponentMapper = ComponentMapper.getFor(AnimationComponent.class);
     private ComponentMapper<SpriteComponent> spriteComponentComponentMapper = ComponentMapper.getFor(SpriteComponent.class);
+    private ComponentMapper<LightComponent> lightComponentMapper = ComponentMapper.getFor(LightComponent.class);
 
     private SettingsComponent settingsComponent;
 
@@ -32,6 +32,7 @@ public class AnimationManagerSystem extends EntitySystem{
     public void addedToEngine(Engine engine){
         selectableHighlights = engine.getEntitiesFor(Family.all(SelectableComponent.class, HighlightComponent.class).get());
         selectableUI = engine.getEntitiesFor(Family.all(SelectableComponent.class, AnimationComponent.class).get());
+        pointLights = engine.getEntitiesFor(Family.all(LightComponent.class).get());
     }
 
     public void update(float deltaTime){
@@ -48,6 +49,11 @@ public class AnimationManagerSystem extends EntitySystem{
                 animationComponent.currentTrack = 0;
                 animationComponent.framesDisplayed = 0;
             }
+        }
+
+        for(Entity entity : pointLights){
+            LightComponent lightComponent = lightComponentMapper.get(entity);
+            lightComponent.intensity = 13f + (float)(Math.sin(GameEngine.lifetime) * 1.5f);
         }
 
         for(Entity entity : selectableUI){
