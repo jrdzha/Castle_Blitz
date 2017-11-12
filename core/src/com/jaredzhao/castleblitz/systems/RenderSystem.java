@@ -35,7 +35,7 @@ public class RenderSystem extends EntitySystem {
     private Pixmap pixmap, blurredPixmap;
     private Texture blurredTexture;
 
-    private int maxPointLights = 50;
+    private int maxPointLights = 15;
 
     private float brightness = 0.12f;
     private float contrast = 1.6f;
