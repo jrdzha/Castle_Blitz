@@ -4,10 +4,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -26,13 +23,12 @@ import com.jaredzhao.castleblitz.utils.ShaderBatch;
 public class RenderSystem extends EntitySystem {
 
     private SpriteBatch spriteBatch;
-    private ShaderBatch shaderBatch, fogOfWarBatch;
+    private ShaderBatch shaderBatch, fogOfWarBatch, blurBatch;
     private OrthographicCamera orthographicCamera;
     private Sprite currentSprite;
 
-    private FrameBuffer frameBuffer;
-    private boolean isPaused = false;
-    private Pixmap pixmap, blurredPixmap;
+    private FrameBuffer frameBufferA, frameBufferB;
+    private TextureRegion frameBufferRegion;
     private Texture blurredTexture;
 
     private int maxPointLights = 15;
@@ -89,8 +85,21 @@ public class RenderSystem extends EntitySystem {
         fogOfWarBatch = new ShaderBatch(
                 Gdx.files.internal("graphics/shaders/default.vert").readString(),
                 Gdx.files.internal("graphics/shaders/fog_of_war.frag").readString(), 100); //SpriteBatch for rendering entities
+        blurBatch = new ShaderBatch(
+                Gdx.files.internal("graphics/shaders/default.vert").readString(),
+                Gdx.files.internal("graphics/shaders/blur.frag").readString(), 10);
         spriteBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
-        frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+
+        blurBatch.begin();
+        blurBatch.shader.setUniformf("dir", 0f, 0f);
+        blurBatch.shader.setUniformf("radius", .0025f);
+        blurBatch.end();
+
+        frameBufferA = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+        frameBufferB = new FrameBuffer(Pixmap.Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+
+        frameBufferRegion = new TextureRegion(frameBufferA.getColorBufferTexture());
+        frameBufferRegion.flip(false, true); // FBO uses lower left, TextureRegion uses
 
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
 
@@ -144,7 +153,7 @@ public class RenderSystem extends EntitySystem {
      * @param deltaTime
      */
     public void update(float deltaTime) {
-        Gdx.gl.glClearColor(.0f, .0f, .0f, 1f); //Background color
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
         //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
 
@@ -154,35 +163,31 @@ public class RenderSystem extends EntitySystem {
         shaderBatch.setProjectionMatrix(orthographicCamera.projection);
         fogOfWarBatch.setProjectionMatrix(orthographicCamera.projection);
 
-        if(settingsComponent.isPaused && !this.isPaused){
-            frameBuffer.begin();
-            Gdx.gl.glClearColor(.0f, .0f, .0f, 1f); //Background color
-            //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+        if(settingsComponent.isPaused){
+            frameBufferA.begin();
         }
+
         drawEntities(renderables);
         drawFogOfWar();
-        if(settingsComponent.isPaused && !this.isPaused){
-            pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-            frameBuffer.end();
-            int blurRadius = 4;
-            int iterations = 3;
-            int pixmapWidth = pixmap.getWidth();
-            int pixMapHeight = pixmap.getHeight();
-            blurredPixmap = BlurUtils.blur(pixmap, 0, 0, pixmapWidth, pixMapHeight,
-                    0, 0, pixmapWidth, pixMapHeight,
-                    blurRadius, iterations, true);
-            blurredTexture = new Texture(PixmapUtils.flipPixmap(blurredPixmap));
-            this.isPaused = true;
+
+        if(settingsComponent.isPaused){
+            frameBufferA.end();
+            frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
+
+            frameBufferB.begin();
+            blurBatch.begin();
+            blurBatch.shader.setUniformf("dir", 0f, 1f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
+            frameBufferRegion.setTexture(frameBufferB.getColorBufferTexture());
+            frameBufferB.end();
+
+            blurBatch.begin();
+            blurBatch.shader.setUniformf("dir", 1f, 0f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
         }
-        if(settingsComponent.isPaused && this.isPaused){
-            spriteBatch.begin();
-            spriteBatch.draw(blurredTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            spriteBatch.end();
-        }
-        if(!settingsComponent.isPaused && this.isPaused){
-            this.isPaused = false;
-        }
+
         drawEntities(staticUI);
         drawUI();
     }

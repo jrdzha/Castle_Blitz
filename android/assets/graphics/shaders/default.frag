@@ -33,5 +33,5 @@ void main(){
 
     vec4 color = v_color * texture2D(u_texture, v_texCoords);
     color.rgb = ((color.rgb * lighting - 0.5) * contrast) + 0.5 + brightness;
-    gl_FragColor = color;
+    gl_FragColor = color * 1.5;
 }

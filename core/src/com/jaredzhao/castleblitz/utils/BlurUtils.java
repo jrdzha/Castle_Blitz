@@ -166,11 +166,9 @@ public class BlurUtils {
      * @param iterations
      * @return
      */
-    public static ByteBuffer blur(ByteBuffer inputRGBA, int width,
-                                  int height, int radius, int iterations) {
+    public static ByteBuffer blur(ByteBuffer inputRGBA, int width, int height, int radius, int iterations) {
         if (inputRGBA.limit() != (width * height * 4))
-            throw new IllegalArgumentException(
-                    "inputRGBA must be in RGBA format");
+            throw new IllegalArgumentException("inputRGBA must be in RGBA format");
         int[] pixels = pack(inputRGBA);
         int[] out = blur(pixels, width, height, radius, iterations);
         return unpack(out);
