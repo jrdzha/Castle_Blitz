@@ -165,6 +165,8 @@ public class RenderSystem extends EntitySystem {
 
         if(settingsComponent.isPaused){
             frameBufferA.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
         }
 
         drawEntities(renderables);
@@ -176,6 +178,51 @@ public class RenderSystem extends EntitySystem {
 
             frameBufferB.begin();
             blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+            blurBatch.shader.setUniformf("radius", .01f);
+            blurBatch.shader.setUniformf("dir", 0f, 1f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
+            frameBufferRegion.setTexture(frameBufferB.getColorBufferTexture());
+            frameBufferB.end();
+
+            frameBufferA.begin();
+            blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+            blurBatch.shader.setUniformf("dir", 1f, 0f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
+            frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
+            frameBufferA.end();
+
+            frameBufferB.begin();
+            blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+            blurBatch.shader.setUniformf("radius", .005f);
+            blurBatch.shader.setUniformf("dir", 0f, 1f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
+            frameBufferRegion.setTexture(frameBufferB.getColorBufferTexture());
+            frameBufferB.end();
+
+            frameBufferA.begin();
+            blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+            blurBatch.shader.setUniformf("dir", 1f, 0f);
+            blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            blurBatch.end();
+            frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
+            frameBufferA.end();
+
+            frameBufferB.begin();
+            blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
+            blurBatch.shader.setUniformf("radius", .0025f);
             blurBatch.shader.setUniformf("dir", 0f, 1f);
             blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             blurBatch.end();
@@ -183,6 +230,8 @@ public class RenderSystem extends EntitySystem {
             frameBufferB.end();
 
             blurBatch.begin();
+            Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
             blurBatch.shader.setUniformf("dir", 1f, 0f);
             blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             blurBatch.end();
