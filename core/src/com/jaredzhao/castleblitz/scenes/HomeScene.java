@@ -66,8 +66,11 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam", 18, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade", 36, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
+        ashleyEngine.addEntity(entityFactory.createPortrait("karen", -35, 0));
+        ashleyEngine.addEntity(entityFactory.createPortrait("nono", 35, 0));
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/home.lvl"))));
         settings = entityFactory.createSettings();
+        settings.getComponent(SettingsComponent.class).homeScreen = "homeCastle";
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
@@ -79,7 +82,7 @@ public class HomeScene extends Scene {
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         //mapSystem = new MapSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, 0);
+        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, 0, 1, 0);
         inputSystem = new InputSystem(ashleyEngine, new EmptyServer(), preferencesAccessor, entityFactory, camera, settings, battleMechanics, 0);
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
@@ -113,7 +116,6 @@ public class HomeScene extends Scene {
 
     @Override
     public void dispose() {
-        //mapSystem.dispose();
         inputSystem.dispose();
         cameraSystem.dispose();
         audioSystem.dispose();

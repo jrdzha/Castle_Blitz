@@ -170,7 +170,8 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         || selectableComponent.name.equals("homeShop")
                         || selectableComponent.name.equals("homeArmory")
                         || selectableComponent.name.equals("homeBrigade")
-                        || selectableComponent.name.equals("battle")) {
+                        || selectableComponent.name.equals("battle")
+                        || selectableComponent.name.equals("portrait")) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }

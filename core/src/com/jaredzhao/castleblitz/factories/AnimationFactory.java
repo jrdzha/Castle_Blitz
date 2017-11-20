@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture textures2, textures4, texture5, highlight, ui, ui2;
+    private Texture textures2, textures4, texture5, highlight, ui, ui2, portraits;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
@@ -19,6 +19,7 @@ public class AnimationFactory {
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
+        portraits = new Texture(Gdx.files.internal("graphics/portraits/portraits.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
@@ -27,7 +28,7 @@ public class AnimationFactory {
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
         Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
-        sprite.setScale(1.005f);
+        //sprite.setScale(1.005f);
         return sprite;
     }
 
@@ -104,7 +105,22 @@ public class AnimationFactory {
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         sprites.add(spriteRegionForTile(textures4, type % 21, type / 21, 16, 16));
-        sprites.get(0).setScale(1.01f);
+        //sprites.get(0).setScale(1.01f);
+        completeAnimation[0] = sprites;
+        ArrayList<Integer> animations = new ArrayList<Integer>();
+        animations.add(Integer.valueOf(-1));
+        completeAnimation[1] = animations;
+        return completeAnimation;
+    }
+
+    public Object[] createPortrait(String type){ //Create tile
+        Object[] completeAnimation = new Object[2];
+        ArrayList<Sprite> sprites = new ArrayList<Sprite>();
+        if(type.equals("karen")) {
+            sprites.add(spriteRegion(portraits, 0, 0, 60, 80));
+        } else if(type.equals("nono")) {
+            sprites.add(spriteRegion(portraits, 1, 0, 60, 80));
+        }
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));
@@ -153,40 +169,6 @@ public class AnimationFactory {
         completeAnimation[1] = animations;
         return completeAnimation;
     }
-
-    /*
-    public Object[] createFogCorner(int cornerType, float r, float g, float b, float a, float scale, float rotation){ //Generate highlight under characters when clicked
-        Object[] completeAnimation = new Object[2];
-        ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        Sprite tile = null;
-        tile = spriteRegion(corners, cornerType, 0, 16, 16);
-        tile.setColor(r, g, b, a);
-        tile.setScale(scale);
-        tile.setRotation(rotation);
-        sprites.add(tile);
-        completeAnimation[0] = sprites;
-        ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(Integer.valueOf(-1));
-        completeAnimation[1] = animations;
-        return completeAnimation;
-    }
-
-    public Object[] createLight(int size){ //Generate randomly flickering light animation
-        Object[] completeAnimation = new Object[2];
-        ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        ArrayList<Integer> animations = new ArrayList<Integer>();
-        for(int i = 0; i < 25; i++){
-            Sprite scaledSprite = spriteRegion(light, 0, 0, 400, 400);
-            scaledSprite.setAlpha(.5f);
-            scaledSprite.setScale((1f + ((float)(Math.random() - .5) / 9f)) * (float)size / 400f);
-            sprites.add(scaledSprite);
-            animations.add(Integer.valueOf(2));
-        }
-        completeAnimation[0] = sprites;
-        completeAnimation[1] = animations;
-        return completeAnimation;
-    }
-    */
 
     public Object[] createTorch(){ //Generate torch animation
         Object[] completeAnimation = new Object[2];

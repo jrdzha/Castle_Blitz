@@ -104,6 +104,30 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity createPortrait(String type, float x, float y){ //Create character entity
+        Entity entity = new Entity();
+        entity.add(new PositionComponent());
+        entity.add(new SpriteComponent());
+        entity.add(new AnimationComponent());
+        entity.add(new SelectableComponent());
+        entity.add(new LayerComponent());
+        entity.add(new StaticScreenPositionComponent());
+        entity.add(new UIComponent());
+
+        Object[] sprite = animationFactory.createPortrait(type);
+        entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
+        entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
+        entity.getComponent(LayerComponent.class).layer = 6;
+        entity.getComponent(SelectableComponent.class).sizeX = 60;
+        entity.getComponent(SelectableComponent.class).sizeY = 80;
+        entity.getComponent(SelectableComponent.class).centerOffsetX = 0;
+        entity.getComponent(SelectableComponent.class).centerOffsetY = 0;
+        entity.getComponent(SelectableComponent.class).name = "portrait";
+        entity.getComponent(StaticScreenPositionComponent.class).x = x;
+        entity.getComponent(StaticScreenPositionComponent.class).y = y;
+        return entity;
+    }
+
     public Entity createProp(String type, int tileX, int tileY){ //Create character entity
         Entity entity = new Entity();
         entity.add(new PositionComponent());

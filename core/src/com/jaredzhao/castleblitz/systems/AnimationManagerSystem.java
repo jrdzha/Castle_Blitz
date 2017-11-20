@@ -175,6 +175,17 @@ public class AnimationManagerSystem extends EntitySystem{
                         }
                     }
                 }
+                if(selectableComponent.name.equals("portrait")){
+                    if(settingsComponent.homeScreen.equals("homeTeam")){
+                        if(entity.getComponent(VisibleComponent.class) == null){
+                            entity.add(new VisibleComponent());
+                        }
+                    } else {
+                        if(entity.getComponent(VisibleComponent.class) != null){
+                            entity.remove(VisibleComponent.class);
+                        }
+                    }
+                }
             }
         }
     }

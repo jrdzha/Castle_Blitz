@@ -11,6 +11,11 @@ public class DesktopLauncher {
 		config.width = 750 / 2;
 		config.height = 1334 / 2;
 
+		config.width = 1920;
+		config.height = 1080;
+		config.fullscreen = true;
+		config.vSyncEnabled = true;
+
 		new LwjglApplication(new GameEngine(), config);
 	}
 }
