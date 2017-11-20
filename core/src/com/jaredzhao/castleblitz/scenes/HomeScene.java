@@ -66,8 +66,10 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam", 18, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade", 36, -90, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
-        ashleyEngine.addEntity(entityFactory.createPortrait("karen", -35, 0));
-        ashleyEngine.addEntity(entityFactory.createPortrait("nono", 35, 0));
+        ashleyEngine.addEntity(entityFactory.createPortrait("1", -105, 0));
+        ashleyEngine.addEntity(entityFactory.createPortrait("2", -35, 0));
+        ashleyEngine.addEntity(entityFactory.createPortrait("3", 35, 0));
+        ashleyEngine.addEntity(entityFactory.createPortrait("4", 105, 0));
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/home.lvl"))));
         settings = entityFactory.createSettings();
         settings.getComponent(SettingsComponent.class).homeScreen = "homeCastle";

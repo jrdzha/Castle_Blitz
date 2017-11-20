@@ -116,10 +116,14 @@ public class AnimationFactory {
     public Object[] createPortrait(String type){ //Create tile
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        if(type.equals("karen")) {
+        if(type.equals("1")) {
             sprites.add(spriteRegion(portraits, 0, 0, 60, 80));
-        } else if(type.equals("nono")) {
+        } else if(type.equals("2")) {
             sprites.add(spriteRegion(portraits, 1, 0, 60, 80));
+        } else if(type.equals("3")) {
+            sprites.add(spriteRegion(portraits, 2, 0, 60, 80));
+        } else if(type.equals("4")) {
+            sprites.add(spriteRegion(portraits, 3, 0, 60, 80));
         }
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
