@@ -105,7 +105,7 @@ public class AnimationFactory {
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         sprites.add(spriteRegionForTile(textures4, type % 21, type / 21, 16, 16));
-        //sprites.get(0).setScale(1.01f);
+        //sprites.get(0).setScale(1.001f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));
@@ -124,6 +124,14 @@ public class AnimationFactory {
             sprites.add(spriteRegion(portraits, 2, 0, 60, 80));
         } else if(type.equals("4")) {
             sprites.add(spriteRegion(portraits, 3, 0, 60, 80));
+        } else if(type.equals("5")) {
+            sprites.add(spriteRegion(portraits, 4, 0, 60, 80));
+        } else if(type.equals("6")) {
+            sprites.add(spriteRegion(portraits, 5, 0, 60, 80));
+        } else if(type.equals("7")) {
+            sprites.add(spriteRegion(portraits, 6, 0, 60, 80));
+        } else if(type.equals("8")) {
+            sprites.add(spriteRegion(portraits, 7, 0, 60, 80));
         }
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
