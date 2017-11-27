@@ -3,7 +3,9 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
+import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
@@ -55,16 +57,32 @@ public class HomeScene extends Scene {
         //Create entities
         String[][][] rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl"));
         map = mapFactory.loadMap(rawMap);
-        camera = entityFactory.createCamera();
+
+        if(GameEngine.safeAreaInsets.y != 0) {
+            camera = entityFactory.createCamera(300);
+        } else {
+            camera = entityFactory.createCamera(250);
+        }
+
         //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", -36, -90, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory", -18, -90, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle", 0, -90, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam", 18, -90, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade", 36, -90, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop",
+                -36,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory",
+                -18,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle",
+                0,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam",
+                18,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade",
+                36,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
         //ashleyEngine.addEntity(entityFactory.createPortrait("1", -210, 50));
         ashleyEngine.addEntity(entityFactory.createPortrait("2", -135, 60));

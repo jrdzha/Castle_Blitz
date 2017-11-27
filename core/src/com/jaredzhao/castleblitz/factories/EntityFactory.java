@@ -1,6 +1,8 @@
 package com.jaredzhao.castleblitz.factories;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
@@ -25,10 +27,16 @@ public class EntityFactory {
         this.audioFactory = audioFactory;
     }
 
-    public Entity createCamera(){ //Create camera (only called once per game)
+    public Entity createCamera(int height){ //Create camera (only called once per game)
         Entity entity = new Entity();
         entity.add(new CameraComponent());
         entity.add(new PositionComponent());
+        float scale = ((float) Gdx.graphics.getHeight() / height);
+        float width = Gdx.graphics.getWidth() / scale;
+        entity.getComponent(CameraComponent.class).cameraHeight = height;
+        entity.getComponent(CameraComponent.class).scale = scale;
+        entity.getComponent(CameraComponent.class).cameraWidth = width;
+        entity.getComponent(CameraComponent.class).camera = new OrthographicCamera(width, height);
         return entity;
     }
 
@@ -378,23 +386,23 @@ public class EntityFactory {
 
         Object[] tileSprite;
 
-        tileSprite = animationFactory.createHighlight(r, g, b, 1, 1, false);
+        tileSprite = animationFactory.createHighlight(r, g, b, 1, 1.0015f, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .75f, 1, false);
+        tileSprite = animationFactory.createHighlight(r, g, b, .75f, 1.0015f, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .5f, 1, false);
+        tileSprite = animationFactory.createHighlight(r, g, b, .5f, 1.0015f, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, .25f, 1, false);
+        tileSprite = animationFactory.createHighlight(r, g, b, .25f, 1.0015f, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 
-        tileSprite = animationFactory.createHighlight(r, g, b, 0, 1, false);
+        tileSprite = animationFactory.createHighlight(r, g, b, 0, 1.0015f, false);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) tileSprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) tileSprite[0]);
 

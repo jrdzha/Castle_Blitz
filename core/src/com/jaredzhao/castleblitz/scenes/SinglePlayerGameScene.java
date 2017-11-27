@@ -3,6 +3,8 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
@@ -73,7 +75,12 @@ public class SinglePlayerGameScene extends Scene {
         map = mapFactory.loadMap(rawMap);
 
         //Create entities
-        camera = entityFactory.createCamera();
+        if(GameEngine.safeAreaInsets.y != 0) {
+            camera = entityFactory.createCamera(300);
+        } else {
+            camera = entityFactory.createCamera(250);
+        }
+
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
@@ -83,11 +90,25 @@ public class SinglePlayerGameScene extends Scene {
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64, 115, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82, 115, 16, 16));
+
+        Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
+
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
 
         //Load settings

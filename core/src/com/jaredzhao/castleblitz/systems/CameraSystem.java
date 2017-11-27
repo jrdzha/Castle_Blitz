@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.math.MathUtils;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -37,7 +38,9 @@ public class CameraSystem extends EntitySystem{
             } else if(position.y > map.getComponent(MapComponent.class).mapEntities[0][0].length * 16){
                 position.y = map.getComponent(MapComponent.class).mapEntities[0][0].length * 16;
             }
-            camera.camera.position.set((position.x + camera.camera.viewportWidth / 2), (position.y + camera.camera.viewportHeight / 2), 0); //Move camera appropriately
+            camera.camera.position.set(
+                    (position.x + camera.camera.viewportWidth / 2),
+                    (position.y + camera.camera.viewportHeight / 2), 0); //Move camera appropriately
         }
     }
 

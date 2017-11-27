@@ -3,6 +3,7 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
@@ -57,7 +58,13 @@ public class LoginScene extends Scene {
         //Create entities
         String[][][] rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/home.lvl"));
         map = mapFactory.loadMap(rawMap);
-        camera = entityFactory.createCamera();
+
+        if(GameEngine.safeAreaInsets.y != 0) {
+            camera = entityFactory.createCamera(300);
+        } else {
+            camera = entityFactory.createCamera(250);
+        }
+
         //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         ashleyEngine.addEntity(camera);

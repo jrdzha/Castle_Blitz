@@ -44,7 +44,10 @@ public class OpeningScene extends Scene {
 
         batch.begin();
 
-        layout.setText(font, "Castle Blitz - " + GameEngine.version);
+        layout.setText(font, "Castle Blitz");
+        font.draw(batch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 4 * layout.height);
+
+        layout.setText(font, GameEngine.version);
         font.draw(batch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 2 * layout.height);
 
         layout.setText(font, "by Jared Zhao");
