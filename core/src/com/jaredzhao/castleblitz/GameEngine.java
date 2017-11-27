@@ -17,7 +17,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static int currentScene; //Current scene number
 
-	public static String version = "Build 48"; //Current build version
+	public static String version = "Build 49"; //Current build version
 
 	public static float lifetime;
 

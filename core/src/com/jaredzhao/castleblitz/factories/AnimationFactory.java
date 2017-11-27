@@ -23,12 +23,15 @@ public class AnimationFactory {
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
-        return new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
+        Sprite sprite = new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
+        sprite.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        return sprite;
     }
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
         Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
         //sprite.setScale(1.005f);
+        sprite.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         return sprite;
     }
 
@@ -132,6 +135,10 @@ public class AnimationFactory {
             sprites.add(spriteRegion(portraits, 6, 0, 60, 80));
         } else if(type.equals("8")) {
             sprites.add(spriteRegion(portraits, 7, 0, 60, 80));
+        } else if(type.equals("9")) {
+            sprites.add(spriteRegion(portraits, 8, 0, 60, 80));
+        } else if(type.equals("10")) {
+            sprites.add(spriteRegion(portraits, 9, 0, 60, 80));
         }
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
