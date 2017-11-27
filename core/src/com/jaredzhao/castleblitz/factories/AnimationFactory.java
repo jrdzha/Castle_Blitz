@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture textures2, textures4, texture5, highlight, ui, ui2, portraits;
+    private Texture textures2, textures5, castle, highlight, ui, ui2, portraits;
 
     public AnimationFactory(){ //Load assets
         textures2 = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
-        textures4 = new Texture(Gdx.files.internal("graphics/dungeon_textures4.png"));
-        texture5 = new Texture(Gdx.files.internal("graphics/castle1.png"));
+        textures5 = new Texture(Gdx.files.internal("graphics/dungeon_textures5.png"));
+        castle = new Texture(Gdx.files.internal("graphics/castle1.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
@@ -23,16 +23,11 @@ public class AnimationFactory {
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
-        Sprite sprite = new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
-        sprite.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        return sprite;
+        return new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
     }
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
-        Sprite sprite = new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
-        //sprite.setScale(1.005f);
-        sprite.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        return sprite;
+        return new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
     }
 
     public Object[] createUI(String type, int sizeX, int sizeY, float scale){ //Create UI elements
@@ -107,7 +102,7 @@ public class AnimationFactory {
     public Object[] createTile(int type){ //Create tile
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        sprites.add(spriteRegionForTile(textures4, type % 21, type / 21, 16, 16));
+        sprites.add(spriteRegion(textures5, type % 21, type / 21, 16, 16));
         //sprites.get(0).setScale(1.001f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
@@ -150,7 +145,7 @@ public class AnimationFactory {
     public Object[] createCastle(){ //Create castle
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        Sprite castleSprite = spriteRegionForTile(texture5, 0, 0, 48, 48);
+        Sprite castleSprite = spriteRegionForTile(castle, 0, 0, 48, 48);
         castleSprite.setColor(new Color(.7f, .7f, .75f, .9f));
         sprites.add(castleSprite);
         completeAnimation[0] = sprites;
