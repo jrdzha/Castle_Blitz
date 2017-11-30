@@ -26,7 +26,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
     private PreferencesAccessor preferencesAccessor;
 
     private boolean beingDragged, beingTapped;
-    private int lastX, lastY, selectedX, selectedY;
+    private int lastTouchX, lastTouchY, lastDragX, lastDragY, selectedX, selectedY;
 
     private Engine ashleyEngine;
     private EntityFactory entityFactory;
@@ -138,8 +138,10 @@ public class InputSystem extends EntitySystem implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         beingTapped = true;
-        lastX = screenX;
-        lastY = screenY;
+        lastTouchX = screenX;
+        lastTouchY = screenY;
+        lastDragX = screenX;
+        lastDragY = screenY;
 
         ArrayList<Entity> sortedSelectables = new ArrayList<Entity>(layerSorter.sortByLayers(selectables).values());
         Collections.reverse(sortedSelectables);
@@ -324,14 +326,16 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { //Move camera when screen is dragged
-        beingDragged = true;
+        if(Math.abs(screenX - lastTouchX) / scale > 2 || Math.abs(screenY - lastTouchY) / scale > 2){
+            beingDragged = true;
+        }
         if(!settingsComponent.isPaused) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(camera);
             CameraComponent cameraComponent = cameraComponentComponentMapper.get(camera);
-            positionComponent.x -= ((screenX - lastX) / cameraComponent.scale);
-            positionComponent.y += ((screenY - lastY) / cameraComponent.scale);
-            lastX = screenX;
-            lastY = screenY;
+            positionComponent.x -= ((screenX - lastDragX) / cameraComponent.scale);
+            positionComponent.y += ((screenY - lastDragY) / cameraComponent.scale);
+            lastDragX = screenX;
+            lastDragY = screenY;
             return true;
         }
         return false;

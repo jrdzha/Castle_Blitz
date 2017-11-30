@@ -22,7 +22,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static Vector2 safeAreaInsets;
 
-	public static String version = "Build 49"; //Current build version
+	public static String version = "Build 50"; //Current build version
 
 	public static float lifetime;
 
