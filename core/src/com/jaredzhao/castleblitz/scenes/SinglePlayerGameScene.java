@@ -70,7 +70,7 @@ public class SinglePlayerGameScene extends Scene {
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Load level data from disk
-        rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test2.lvl"));
+        rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test3.lvl"));
         singlePlayerGameServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 

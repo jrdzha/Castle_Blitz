@@ -8,4 +8,5 @@ public class CharacterPropertiesComponent implements Component{
     public String team = "";
     public int movementRange = 4;
     public ArrayList<int[]> possibleMoves;
+    public ArrayList<int[]> possibleAttacks;
 }

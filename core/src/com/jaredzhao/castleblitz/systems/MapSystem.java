@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class MapSystem extends EntitySystem {
 
-    private ImmutableArray<Entity> updateTileEntities, selectableEntities, selectableTiles, visibleCharacters;
+    private ImmutableArray<Entity> updateTileEntities, selectableCharacters, selectableTiles, visibleCharacters;
 
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -50,7 +50,7 @@ public class MapSystem extends EntitySystem {
      */
     public void addedToEngine(Engine engine){
         updateTileEntities = engine.getEntitiesFor(Family.all(TileComponent.class, PositionComponent.class, UpdateTileComponent.class).get());
-        selectableEntities = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
+        selectableCharacters = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class, CharacterPropertiesComponent.class).get());
         selectableTiles = engine.getEntitiesFor(Family.all(SelectableComponent.class, TileComponent.class).get());
         visibleCharacters = engine.getEntitiesFor(Family.all(CharacterPropertiesComponent.class).get());
     }
@@ -100,7 +100,7 @@ public class MapSystem extends EntitySystem {
             }
         }
 
-        for(Entity entity : selectableEntities){
+        for(Entity entity : selectableCharacters){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             if(selectableComponent.isSelected && moveTo[0] != -1){
@@ -108,6 +108,7 @@ public class MapSystem extends EntitySystem {
                 gameServer.getConsole().putConsoleNewEntries("server.move." + tileComponent.tileX + "," + tileComponent.tileY + ".to." + moveTo[0] + "," + moveTo[1] + ".");
             }
         }
+
         boolean[][] playerViewMap = gameServer.retrieveViewMap();
         int[][] playerPositions = gameServer.retrieveTeamPositions();
         for(int i = 0; i < playerViewMap.length; i++){
@@ -121,6 +122,7 @@ public class MapSystem extends EntitySystem {
                 // 0 for black, 1 for gray, 2 for visible
             }
         }
+
         for(int i = 0; i < playerViewMap.length; i++){
             for(int j = 0; j < playerViewMap[0].length; j++){
                 if(fogOfWarComponent.rawViewMap[i][j] == 0){
@@ -160,11 +162,12 @@ public class MapSystem extends EntitySystem {
             entity.remove(UpdateTileComponent.class);
         }
 
-        for(Entity entity : selectableEntities){
+        for(Entity entity : selectableCharacters){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             CharacterPropertiesComponent characteristics = characterPropertiesComponentComponentMapper.get(entity);
-            ArrayList<int[]> possibleMoves1 = new ArrayList<int[]>();
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
+            ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+            ArrayList<int[]> possibleAttacks = new ArrayList<int[]>();
             //Find appropriate range
             if(selectableComponent.isSelected) {
                 for (int x = characteristics.movementRange * -1; x <= characteristics.movementRange; x++) {
@@ -172,7 +175,7 @@ public class MapSystem extends EntitySystem {
                         if ((Math.pow(Math.pow(x, 2) + Math.pow(y, 2), .5)) <= characteristics.movementRange) {
                             int[] availableSpot = {x + tileComponent.tileX, y + tileComponent.tileY};
                             Entity tileCheck = map.getComponent(MapComponent.class).mapEntities[0][availableSpot[0]][availableSpot[1]];
-                            if(tileCheck != null && map.getComponent(MapComponent.class).mapEntities[1][availableSpot[0]][availableSpot[1]] == null) {
+                            if(tileCheck != null) {
                                 int type = Integer.parseInt(tileCheck.getComponent(TileComponent.class).type);
                                 if ((type >= 0 && type <= 11) ||
                                         (type >= 0 && type <= 11) ||
@@ -182,37 +185,109 @@ public class MapSystem extends EntitySystem {
                                         (type >= 63 && type <= 70) ||
                                         (type >= 84 && type <= 89) ||
                                         (type == 91)) {
-                                    possibleMoves1.add(availableSpot);
+                                    if(map.getComponent(MapComponent.class).mapEntities[1][availableSpot[0]][availableSpot[1]] == null) {
+                                        possibleMoves.add(availableSpot);
+                                    } else {
+                                        CharacterPropertiesComponent characterPropertiesComponent = map.getComponent(MapComponent.class).mapEntities[1][availableSpot[0]][availableSpot[1]].getComponent(CharacterPropertiesComponent.class);
+                                        if(characterPropertiesComponent != null && !characterPropertiesComponent.team.equals(characteristics.team)){
+                                            possibleAttacks.add(availableSpot);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                ArrayList<int[]> possibleMoves2 = new ArrayList<int[]>();
-                ArrayList<int[]> addList = new ArrayList<int[]>();
-                int[] originalLocation = {tileComponent.tileX, tileComponent.tileY};
-                possibleMoves2.add(originalLocation);
+                int[] origin = {tileComponent.tileX, tileComponent.tileY};
 
-                for (int j = 0; j < characteristics.movementRange; j++) {
-                    addList.removeAll(addList);
-                    for (int[] branch : possibleMoves2) {
-                        for (int[] check : possibleMoves1) {
-                            if (branch[0] == check[0] && Math.abs(branch[1] - check[1]) == 1) {
-                                addList.add(check);
-                            } else if (branch[1] == check[1] && Math.abs(branch[0] - check[0]) == 1) {
-                                addList.add(check);
-                            }
-                        }
-                    }
-                    possibleMoves2.addAll(addList);
-                    possibleMoves1.removeAll(addList);
-                }
-                possibleMoves2.remove(originalLocation);
-
-                characteristics.possibleMoves = possibleMoves2;
+                characteristics.possibleMoves = filterPath(origin , characteristics.movementRange, possibleMoves);
+                characteristics.possibleAttacks = filterRange(origin , characteristics.movementRange, possibleAttacks);
             }
         }
+    }
+
+    public ArrayList<int[]> filterPath(int[] origin, int range, ArrayList<int[]> possibleRange) {
+        ArrayList<int[]> path = new ArrayList<int[]>();
+        ArrayList<int[]> addList = new ArrayList<int[]>();
+        path.add(origin);
+
+        for (int j = 0; j < range; j++) {
+            addList.removeAll(addList);
+            for (int[] branch : path) {
+                for (int[] check : possibleRange) {
+                    if (branch[0] == check[0] && Math.abs(branch[1] - check[1]) == 1) {
+                        addList.add(check);
+                    } else if (branch[1] == check[1] && Math.abs(branch[0] - check[0]) == 1) {
+                        addList.add(check);
+                    }
+                }
+            }
+            path.addAll(addList);
+            possibleRange.removeAll(addList);
+        }
+        path.remove(origin);
+        return path;
+    }
+
+    public ArrayList<int[]> filterRange(int[] origin, int range, ArrayList<int[]> possibleRange) {
+        ArrayList<int[]> removeList = new ArrayList<int[]>();
+        for(int[] location : possibleRange){
+            if(location[0] != origin[0] && location[1] != origin[1]){
+                removeList.add(location);
+            }
+            if(Math.abs(location[0] - origin[0]) > range || Math.abs(location[1] - origin[1]) > range){
+                removeList.add(location);
+            }
+        }
+
+        possibleRange.removeAll(removeList);
+
+        ArrayList<int[]> rangeX = new ArrayList<int[]>();
+        ArrayList<int[]> rangeY = new ArrayList<int[]>();
+
+        for(int[] location : possibleRange){
+            if(location[0] == origin[0]){
+                rangeY.add(location);
+            } else if(location[1] == origin[1]){
+                rangeX.add(location);
+            }
+        }
+
+        ArrayList<int[]> filteredRange = new ArrayList<int[]>();
+
+        if(rangeX.size() != 0) {
+            if (origin[0] - rangeX.get(0)[0] < 0) {
+                filteredRange.add(rangeX.get(0));
+            }
+            if (origin[0] - rangeX.get(rangeX.size() - 1)[0] > 0) {
+                filteredRange.add(rangeX.get(rangeX.size() - 1));
+            }
+        }
+        if(rangeY.size() != 0) {
+            if (origin[1] - rangeY.get(0)[1] < 0) {
+                filteredRange.add(rangeY.get(0));
+            }
+            if (origin[1] - rangeY.get(rangeY.size() - 1)[1] > 0) {
+                filteredRange.add(rangeY.get(rangeY.size() - 1));
+            }
+        }
+
+        for(int i = 0; i < rangeX.size() - 1; i++){
+            if(origin[0] - rangeX.get(i)[0] > 0 && origin[0] - rangeX.get(i + 1)[0] < 0) {
+                filteredRange.add(rangeX.get(i));
+                filteredRange.add(rangeX.get(i + 1));
+            }
+        }
+
+        for(int i = 0; i < rangeY.size() - 1; i++){
+            if(origin[1] - rangeY.get(i)[1] > 0 && origin[1] - rangeY.get(i + 1)[1] < 0) {
+                filteredRange.add(rangeY.get(i));
+                filteredRange.add(rangeY.get(i + 1));
+            }
+        }
+
+        return filteredRange;
     }
 
     public void dispose() {

@@ -302,7 +302,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                     if (selectableComponent.name.equals("attack")
                             && battleMechanicsStatesComponent.isMyTurn
                             && !settingsComponent.isPaused) {
-                        //settings.getComponent(SettingsComponent.class).attack = true;
+                        battleMechanicsStatesComponent.attack = true;
                         nothingSelectedYet = false;
                     }
 

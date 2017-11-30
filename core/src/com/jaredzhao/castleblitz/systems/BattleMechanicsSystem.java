@@ -43,7 +43,7 @@ public class BattleMechanicsSystem extends EntitySystem{
             }
         }
 
-        if (!battleMechanicsStatesComponent.move) {
+        if (!battleMechanicsStatesComponent.move && !battleMechanicsStatesComponent.attack) {
             for (Entity[] column : map.getComponent(MapComponent.class).mapEntities[0]) {
                 for (Entity tile : column) {
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) != null) {
@@ -60,6 +60,21 @@ public class BattleMechanicsSystem extends EntitySystem{
 
             if (battleMechanicsStatesComponent.move && selectableComponent.isSelected && !selectableComponent.removeSelection) {
                 for (int[] position : characterPropertiesComponent.possibleMoves) {
+                    Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
+                    if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) == null) {
+                        tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
+
+                        tile.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(AnimationComponent.class).currentFrame = 0;
+                    }
+                }
+            }
+
+            if (battleMechanicsStatesComponent.attack && selectableComponent.isSelected && !selectableComponent.removeSelection) {
+                for (int[] position : characterPropertiesComponent.possibleAttacks) {
                     Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) == null) {
                         tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
