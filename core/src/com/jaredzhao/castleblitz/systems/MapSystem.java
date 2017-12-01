@@ -8,6 +8,7 @@ import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.map.UpdateTileComponent;
+import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
@@ -27,6 +28,7 @@ public class MapSystem extends EntitySystem {
 
     private Entity map;
     private FogOfWarComponent fogOfWarComponent;
+    private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
 
     private GameServer gameServer;
 
@@ -37,10 +39,11 @@ public class MapSystem extends EntitySystem {
      * @param map           Map to be used in gameplay
      * @param fogOfWar      Entity used to store fog of war data
      */
-    public MapSystem(GameServer gameServer, Entity map, Entity fogOfWar){
+    public MapSystem(GameServer gameServer, Entity map, Entity fogOfWar, Entity battleMechanics){
         this.gameServer = gameServer;
         this.map = map;
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
+        this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
     }
 
     /**
@@ -94,7 +97,7 @@ public class MapSystem extends EntitySystem {
         for(Entity entity : selectableTiles){
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
-            if(entity.getComponent(CharacterPropertiesComponent.class) == null && selectableComponent.isSelected){
+            if(!battleMechanicsStatesComponent.attack && entity.getComponent(CharacterPropertiesComponent.class) == null && selectableComponent.isSelected){
                 moveTo[0] = tileComponent.tileX;
                 moveTo[1] = tileComponent.tileY;
             }

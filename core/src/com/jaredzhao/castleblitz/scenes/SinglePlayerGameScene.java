@@ -70,7 +70,7 @@ public class SinglePlayerGameScene extends Scene {
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
         //Load level data from disk
-        rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test3.lvl"));
+        rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test2.lvl"));
         singlePlayerGameServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
@@ -121,7 +121,7 @@ public class SinglePlayerGameScene extends Scene {
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight, 1.6f, .12f);
-        mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar);
+        mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar, battleMechanics);
         inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem();
