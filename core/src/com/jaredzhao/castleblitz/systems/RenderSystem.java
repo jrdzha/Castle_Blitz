@@ -34,7 +34,7 @@ public class RenderSystem extends EntitySystem {
 
     private FreeTypeFontGenerator fontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont debugFont, font35, font25, font15;
+    private BitmapFont debugFont, font35, font25, font15, fontUsernamePassword;
     private GlyphLayout layout;
 
     private Engine ashleyEngine;
@@ -108,6 +108,9 @@ public class RenderSystem extends EntitySystem {
         //font = new BitmapFont();
         //font.setColor(Color.WHITE);
 
+
+        layout = new GlyphLayout();
+
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/slkscrb.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
@@ -119,7 +122,13 @@ public class RenderSystem extends EntitySystem {
         font25 = fontGenerator.generateFont(fontParameter);
         fontParameter.size = Gdx.graphics.getHeight() / 35;
         font15 = fontGenerator.generateFont(fontParameter);
-        layout = new GlyphLayout();
+        fontParameter.size = 50;
+        do {
+            fontParameter.size -= 1;
+            fontUsernamePassword = fontGenerator.generateFont(fontParameter);
+            layout.setText(fontUsernamePassword, "***************");
+            System.out.println(layout.width);
+        } while(layout.width / Gdx.graphics.getWidth() > 0.7f);
 
         layerSorter = new LayerSorter(mapHeight);
     }
@@ -379,44 +388,59 @@ public class RenderSystem extends EntitySystem {
                 layout.setText(font35, "Account");
                 font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
 
-                if(settingsComponent.username.equals("")){
-                    font15.setColor(1, 1, 1, 0.5f);
-                    layout.setText(font15, "Username");
+                if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
+                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
+                    layout.setText(fontUsernamePassword, "Username");
                 } else {
-                    layout.setText(font15, settingsComponent.username);
-                }
-                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
-                font15.setColor(Color.WHITE);
+                    String cursor = "";
+                    if(settingsComponent.editUsername && (int)GameEngine.lifetime % 2 == 0){
+                        cursor = "|";
+                    }
 
-                if(settingsComponent.password.equals("")){
-                    font15.setColor(1, 1, 1, 0.5f);
-                    layout.setText(font15, "Password");
+                    layout.setText(fontUsernamePassword, settingsComponent.username + cursor);
+                }
+                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
+
+                if(settingsComponent.password.equals("") && !settingsComponent.editPassword){
+                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
+                    layout.setText(fontUsernamePassword, "Password");
                 } else {
+                    String cursor = "";
+                    if(settingsComponent.editPassword && (int)GameEngine.lifetime % 2 == 0){
+                        cursor = "|";
+                    }
+
                     String placeHolder = "";
                     for(int i = 0; i < settingsComponent.password.length(); i++){
                         placeHolder = placeHolder + "*";
                     }
-                    layout.setText(font15, placeHolder);
+                    layout.setText(fontUsernamePassword, placeHolder + cursor);
                 }
-                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
-                font15.setColor(Color.WHITE);
+                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
 
-                if(settingsComponent.confirmPassword.equals("")){
-                    font15.setColor(1, 1, 1, 0.5f);
-                    layout.setText(font15, "Confirm Password");
+                if(settingsComponent.confirmPassword.equals("") && !settingsComponent.editConfirmPassword){
+                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
+                    layout.setText(fontUsernamePassword, "Confirm Password");
                 } else {
+                    String cursor = "";
+                    if(settingsComponent.editConfirmPassword && (int)GameEngine.lifetime % 2 == 0){
+                        cursor = "|";
+                    }
+
                     String placeHolder = "";
                     for(int i = 0; i < settingsComponent.confirmPassword.length(); i++){
                         placeHolder = placeHolder + "*";
                     }
-                    layout.setText(font15, placeHolder);
+                    layout.setText(fontUsernamePassword, placeHolder + cursor);
                 }
-                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
-                font15.setColor(Color.RED);
+                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.RED);
 
-                layout.setText(font15, settingsComponent.signUpLoginError);
-                font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 15 * cameraComponent.scale);
-                font15.setColor(Color.WHITE);
+                layout.setText(fontUsernamePassword, settingsComponent.signUpLoginError);
+                fontUsernamePassword.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 15 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
             }
 
             if (settingsComponent.debug) {

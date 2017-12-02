@@ -63,7 +63,7 @@ public class SinglePlayerGameServer implements GameServer {
     }
 
     public String getTeam(){
-        return "R";
+        return "G";
     }
 
     public double viewRange(){
