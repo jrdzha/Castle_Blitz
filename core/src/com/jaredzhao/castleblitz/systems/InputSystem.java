@@ -3,6 +3,7 @@ package com.jaredzhao.castleblitz.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
@@ -67,8 +68,6 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
     public void update(float deltaTime){
 
-        //System.out.println(settingsComponent.sfxOn + " " + settingsComponent.soundOn);
-
         for(Entity entity : selectables){
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
@@ -132,7 +131,27 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-        return false;
+        if(character == '\b'){
+            if(settingsComponent.editUsername && settingsComponent.username.length() != 0){
+                settingsComponent.username = settingsComponent.username.substring(0, settingsComponent.username.length() - 1);
+            } else if(settingsComponent.editPassword && settingsComponent.password.length() != 0){
+                settingsComponent.password = settingsComponent.password.substring(0, settingsComponent.password.length() - 1);
+            } else if(settingsComponent.editConfirmPassword && settingsComponent.confirmPassword.length() != 0){
+                settingsComponent.confirmPassword = settingsComponent.confirmPassword.substring(0, settingsComponent.confirmPassword.length() - 1);
+            }
+        } else if(character >= 32 && character <= 126){
+            if (settingsComponent.editUsername && settingsComponent.username.length() < 17 &&
+                    ((character >= 48 && character <= 57)
+                    || (character >= 65 && character <= 90)
+                    || (character >= 97 && character <= 122))) {
+                settingsComponent.username = settingsComponent.username + character;
+            } else if (settingsComponent.editPassword && settingsComponent.password.length() < 15) {
+                settingsComponent.password = settingsComponent.password + character;
+            } else if (settingsComponent.editConfirmPassword && settingsComponent.confirmPassword.length() < 15) {
+                settingsComponent.confirmPassword = settingsComponent.confirmPassword + character;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -173,7 +192,12 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         || selectableComponent.name.equals("homeArmory")
                         || selectableComponent.name.equals("homeBrigade")
                         || selectableComponent.name.equals("battle")
-                        || selectableComponent.name.equals("portrait")) {
+                        || selectableComponent.name.equals("portrait")
+                        || selectableComponent.name.equals("editUsername")
+                        || selectableComponent.name.equals("editPassword")
+                        || selectableComponent.name.equals("editConfirmPassword")
+                        || selectableComponent.name.equals("signUp")
+                        || selectableComponent.name.equals("login")) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
@@ -253,6 +277,40 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         nothingSelectedYet = false;
                     }
 
+                    if (selectableComponent.name.equals("editUsername")) {
+                        settingsComponent.editUsername = true;
+                        settingsComponent.editPassword = false;
+                        settingsComponent.editConfirmPassword = false;
+                        settingsComponent.username = "";
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("editPassword")) {
+                        settingsComponent.editUsername = false;
+                        settingsComponent.editPassword = true;
+                        settingsComponent.editConfirmPassword = false;
+                        settingsComponent.password = "";
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("editConfirmPassword")) {
+                        settingsComponent.editUsername = false;
+                        settingsComponent.editPassword = false;
+                        settingsComponent.editConfirmPassword = true;
+                        settingsComponent.confirmPassword = "";
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("signUp")) {
+                        settingsComponent.signUp = true;
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("login")) {
+                        settingsComponent.login = true;
+                        nothingSelectedYet = false;
+                    }
+
                     if (selectableComponent.name.equals("facebookLogin")) {
                         settingsComponent.facebookLogin = true;
                         nothingSelectedYet = false;
@@ -315,6 +373,21 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         if (selectableComponent.isSelected) {
                             selectableComponent.removeSelection = true;
                         }
+                    }
+
+                    if (selectableComponent.name.equals("editUsername")) {
+                        settingsComponent.editUsername = false;
+                        selectableComponent.removeSelection = true;
+                    }
+
+                    if (selectableComponent.name.equals("editPassword")) {
+                        settingsComponent.editPassword = false;
+                        selectableComponent.removeSelection = true;
+                    }
+
+                    if (selectableComponent.name.equals("editConfirmPassword")) {
+                        settingsComponent.editConfirmPassword = false;
+                        selectableComponent.removeSelection = true;
                     }
                 }
             }

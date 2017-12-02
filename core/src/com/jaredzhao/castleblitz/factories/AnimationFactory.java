@@ -50,6 +50,15 @@ public class AnimationFactory {
         } else if(type.equals("battle")){
             sprites.add(spriteRegionForTile(ui, 13, 0, sizeX, sizeY));
             alpha = 1f;
+        } else if(type.equals("editUsername") || type.equals("editPassword") || type.equals("editConfirmPassword")){
+            sprites.add(spriteRegionForTile(ui, 18, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("signUp")){
+            sprites.add(spriteRegionForTile(ui, 19, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("login")){
+            sprites.add(spriteRegionForTile(ui, 24, 0, sizeX, sizeY));
+            alpha = 1f;
         } else if(type.equals("sfxOn")){
             sprites.add(spriteRegionForTile(ui, 9, 0, sizeX, sizeY));
         } else if(type.equals("sfxOff")){

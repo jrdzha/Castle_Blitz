@@ -5,10 +5,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.scenes.*;
-import com.jaredzhao.castleblitz.utils.FacebookAccessor;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
+import com.jaredzhao.castleblitz.utils.SocketAccessor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +27,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	//public FacebookAccessor facebookAccessor;
 	public PreferencesAccessor preferencesAccessor;
-	//public SocketAccessor socketAccessor;
+	public SocketAccessor socketAccessor;
 
 	/**
 	 * Creates the game object and initializes Accessors
@@ -36,7 +35,7 @@ public class GameEngine extends ApplicationAdapter {
 	public GameEngine(){
 		//facebookAccessor = new FacebookAccessor();
 		preferencesAccessor = new PreferencesAccessor();
-		//socketAccessor = new SocketAccessor();
+		socketAccessor = new SocketAccessor("jaredzhao.com");
 	}
 
 	/**
@@ -51,19 +50,21 @@ public class GameEngine extends ApplicationAdapter {
 
 		//facebookAccessor.init();
 		preferencesAccessor.init();
-		//socketAccessor.init();
+		socketAccessor.init();
 
 		sceneList = new ArrayList<Scene>();
 
 		Scene gameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
-		Scene openingScene = new OpeningScene();
+		Scene openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
 		//Scene loginScene = new LoginScene(preferencesAccessor);
 		Scene homeScene = new HomeScene(preferencesAccessor);
+		Scene signUpScene = new SignUpLoginScene(preferencesAccessor, socketAccessor);
 
 		sceneList.add(openingScene);
 		//sceneList.add(loginScene);
 		sceneList.add(homeScene);
 		sceneList.add(gameScene);
+		sceneList.add(signUpScene);
 
 		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 
@@ -76,7 +77,9 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	@Override
 	public void render () {
-		//socketAccessor.update();
+		if((int)lifetime % 1 == 0) {
+			socketAccessor.update();
+		}
 
 		for(Scene scene : sceneList){
 			if(currentScene == scene.IDENTIFIER){

@@ -83,7 +83,7 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade",
                 36,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 64, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 80, 16));
         //ashleyEngine.addEntity(entityFactory.createPortrait("1", -210, 50));
         ashleyEngine.addEntity(entityFactory.createPortrait("2", -135, 60));
         ashleyEngine.addEntity(entityFactory.createPortrait("3", -65, 60));

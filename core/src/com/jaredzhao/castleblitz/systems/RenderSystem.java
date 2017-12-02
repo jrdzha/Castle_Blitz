@@ -34,7 +34,7 @@ public class RenderSystem extends EntitySystem {
 
     private FreeTypeFontGenerator fontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont debugFont, pausedFont, signInFont1, signInFont2;
+    private BitmapFont debugFont, font35, font25, font15;
     private GlyphLayout layout;
 
     private Engine ashleyEngine;
@@ -112,12 +112,13 @@ public class RenderSystem extends EntitySystem {
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         fontParameter.color = Color.WHITE;
-        fontParameter.size = Gdx.graphics.getHeight() / 25;
-        pausedFont = fontGenerator.generateFont(fontParameter);
+
         fontParameter.size = Gdx.graphics.getHeight() / 15;
-        signInFont1 = fontGenerator.generateFont(fontParameter);
+        font35 = fontGenerator.generateFont(fontParameter);
+        fontParameter.size = Gdx.graphics.getHeight() / 25;
+        font25 = fontGenerator.generateFont(fontParameter);
         fontParameter.size = Gdx.graphics.getHeight() / 35;
-        signInFont2 = fontGenerator.generateFont(fontParameter);
+        font15 = fontGenerator.generateFont(fontParameter);
         layout = new GlyphLayout();
 
         layerSorter = new LayerSorter(mapHeight);
@@ -341,39 +342,81 @@ public class RenderSystem extends EntitySystem {
 
         {
             if (settingsComponent.isPaused) {
-                layout.setText(pausedFont, "PAUSED");
-                pausedFont.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
+                layout.setText(font25, "PAUSED");
+                font25.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
             } else if (GameEngine.currentScene == 1) {
                 if (battleMechanicsStatesComponent.isMyTurn) {
-                    layout.setText(signInFont2, "YOUR TURN");
-                    signInFont2.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
+                    layout.setText(font15, "YOUR TURN");
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
                 } else {
-                    layout.setText(signInFont2, "OPPONENT'S TURN");
-                    signInFont2.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
+                    layout.setText(font15, "OPPONENT'S TURN");
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
                 }
             } else if (GameEngine.currentScene == 2) {
-                layout.setText(signInFont1, "SIGN IN");
-                signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
+                layout.setText(font35, "SIGN IN");
+                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
 
-                layout.setText(signInFont2, "IT'S GOOD FOR YOU");
-                signInFont2.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
+                layout.setText(font15, "IT'S GOOD FOR YOU");
+                font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
             } else if (GameEngine.currentScene == 3) {
                 if (settingsComponent.homeScreen.equals("homeShop")) {
-                    layout.setText(signInFont1, "Shop");
-                    signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+                    layout.setText(font35, "Shop");
+                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeArmory")) {
-                    layout.setText(signInFont1, "Armory");
-                    signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+                    layout.setText(font35, "Armory");
+                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeCastle")) {
-                    layout.setText(signInFont1, "Castle");
-                    signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+                    layout.setText(font35, "Castle");
+                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeTeam")) {
-                    layout.setText(signInFont1, "Team");
-                    signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+                    layout.setText(font35, "Team");
+                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeBrigade")) {
-                    layout.setText(signInFont1, "Brigade");
-                    signInFont1.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+                    layout.setText(font35, "Brigade");
+                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 }
+            } else if (GameEngine.currentScene == 4) {
+                layout.setText(font35, "Account");
+                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+
+                if(settingsComponent.username.equals("")){
+                    font15.setColor(1, 1, 1, 0.5f);
+                    layout.setText(font15, "Username");
+                } else {
+                    layout.setText(font15, settingsComponent.username);
+                }
+                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
+                font15.setColor(Color.WHITE);
+
+                if(settingsComponent.password.equals("")){
+                    font15.setColor(1, 1, 1, 0.5f);
+                    layout.setText(font15, "Password");
+                } else {
+                    String placeHolder = "";
+                    for(int i = 0; i < settingsComponent.password.length(); i++){
+                        placeHolder = placeHolder + "*";
+                    }
+                    layout.setText(font15, placeHolder);
+                }
+                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
+                font15.setColor(Color.WHITE);
+
+                if(settingsComponent.confirmPassword.equals("")){
+                    font15.setColor(1, 1, 1, 0.5f);
+                    layout.setText(font15, "Confirm Password");
+                } else {
+                    String placeHolder = "";
+                    for(int i = 0; i < settingsComponent.confirmPassword.length(); i++){
+                        placeHolder = placeHolder + "*";
+                    }
+                    layout.setText(font15, placeHolder);
+                }
+                font15.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
+                font15.setColor(Color.RED);
+
+                layout.setText(font15, settingsComponent.signUpLoginError);
+                font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 15 * cameraComponent.scale);
+                font15.setColor(Color.WHITE);
             }
 
             if (settingsComponent.debug) {
@@ -409,9 +452,9 @@ public class RenderSystem extends EntitySystem {
         shaderBatch.dispose();
         spriteBatch.dispose();
         fontGenerator.dispose();
-        pausedFont.dispose();
-        signInFont1.dispose();
-        signInFont2.dispose();
+        font15.dispose();
+        font25.dispose();
+        font35.dispose();
         debugFont.dispose();
     }
 }

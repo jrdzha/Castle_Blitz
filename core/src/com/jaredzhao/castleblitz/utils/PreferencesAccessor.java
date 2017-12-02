@@ -34,6 +34,17 @@ public class PreferencesAccessor {
         return localSettings;
     }
 
+    public String[] loadUserData(){
+        String[] userData = new String[2];
+        if(getString("username") == null){
+            putString("username", "%DOESNOTEXIST%");
+            putString("password", "%DOESNOTEXIST%");
+        }
+        userData[0] = getString("username");
+        userData[1] = getString("password");
+        return userData;
+    }
+
     /**
      * Save String data
      *

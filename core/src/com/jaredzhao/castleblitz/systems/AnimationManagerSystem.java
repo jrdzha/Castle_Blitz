@@ -64,7 +64,7 @@ public class AnimationManagerSystem extends EntitySystem{
 
                 Sprite currentFrame = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
 
-                if(selectableComponent.touchDown) {
+                if(selectableComponent.touchDown && selectableComponent.canShrink) {
                     if(currentFrame.getScaleX() > .93f) {
                         currentFrame.scale(-.03f);
                     }
