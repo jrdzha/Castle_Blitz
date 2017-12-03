@@ -116,8 +116,8 @@ public class AnimationManagerSystem extends EntitySystem{
                     }
                 }
 
-                if(selectableComponent.name.equals("homeTeam")){
-                    if(settingsComponent.homeScreen.equals("homeTeam")){
+                if(selectableComponent.name.equals("homePotions")){
+                    if(settingsComponent.homeScreen.equals("homePotions")){
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -152,8 +152,8 @@ public class AnimationManagerSystem extends EntitySystem{
                     }
                 }
 
-                if(selectableComponent.name.equals("homeBrigade")){
-                    if(settingsComponent.homeScreen.equals("homeBrigade")){
+                if(selectableComponent.name.equals("homeRanking")){
+                    if(settingsComponent.homeScreen.equals("homeRanking")){
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -166,17 +166,6 @@ public class AnimationManagerSystem extends EntitySystem{
 
                 if(selectableComponent.name.equals("battle")){
                     if(settingsComponent.homeScreen.equals("homeCastle")){
-                        if(entity.getComponent(VisibleComponent.class) == null){
-                            entity.add(new VisibleComponent());
-                        }
-                    } else {
-                        if(entity.getComponent(VisibleComponent.class) != null){
-                            entity.remove(VisibleComponent.class);
-                        }
-                    }
-                }
-                if(selectableComponent.name.equals("portrait")){
-                    if(settingsComponent.homeScreen.equals("homeTeam")){
                         if(entity.getComponent(VisibleComponent.class) == null){
                             entity.add(new VisibleComponent());
                         }

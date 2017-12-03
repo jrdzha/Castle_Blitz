@@ -18,6 +18,8 @@ import com.jaredzhao.castleblitz.servers.SinglePlayerGameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
+import java.util.Set;
+
 public class SinglePlayerGameScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
@@ -31,6 +33,7 @@ public class SinglePlayerGameScene extends Scene {
 
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
+    private SettingsComponent settingsComponent;
     private String[][][] rawMap;
 
     private CameraSystem cameraSystem; //System for moving the camera
@@ -83,8 +86,8 @@ public class SinglePlayerGameScene extends Scene {
 
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
-        //Entity fogOfWar = entityFactory.createFogOfWar(.15f, .15f, .25f, .6f, rawMap[0].length, rawMap[0][0].length);
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
+        settingsComponent = settings.getComponent(SettingsComponent.class);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
         ashleyEngine.addEntity(camera);
@@ -105,16 +108,19 @@ public class SinglePlayerGameScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward",
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64,
                 camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug",
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("home",
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug",
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 100,
                 camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
 
         //Load settings
         boolean[] localSettings = preferencesAccessor.loadLocalSettings();
-        settings.getComponent(SettingsComponent.class).soundOn = localSettings[0];
-        settings.getComponent(SettingsComponent.class).sfxOn = localSettings[1];
+        settingsComponent.soundOn = localSettings[0];
+        settingsComponent.sfxOn = localSettings[1];
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
@@ -147,6 +153,13 @@ public class SinglePlayerGameScene extends Scene {
     @Override
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
+
+        if(settingsComponent.goHome){
+            settingsComponent.goHome = false;
+            this.dispose();
+            this.isRunning = false;
+            return 3;
+        }
         return IDENTIFIER;
     }
 

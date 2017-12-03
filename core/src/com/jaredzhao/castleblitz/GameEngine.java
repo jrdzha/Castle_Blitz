@@ -35,7 +35,7 @@ public class GameEngine extends ApplicationAdapter {
 	public GameEngine(){
 		//facebookAccessor = new FacebookAccessor();
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("jaredzhao.com");
+		socketAccessor = new SocketAccessor("localhost");
 	}
 
 	/**
@@ -45,7 +45,6 @@ public class GameEngine extends ApplicationAdapter {
 	public void create () { //Called once when the game is started
 		lifetime = 0;
 
-		//Gdx.graphics.setVSync(false);
 		Gdx.graphics.setResizable(false);
 
 		//facebookAccessor.init();

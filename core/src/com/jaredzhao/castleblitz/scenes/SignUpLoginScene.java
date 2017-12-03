@@ -15,6 +15,10 @@ import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 import com.jaredzhao.castleblitz.utils.SocketAccessor;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class SignUpLoginScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
@@ -39,6 +43,8 @@ public class SignUpLoginScene extends Scene {
 
     private PreferencesAccessor preferencesAccessor;
     private SocketAccessor socketAccessor;
+
+    MessageDigest digest;
 
     private boolean loggedIn = false;
 
@@ -101,6 +107,12 @@ public class SignUpLoginScene extends Scene {
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         animationManagerSystem = new AnimationManagerSystem(settings);
 
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(inputSystem);
         ashleyEngine.addSystem(cameraSystem);
@@ -126,12 +138,16 @@ public class SignUpLoginScene extends Scene {
                 if (settingsComponent.password.length() > 7) {
                     if(!settingsComponent.password.contains(".")) {
                         if (settingsComponent.password.equals(settingsComponent.confirmPassword)) {
+                            StringBuffer hashedPasswordBuffer = new StringBuffer();
+                            for(Byte b : digest.digest(settingsComponent.password.getBytes())){
+                                hashedPasswordBuffer.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+                            }
                             preferencesAccessor.putString("username", settingsComponent.username.toUpperCase());
-                            preferencesAccessor.putString("password", settingsComponent.password);
+                            preferencesAccessor.putString("password", hashedPasswordBuffer.toString());
                             if(settingsComponent.signUp) {
-                                socketAccessor.outputQueue.add("register." + settingsComponent.username.toUpperCase() + "." + settingsComponent.password);
+                                socketAccessor.outputQueue.add("register." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
                             } else if(settingsComponent.login) {
-                                socketAccessor.outputQueue.add("login." + settingsComponent.username.toUpperCase() + "." + settingsComponent.password);
+                                socketAccessor.outputQueue.add("login." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
                             }
                         } else {
                             settingsComponent.signUpLoginError = "Passwords don't match";
@@ -151,13 +167,12 @@ public class SignUpLoginScene extends Scene {
 
         if(socketAccessor.inputQueue.size() != 0){
             if(socketAccessor.inputQueue.get(0).equals("register.successful")) {
-                socketAccessor.inputQueue.remove(0);
                 String[] userData = preferencesAccessor.loadUserData();
                 socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
             } else if(socketAccessor.inputQueue.get(0).equals("login.successful")) {
                 loggedIn = true;
-                socketAccessor.inputQueue.remove(0);
             }
+            socketAccessor.inputQueue.remove(0);
         }
 
         int nextScene;

@@ -187,17 +187,17 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         || selectableComponent.name.equals("sound")
                         || selectableComponent.name.equals("sfx")
                         || selectableComponent.name.equals("homeCastle")
-                        || selectableComponent.name.equals("homeTeam")
+                        || selectableComponent.name.equals("homePotions")
                         || selectableComponent.name.equals("homeShop")
                         || selectableComponent.name.equals("homeArmory")
-                        || selectableComponent.name.equals("homeBrigade")
+                        || selectableComponent.name.equals("homeRanking")
                         || selectableComponent.name.equals("battle")
-                        || selectableComponent.name.equals("portrait")
                         || selectableComponent.name.equals("editUsername")
                         || selectableComponent.name.equals("editPassword")
                         || selectableComponent.name.equals("editConfirmPassword")
                         || selectableComponent.name.equals("signUp")
-                        || selectableComponent.name.equals("login")) {
+                        || selectableComponent.name.equals("login")
+                        || selectableComponent.name.equals("home")) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
@@ -247,6 +247,11 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
                     if (selectableComponent.name.equals("pause")) {
                         settingsComponent.isPaused = !settingsComponent.isPaused;
+                        nothingSelectedYet = false;
+                    }
+
+                    if (selectableComponent.name.equals("home")) {
+                        settingsComponent.goHome = true;
                         nothingSelectedYet = false;
                     }
 
@@ -317,10 +322,10 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                     }
 
                     if (selectableComponent.name.equals("homeCastle")
-                            || selectableComponent.name.equals("homeTeam")
+                            || selectableComponent.name.equals("homePotions")
                             || selectableComponent.name.equals("homeShop")
                             || selectableComponent.name.equals("homeArmory")
-                            || selectableComponent.name.equals("homeBrigade")) {
+                            || selectableComponent.name.equals("homeRanking")) {
                         settingsComponent.homeScreen = selectableComponent.name;
                         nothingSelectedYet = false;
                     }

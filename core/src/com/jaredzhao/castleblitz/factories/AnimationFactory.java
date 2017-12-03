@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture props, tiles, castle, highlight, ui, ui2, portraits;
+    private Texture props, tiles, castle, highlight, ui, ui2;
 
     public AnimationFactory(){ //Load assets
         props = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
@@ -19,7 +19,6 @@ public class AnimationFactory {
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
-        portraits = new Texture(Gdx.files.internal("graphics/portraits/portraits.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
@@ -38,6 +37,8 @@ public class AnimationFactory {
             sprites.add(spriteRegionForTile(ui, 0, 0, sizeX, sizeY));
         } else if(type.equals("fastforward")){
             sprites.add(spriteRegionForTile(ui, 1, 0, sizeX, sizeY));
+        } else if(type.equals("home")){
+            sprites.add(spriteRegionForTile(ui, 34, 0, sizeX, sizeY));
         } else if(type.equals("debug")){
             sprites.add(spriteRegionForTile(ui, 2, 0, sizeX, sizeY));
         } else if(type.equals("move")){
@@ -73,10 +74,10 @@ public class AnimationFactory {
         } else if(type.equals("homeCastleOn")){
             sprites.add(spriteRegionForTile(ui2, 1, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeTeamOff")){
+        } else if(type.equals("homePotionsOff")){
             sprites.add(spriteRegionForTile(ui2, 2, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeTeamOn")){
+        } else if(type.equals("homePotionsOn")){
             sprites.add(spriteRegionForTile(ui2, 3, 0, sizeX, sizeY));
             alpha = 1f;
         } else if(type.equals("homeShopOff")){
@@ -91,10 +92,10 @@ public class AnimationFactory {
         } else if(type.equals("homeArmoryOn")){
             sprites.add(spriteRegionForTile(ui2, 7, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeBrigadeOff")){
+        } else if(type.equals("homeRankingOff")){
             sprites.add(spriteRegionForTile(ui2, 8, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeBrigadeOn")){
+        } else if(type.equals("homeRankingOn")){
             sprites.add(spriteRegionForTile(ui2, 9, 0, sizeX, sizeY));
             alpha = 1f;
         }
@@ -113,37 +114,6 @@ public class AnimationFactory {
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         sprites.add(spriteRegionForTile(tiles, type % 21, type / 21, 16, 16));
         sprites.get(0).setScale(1.003f);
-        completeAnimation[0] = sprites;
-        ArrayList<Integer> animations = new ArrayList<Integer>();
-        animations.add(Integer.valueOf(-1));
-        completeAnimation[1] = animations;
-        return completeAnimation;
-    }
-
-    public Object[] createPortrait(String type){ //Create tile
-        Object[] completeAnimation = new Object[2];
-        ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        if(type.equals("1")) {
-            sprites.add(spriteRegion(portraits, 0, 0, 60, 80));
-        } else if(type.equals("2")) {
-            sprites.add(spriteRegion(portraits, 1, 0, 60, 80));
-        } else if(type.equals("3")) {
-            sprites.add(spriteRegion(portraits, 2, 0, 60, 80));
-        } else if(type.equals("4")) {
-            sprites.add(spriteRegion(portraits, 3, 0, 60, 80));
-        } else if(type.equals("5")) {
-            sprites.add(spriteRegion(portraits, 4, 0, 60, 80));
-        } else if(type.equals("6")) {
-            sprites.add(spriteRegion(portraits, 5, 0, 60, 80));
-        } else if(type.equals("7")) {
-            sprites.add(spriteRegion(portraits, 6, 0, 60, 80));
-        } else if(type.equals("8")) {
-            sprites.add(spriteRegion(portraits, 7, 0, 60, 80));
-        } else if(type.equals("9")) {
-            sprites.add(spriteRegion(portraits, 8, 0, 60, 80));
-        } else if(type.equals("10")) {
-            sprites.add(spriteRegion(portraits, 9, 0, 60, 80));
-        }
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));

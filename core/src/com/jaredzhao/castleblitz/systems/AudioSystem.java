@@ -161,5 +161,11 @@ public class AudioSystem extends EntitySystem {
             musicComponent.currentMusic.stop();
             musicComponent.currentMusic.dispose();
         }
+
+        for (Object object : soundEffects.values()) {
+            SoundEffectComponent soundEffectComponent = ((Entity) object).getComponent(SoundEffectComponent.class);
+            soundEffectComponent.sound.stop();
+            soundEffectComponent.sound.dispose();
+        }
     }
 }

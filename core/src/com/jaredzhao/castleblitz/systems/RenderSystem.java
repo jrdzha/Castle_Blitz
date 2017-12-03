@@ -127,7 +127,6 @@ public class RenderSystem extends EntitySystem {
             fontParameter.size -= 1;
             fontUsernamePassword = fontGenerator.generateFont(fontParameter);
             layout.setText(fontUsernamePassword, "***************");
-            System.out.println(layout.width);
         } while(layout.width / Gdx.graphics.getWidth() > 0.7f);
 
         layerSorter = new LayerSorter(mapHeight);
@@ -375,13 +374,13 @@ public class RenderSystem extends EntitySystem {
                     layout.setText(font35, "Armory");
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeCastle")) {
-                    layout.setText(font35, "Castle");
+                    layout.setText(font35, settingsComponent.username);
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homeTeam")) {
-                    layout.setText(font35, "Team");
+                } else if (settingsComponent.homeScreen.equals("homePotions")) {
+                    layout.setText(font35, "Potions");
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homeBrigade")) {
-                    layout.setText(font35, "Brigade");
+                } else if (settingsComponent.homeScreen.equals("homeRanking")) {
+                    layout.setText(font35, "Ranking");
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 }
             } else if (GameEngine.currentScene == 4) {

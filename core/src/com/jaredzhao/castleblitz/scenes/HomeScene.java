@@ -14,6 +14,8 @@ import com.jaredzhao.castleblitz.servers.EmptyServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
+import java.util.Set;
+
 public class HomeScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
@@ -26,6 +28,8 @@ public class HomeScene extends Scene {
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
     private Entity settings;
+
+    private SettingsComponent settingsComponent;
 
     private CameraSystem cameraSystem; //System for moving the camera
     //private MapSystem mapSystem; //System to create screen positions for new map entities
@@ -71,39 +75,32 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop",
                 -36,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory",
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homePotions",
                 -18,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle",
                 0,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeTeam",
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory",
                 18,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeBrigade",
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeRanking",
                 36,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", 0, 20, 80, 16));
-        //ashleyEngine.addEntity(entityFactory.createPortrait("1", -210, 50));
-        ashleyEngine.addEntity(entityFactory.createPortrait("2", -135, 60));
-        ashleyEngine.addEntity(entityFactory.createPortrait("3", -65, 60));
-        ashleyEngine.addEntity(entityFactory.createPortrait("4", 0, 60));
-        ashleyEngine.addEntity(entityFactory.createPortrait("5", 65, 60));
-        ashleyEngine.addEntity(entityFactory.createPortrait("6", 135, 60));
-        ashleyEngine.addEntity(entityFactory.createPortrait("7", -135, -30));
-        ashleyEngine.addEntity(entityFactory.createPortrait("8", -65, -30));
-        ashleyEngine.addEntity(entityFactory.createPortrait("9", 0, -30));
-        ashleyEngine.addEntity(entityFactory.createPortrait("10", 65, -30));
+
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/home.lvl"))));
         settings = entityFactory.createSettings();
-        settings.getComponent(SettingsComponent.class).homeScreen = "homeCastle";
+        settingsComponent = settings.getComponent(SettingsComponent.class);
+        settingsComponent.username = preferencesAccessor.loadUserData()[0];
+        settingsComponent.homeScreen = "homeCastle";
         Entity battleMechanics = entityFactory.createBattleMechanics();
         ashleyEngine.addEntity(settings);
 
         //Load settings
         boolean[] localSettings = preferencesAccessor.loadLocalSettings();
-        settings.getComponent(SettingsComponent.class).soundOn = localSettings[0];
-        settings.getComponent(SettingsComponent.class).sfxOn = localSettings[1];
+        settingsComponent.soundOn = localSettings[0];
+        settingsComponent.sfxOn = localSettings[1];
 
         //Initialize systems
         cameraSystem = new CameraSystem(map);
