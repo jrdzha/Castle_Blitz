@@ -152,16 +152,18 @@ public class EntityFactory {
         return entity;
     }
 
-    public Entity createStaticPositionUI(String type, float x, float y, int sizeX, int sizeY){ //Create UI elements
+    public Entity createStaticPositionUI(String type, boolean visible, float x, float y, int sizeX, int sizeY){ //Create UI elements
         Entity entity = new Entity();
         entity.add(new PositionComponent());
         entity.add(new SpriteComponent());
         entity.add(new AnimationComponent());
         entity.add(new SelectableComponent());
-        entity.add(new VisibleComponent());
         entity.add(new LayerComponent());
         entity.add(new StaticScreenPositionComponent());
         entity.add(new UIComponent());
+        if(visible) {
+            entity.add(new VisibleComponent());
+        }
 
         int centerOffsetX = 0;
         int centerOffsetY = 0;

@@ -60,6 +60,9 @@ public class AnimationFactory {
         } else if(type.equals("login")){
             sprites.add(spriteRegionForTile(ui, 24, 0, sizeX, sizeY));
             alpha = 1f;
+        } else if(type.equals("back")){
+            sprites.add(spriteRegionForTile(ui, 35, 0, sizeX, sizeY));
+            alpha = 1f;
         } else if(type.equals("sfxOn")){
             sprites.add(spriteRegionForTile(ui, 9, 0, sizeX, sizeY));
         } else if(type.equals("sfxOff")){

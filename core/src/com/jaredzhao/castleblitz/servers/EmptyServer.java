@@ -3,6 +3,7 @@ package com.jaredzhao.castleblitz.servers;
 import com.jaredzhao.castleblitz.utils.Console;
 
 public class EmptyServer implements GameServer {
+
     @Override
     public void init() {
 

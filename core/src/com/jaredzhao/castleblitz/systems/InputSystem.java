@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.graphics.LayerComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
@@ -197,7 +198,8 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         || selectableComponent.name.equals("editConfirmPassword")
                         || selectableComponent.name.equals("signUp")
                         || selectableComponent.name.equals("login")
-                        || selectableComponent.name.equals("home")) {
+                        || selectableComponent.name.equals("home")
+                        || selectableComponent.name.equals("back")) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
@@ -316,6 +318,11 @@ public class InputSystem extends EntitySystem implements InputProcessor {
                         nothingSelectedYet = false;
                     }
 
+                    if (selectableComponent.name.equals("back")) {
+                        settingsComponent.back = true;
+                        nothingSelectedYet = false;
+                    }
+
                     if (selectableComponent.name.equals("facebookLogin")) {
                         settingsComponent.facebookLogin = true;
                         nothingSelectedYet = false;
@@ -407,7 +414,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
         if(Math.abs(screenX - lastTouchX) / scale > 2 || Math.abs(screenY - lastTouchY) / scale > 2){
             beingDragged = true;
         }
-        if(!settingsComponent.isPaused) {
+        if(!settingsComponent.isPaused && GameEngine.currentScene == 1) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(camera);
             CameraComponent cameraComponent = cameraComponentComponentMapper.get(camera);
             positionComponent.x -= ((screenX - lastDragX) / cameraComponent.scale);

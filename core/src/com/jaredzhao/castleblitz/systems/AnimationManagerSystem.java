@@ -175,6 +175,20 @@ public class AnimationManagerSystem extends EntitySystem{
                         }
                     }
                 }
+
+                if(selectableComponent.name.equals("debug")
+                        || selectableComponent.name.equals("home")
+                        || selectableComponent.name.equals("sound")
+                        || selectableComponent.name.equals("sfx")
+                        || selectableComponent.name.equals("fastforward")){
+                    if(settingsComponent.isPaused && GameEngine.currentScene == 1){
+                        if(entity.getComponent(VisibleComponent.class) == null) {
+                            entity.add(new VisibleComponent());
+                        }
+                    } else {
+                        entity.remove(VisibleComponent.class);
+                    }
+                }
             }
         }
     }

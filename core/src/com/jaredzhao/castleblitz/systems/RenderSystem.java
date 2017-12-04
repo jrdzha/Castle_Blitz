@@ -28,6 +28,9 @@ public class RenderSystem extends EntitySystem {
     private TextureRegion frameBufferRegion;
 
     private int maxPointLights = 15;
+    public boolean renderEntities = true;
+    public boolean renderFogOfWar = true;
+    public boolean renderGaussianBlur = false;
 
     private float brightness = 0.12f;
     private float contrast = 1.6f;
@@ -173,16 +176,21 @@ public class RenderSystem extends EntitySystem {
         shaderBatch.setProjectionMatrix(orthographicCamera.projection);
         fogOfWarBatch.setProjectionMatrix(orthographicCamera.projection);
 
-        if(settingsComponent.isPaused){
+        if(settingsComponent.isPaused || renderGaussianBlur){
             frameBufferA.begin();
             Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
         }
 
-        drawEntities(renderables);
-        drawFogOfWar();
+        if(renderEntities) {
+            drawEntities(renderables);
+        }
 
-        if(settingsComponent.isPaused){
+        if(renderFogOfWar){
+            drawFogOfWar();
+        }
+
+        if(settingsComponent.isPaused || renderGaussianBlur){
             frameBufferA.end();
             frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
 
@@ -360,12 +368,6 @@ public class RenderSystem extends EntitySystem {
                     layout.setText(font15, "OPPONENT'S TURN");
                     font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
                 }
-            } else if (GameEngine.currentScene == 2) {
-                layout.setText(font35, "SIGN IN");
-                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
-
-                layout.setText(font15, "IT'S GOOD FOR YOU");
-                font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4);
             } else if (GameEngine.currentScene == 3) {
                 if (settingsComponent.homeScreen.equals("homeShop")) {
                     layout.setText(font35, "Shop");
@@ -383,8 +385,8 @@ public class RenderSystem extends EntitySystem {
                     layout.setText(font35, "Ranking");
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 }
-            } else if (GameEngine.currentScene == 4) {
-                layout.setText(font35, "Account");
+            } else if (GameEngine.currentScene == 2) {
+                layout.setText(font35, "Sign Up");
                 font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
 
                 if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
@@ -435,10 +437,49 @@ public class RenderSystem extends EntitySystem {
                     layout.setText(fontUsernamePassword, placeHolder + cursor);
                 }
                 fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.RED);
+                fontUsernamePassword.setColor(Color.WHITE);
 
                 layout.setText(fontUsernamePassword, settingsComponent.signUpLoginError);
                 fontUsernamePassword.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 15 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
+            } else if (GameEngine.currentScene == 5) {
+                layout.setText(font35, "Login");
+                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
+
+                if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
+                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
+                    layout.setText(fontUsernamePassword, "Username");
+                } else {
+                    String cursor = "";
+                    if(settingsComponent.editUsername && (int)GameEngine.lifetime % 2 == 0){
+                        cursor = "|";
+                    }
+
+                    layout.setText(fontUsernamePassword, settingsComponent.username + cursor);
+                }
+                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
+
+                if(settingsComponent.password.equals("") && !settingsComponent.editPassword){
+                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
+                    layout.setText(fontUsernamePassword, "Password");
+                } else {
+                    String cursor = "";
+                    if(settingsComponent.editPassword && (int)GameEngine.lifetime % 2 == 0){
+                        cursor = "|";
+                    }
+
+                    String placeHolder = "";
+                    for(int i = 0; i < settingsComponent.password.length(); i++){
+                        placeHolder = placeHolder + "*";
+                    }
+                    layout.setText(fontUsernamePassword, placeHolder + cursor);
+                }
+                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
+                fontUsernamePassword.setColor(Color.WHITE);
+
+                layout.setText(fontUsernamePassword, settingsComponent.signUpLoginError);
+                fontUsernamePassword.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
                 fontUsernamePassword.setColor(Color.WHITE);
             }
 

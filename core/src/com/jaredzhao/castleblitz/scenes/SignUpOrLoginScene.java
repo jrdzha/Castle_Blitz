@@ -13,18 +13,19 @@ import com.jaredzhao.castleblitz.factories.AnimationFactory;
 import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
+import com.jaredzhao.castleblitz.servers.CharacterSelectionServer;
+import com.jaredzhao.castleblitz.servers.EmptyServer;
 import com.jaredzhao.castleblitz.servers.GameServer;
-import com.jaredzhao.castleblitz.servers.SinglePlayerGameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
+import com.jaredzhao.castleblitz.utils.SocketAccessor;
 
-import java.util.Set;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-public class SinglePlayerGameScene extends Scene {
+public class SignUpOrLoginScene extends Scene {
 
     private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
-
-    private PreferencesAccessor preferencesAccessor;
 
     private EntityFactory entityFactory; //Entity factory used for creating all entities
     private AudioFactory audioFactory; //Audio factory for loading audio files
@@ -33,8 +34,8 @@ public class SinglePlayerGameScene extends Scene {
 
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
+
     private SettingsComponent settingsComponent;
-    private String[][][] rawMap;
 
     private CameraSystem cameraSystem; //System for moving the camera
     private RenderSystem renderSystem; //System for rendering to the screen
@@ -47,24 +48,29 @@ public class SinglePlayerGameScene extends Scene {
     private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
     private BattleMechanicsSystem battleMechanicsSystem;
 
+    private PreferencesAccessor preferencesAccessor;
+    private SocketAccessor socketAccessor;
+
+    private GameServer characterSelectionServer;
     public static String team;
 
-    private GameServer singlePlayerGameServer;
+    MessageDigest digest;
 
-    public SinglePlayerGameScene(PreferencesAccessor preferencesAccessor){
-        IDENTIFIER = 1;
+    public SignUpOrLoginScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
+        IDENTIFIER = 4;
         this.preferencesAccessor = preferencesAccessor;
+        this.socketAccessor = socketAccessor;
     }
 
     @Override
     public void init() {
+
         //Initialize ashleyEngine
         ashleyEngine = new Engine();
 
-        //Initialize SinglePlayerGameServer
-        singlePlayerGameServer = new SinglePlayerGameServer();
-        singlePlayerGameServer.init();
-        team = singlePlayerGameServer.getTeam();
+        characterSelectionServer = new CharacterSelectionServer();
+        characterSelectionServer.init();
+        team = "None";
 
         //Initialize factories
         audioFactory = new AudioFactory();
@@ -72,48 +78,32 @@ public class SinglePlayerGameScene extends Scene {
         entityFactory = new EntityFactory(animationFactory, audioFactory);
         mapFactory = new MapFactory(ashleyEngine, entityFactory);
 
-        //Load level data from disk
-        rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test2.lvl"));
-        singlePlayerGameServer.loadMap(rawMap);
+        //Create entities
+        String[][][] rawMap = mapFactory.loadRawMap(Gdx.files.internal("levels/test2.lvl"));
+        characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        //Create entities
         if(GameEngine.safeAreaInsets.y != 0) {
             camera = entityFactory.createCamera(300);
         } else {
             camera = entityFactory.createCamera(250);
         }
 
+        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
-        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         settingsComponent = settings.getComponent(SettingsComponent.class);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
+
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
 
         Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
 
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", true,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("home", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 100,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("login", true, 0, -70, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("signUp", true, 0, -90, 80, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
 
@@ -127,14 +117,22 @@ public class SinglePlayerGameScene extends Scene {
         //Initialize systems
         cameraSystem = new CameraSystem(map);
         renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight, 1.6f, .12f);
-        mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar, battleMechanics);
-        inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
+        mapSystem = new MapSystem(characterSelectionServer, map, fogOfWar, battleMechanics);
+        inputSystem = new InputSystem(ashleyEngine, characterSelectionServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
         resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
         lightSystem = new LightSystem();
         audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
         highlightSystem = new HighlightSystem(ashleyEngine);
         animationManagerSystem = new AnimationManagerSystem(settings);
-        battleMechanicsSystem = new BattleMechanicsSystem(map, singlePlayerGameServer, battleMechanics);
+        battleMechanicsSystem = new BattleMechanicsSystem(map, characterSelectionServer, battleMechanics);
+
+        renderSystem.renderGaussianBlur = true;
+
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         //Add systems to ashleyEngine
         ashleyEngine.addSystem(mapSystem);
@@ -154,11 +152,14 @@ public class SinglePlayerGameScene extends Scene {
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        if(settingsComponent.goHome){
-            settingsComponent.goHome = false;
+        if(settingsComponent.signUp){
             this.dispose();
             this.isRunning = false;
-            return 3;
+            return 2;
+        } else if(settingsComponent.login){
+            this.dispose();
+            this.isRunning = false;
+            return 5;
         }
         return IDENTIFIER;
     }

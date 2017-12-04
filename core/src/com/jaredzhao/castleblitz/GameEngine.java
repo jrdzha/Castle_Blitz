@@ -35,7 +35,7 @@ public class GameEngine extends ApplicationAdapter {
 	public GameEngine(){
 		//facebookAccessor = new FacebookAccessor();
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("localhost");
+		socketAccessor = new SocketAccessor("jaredzhao.com");
 	}
 
 	/**
@@ -55,15 +55,17 @@ public class GameEngine extends ApplicationAdapter {
 
 		Scene gameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
 		Scene openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
-		//Scene loginScene = new LoginScene(preferencesAccessor);
 		Scene homeScene = new HomeScene(preferencesAccessor);
-		Scene signUpScene = new SignUpLoginScene(preferencesAccessor, socketAccessor);
+		Scene loginScene = new LoginScene(preferencesAccessor, socketAccessor);
+		Scene signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
+		Scene signUpScene = new SignUpScene(preferencesAccessor, socketAccessor);
 
-		sceneList.add(openingScene);
-		//sceneList.add(loginScene);
-		sceneList.add(homeScene);
-		sceneList.add(gameScene);
-		sceneList.add(signUpScene);
+		sceneList.add(homeScene); //IDENTIFIER = 3
+		sceneList.add(openingScene); //IDENTIFIER = 0
+		sceneList.add(gameScene); //IDENTIFIER = 1
+		sceneList.add(signUpOrLoginScene); //IDENTIFIER = 4
+		sceneList.add(signUpScene); //IDENTIFIER = 2
+		sceneList.add(loginScene); //IDENTIFIER = 5
 
 		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 

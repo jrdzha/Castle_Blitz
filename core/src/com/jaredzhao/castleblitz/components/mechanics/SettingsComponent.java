@@ -20,5 +20,6 @@ public class SettingsComponent implements Component {
     public boolean signUp = false;
     public boolean login = false;
     public boolean goHome = false;
+    public boolean back = false;
     public String signUpLoginError = "";
 }

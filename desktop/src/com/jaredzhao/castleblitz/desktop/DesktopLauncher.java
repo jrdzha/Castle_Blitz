@@ -8,8 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Castle Blitz - " + GameEngine.version;
-		config.width = 750 / 2;
-		config.height = 1334 / 2;
+		config.width = 1125 / 3;
+		config.height = 2436 / 3;
 
 		/*
 		config.width = 1920;
