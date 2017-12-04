@@ -106,8 +106,8 @@ public class LoginScene extends Scene {
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("editUsername", true, -cameraComponent.cameraWidth / 2 + 18, 73, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("editPassword", true, -cameraComponent.cameraWidth / 2 + 18, 53, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("back", true, 0, -70, 80, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("login", true, 0, -90, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("back", true, 0, -90, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("login", true, 0, -70, 80, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/login.lvl"))));
 

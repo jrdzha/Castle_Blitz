@@ -107,8 +107,8 @@ public class SignUpScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("editUsername", true, -cameraComponent.cameraWidth / 2 + 18, 73, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("editPassword", true, -cameraComponent.cameraWidth / 2 + 18, 53, 16, 16));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("editConfirmPassword", true, -cameraComponent.cameraWidth / 2 + 18, 33, 16, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("back", true, 0, -70, 80, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("signUp", true, 0, -90, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("back", true, 0, -90, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("signUp", true, 0, -70, 80, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/login.lvl"))));
 
@@ -157,7 +157,7 @@ public class SignUpScene extends Scene {
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        if (settingsComponent.editPassword || settingsComponent.editUsername) {
+        if (settingsComponent.editPassword || settingsComponent.editUsername || settingsComponent.editConfirmPassword) {
             Gdx.input.setOnscreenKeyboardVisible(true);
         } else {
             Gdx.input.setOnscreenKeyboardVisible(false);
