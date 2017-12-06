@@ -25,7 +25,6 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static float lifetime;
 
-	//public FacebookAccessor facebookAccessor;
 	public PreferencesAccessor preferencesAccessor;
 	public SocketAccessor socketAccessor;
 
@@ -33,9 +32,8 @@ public class GameEngine extends ApplicationAdapter {
 	 * Creates the game object and initializes Accessors
 	 */
 	public GameEngine(){
-		//facebookAccessor = new FacebookAccessor();
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("jaredzhao.com");
+		socketAccessor = new SocketAccessor("localhost");
 	}
 
 	/**
@@ -47,7 +45,6 @@ public class GameEngine extends ApplicationAdapter {
 
 		Gdx.graphics.setResizable(false);
 
-		//facebookAccessor.init();
 		preferencesAccessor.init();
 		socketAccessor.init();
 
@@ -55,7 +52,7 @@ public class GameEngine extends ApplicationAdapter {
 
 		Scene gameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
 		Scene openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
-		Scene homeScene = new HomeScene(preferencesAccessor);
+		Scene homeScene = new HomeScene(preferencesAccessor, socketAccessor);
 		Scene loginScene = new LoginScene(preferencesAccessor, socketAccessor);
 		Scene signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
 		Scene signUpScene = new SignUpScene(preferencesAccessor, socketAccessor);
@@ -78,7 +75,7 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	@Override
 	public void render () {
-		if((int)lifetime % 1 == 0) {
+		if((int)(lifetime * 10) % 2 == 0) {
 			socketAccessor.update();
 		}
 

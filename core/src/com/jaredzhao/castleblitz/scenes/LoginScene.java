@@ -184,6 +184,7 @@ public class LoginScene extends Scene {
 
         if (socketAccessor.inputQueue.size() != 0) {
             if (socketAccessor.inputQueue.get(0).equals("login.successful")) {
+                socketAccessor.outputQueue.add("request.stats");
                 loggedIn = true;
             } else if (socketAccessor.inputQueue.get(0).equals("login.fail")) {
                 settingsComponent.signUpLoginError = "Incorrect Login";

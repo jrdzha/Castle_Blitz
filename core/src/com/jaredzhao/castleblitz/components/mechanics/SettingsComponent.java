@@ -2,6 +2,8 @@ package com.jaredzhao.castleblitz.components.mechanics;
 
 import com.badlogic.ashley.core.Component;
 
+import java.util.ArrayList;
+
 public class SettingsComponent implements Component {
     public boolean isPaused = false;
     public boolean fastForward = false;
@@ -21,5 +23,11 @@ public class SettingsComponent implements Component {
     public boolean login = false;
     public boolean goHome = false;
     public boolean back = false;
+    public String rank = "";
+    public String level = "";
+    public String xp = "";
+    public String shards = "";
+    public String gold = "";
+    public ArrayList<String> unlockedCharacters = new ArrayList<String>();
     public String signUpLoginError = "";
 }

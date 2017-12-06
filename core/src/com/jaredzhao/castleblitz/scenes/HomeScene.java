@@ -17,6 +17,7 @@ import com.jaredzhao.castleblitz.servers.CharacterSelectionServer;
 import com.jaredzhao.castleblitz.servers.GameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
+import com.jaredzhao.castleblitz.utils.SocketAccessor;
 
 
 public class HomeScene extends Scene {
@@ -45,13 +46,15 @@ public class HomeScene extends Scene {
     private BattleMechanicsSystem battleMechanicsSystem;
 
     private PreferencesAccessor preferencesAccessor;
+    private SocketAccessor socketAccessor;
 
     private GameServer characterSelectionServer;
     public static String team;
 
-    public HomeScene(PreferencesAccessor preferencesAccessor){
+    public HomeScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
         IDENTIFIER = 3;
         this.preferencesAccessor = preferencesAccessor;
+        this.socketAccessor = socketAccessor;
     }
 
     @Override
@@ -109,7 +112,7 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeRanking", true,
                 36,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, 20, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, 80, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/armory.lvl"))));
 
@@ -157,6 +160,36 @@ public class HomeScene extends Scene {
 
         renderSystem.renderEntities = settingsComponent.homeScreen.equals("homeArmory");
         settingsComponent.sfxOn = renderSystem.renderEntities;
+
+        if(socketAccessor.inputQueue.size() > 0) {
+            String[] input = socketAccessor.inputQueue.get(0).split("\\.");
+            socketAccessor.inputQueue.remove(0);
+            if (input[0].equals("rank")) {
+                settingsComponent.rank = input[1];
+            }
+
+            if (input[0].equals("level")) {
+                settingsComponent.level = input[1];
+            }
+
+            if (input[0].equals("xp")) {
+                settingsComponent.xp = input[1];
+            }
+
+            if (input[0].equals("shards")) {
+                settingsComponent.shards = input[1];
+            }
+
+            if (input[0].equals("gold")) {
+                settingsComponent.gold = input[1];
+            }
+
+            if (input[0].equals("rank")) {
+                for(int i = 1; i < input.length; i++){
+                    settingsComponent.unlockedCharacters.add(input[i]);
+                }
+            }
+        }
 
         int nextScene;
         if(settingsComponent.battle){

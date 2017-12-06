@@ -376,6 +376,17 @@ public class RenderSystem extends EntitySystem {
                     layout.setText(font35, "Armory");
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homeCastle")) {
+                    layout.setText(font15, "Rank " + settingsComponent.rank);
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 24 / 32 + 1.5f * layout.height);
+                    layout.setText(font15, "Level " + settingsComponent.level);
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 23 / 32 + 1.5f * layout.height);
+                    layout.setText(font15, "XP " + settingsComponent.xp);
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 22 / 32 + 1.5f * layout.height);
+                    layout.setText(font15, "Shards " + settingsComponent.shards);
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 21 / 32 + 1.5f * layout.height);
+                    layout.setText(font15, "Gold " + settingsComponent.gold);
+                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 20 / 32 + 1.5f * layout.height);
+
                     layout.setText(font35, settingsComponent.username);
                     font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
                 } else if (settingsComponent.homeScreen.equals("homePotions")) {

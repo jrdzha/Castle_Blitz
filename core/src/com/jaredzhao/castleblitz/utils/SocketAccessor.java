@@ -19,6 +19,7 @@ public class SocketAccessor {
     private int lastPing;
     private boolean isConnected = false;
     public String host;
+    BufferedReader bufferedReader;
 
     public SocketAccessor(String host){
         this.host = host;
@@ -34,6 +35,7 @@ public class SocketAccessor {
         inputQueue = new ArrayList<String>();
 
         connectToServer();
+        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     /**
@@ -41,18 +43,13 @@ public class SocketAccessor {
      */
     public void connectToServer(){
         try {
-            System.out.println("Attempting to connect");
+            System.out.println("CONNECTING");
             socket = Gdx.net.newClientSocket(Protocol.TCP, host, 4000, new SocketHints());
-            System.out.println("Connection successful");
+            System.out.println("CONNECTION SUCCESSFUL");
             isConnected = true;
         } catch (GdxRuntimeException e) {
-            System.out.println("Failed to connect");
+            System.out.println("FAILED TO CONNECT");
             isConnected = false;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
             connectToServer();
         }
     }
@@ -64,7 +61,7 @@ public class SocketAccessor {
         //Ping
 
         if(lastPing != (int) GameEngine.lifetime && (int) GameEngine.lifetime % 10 == 0){
-            outputQueue.add("ping");
+            outputQueue.add("PING");
             lastPing = (int) GameEngine.lifetime;
         }
 
@@ -73,26 +70,21 @@ public class SocketAccessor {
             try {
                 socket.getOutputStream().write((outputQueue.get(0) + "\n").getBytes());
                 socket.getOutputStream().flush();
-                System.out.println("Sent " + outputQueue.get(0));
+                System.out.println("OUT " + outputQueue.get(0));
                 outputQueue.remove(0);
             } catch (IOException e) {
-                System.out.println("Disconnected from server");
+                System.out.println("DISCONNECTED");
                 isConnected = false;
                 connectToServer();
-            }
-        } else {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
         //Receive
         try {
-            if (socket != null && socket.getInputStream().available() > 0) {
-                inputQueue.add(new BufferedReader(new InputStreamReader(socket.getInputStream())).readLine());
-                System.out.println(inputQueue.get(0));
+            while (socket != null && bufferedReader.ready()) {
+                String input = bufferedReader.readLine();
+                inputQueue.add(input);
+                System.out.println("IN  " + input);
             }
         } catch (IOException e) {
             e.printStackTrace();
