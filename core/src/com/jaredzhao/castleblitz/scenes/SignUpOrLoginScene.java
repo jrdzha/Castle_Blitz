@@ -122,8 +122,6 @@ public class SignUpOrLoginScene extends Scene {
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
 
-        Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / cameraScale, GameEngine.safeAreaInsets.y / cameraScale);
-
         editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 73, 16, 16);
         editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 53, 16, 16);
         editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 33, 16, 16);
@@ -133,7 +131,7 @@ public class SignUpOrLoginScene extends Scene {
 
         int textScale = 3;
         Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
-        while(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.7f){
+        while(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.65f){
             textScale++;
             System.out.println(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() + "    " + textScale);
             testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
@@ -266,17 +264,20 @@ public class SignUpOrLoginScene extends Scene {
             if (socketAccessor.inputQueue.get(0).equals("register.successful")) {
                 String[] userData = preferencesAccessor.loadUserData();
                 socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
+                socketAccessor.inputQueue.remove(0);
             } else if (socketAccessor.inputQueue.get(0).equals("login.successful")) {
                 loggedIn = true;
+                socketAccessor.inputQueue.remove(0);
             } else if (socketAccessor.inputQueue.get(0).equals("username.exists")) {
                 settingsComponent.signUpLoginError = "Username Exists Already";
+                socketAccessor.inputQueue.remove(0);
             } else if (socketAccessor.inputQueue.get(0).equals("login.successful")) {
-                socketAccessor.outputQueue.add("request.stats");
                 loggedIn = true;
+                socketAccessor.inputQueue.remove(0);
             } else if (socketAccessor.inputQueue.get(0).equals("login.fail")) {
                 settingsComponent.signUpLoginError = "Incorrect Login";
+                socketAccessor.inputQueue.remove(0);
             }
-            socketAccessor.inputQueue.remove(0);
         }
 
         if(settingsComponent.accountScreen.equals("signUpOrLogin")){

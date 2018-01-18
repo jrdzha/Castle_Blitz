@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.TextComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
@@ -21,6 +20,8 @@ import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 import com.jaredzhao.castleblitz.utils.SocketAccessor;
 
+import java.util.HashMap;
+
 
 public class HomeScene extends Scene {
 
@@ -34,6 +35,15 @@ public class HomeScene extends Scene {
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
     private Entity headingText;
+    private Entity usernameText;
+    private Entity goldText;
+    private Entity shardsText;
+    private Entity levelText;
+    private Entity xpText;
+    private Entity idText;
+    private Entity preIdText;
+
+    private float cameraScale;
 
     private SettingsComponent settingsComponent;
 
@@ -50,6 +60,7 @@ public class HomeScene extends Scene {
 
     private PreferencesAccessor preferencesAccessor;
     private SocketAccessor socketAccessor;
+    private HashMap<String, String> userData = new HashMap<String, String>();
 
     private GameServer characterSelectionServer;
     public static String team;
@@ -62,6 +73,7 @@ public class HomeScene extends Scene {
 
     @Override
     public void init() {
+        socketAccessor.outputQueue.add("request.stats");
 
         //Initialize ashleyEngine
         ashleyEngine = new Engine();
@@ -86,6 +98,7 @@ public class HomeScene extends Scene {
         } else {
             camera = entityFactory.createCamera(250);
         }
+        cameraScale = camera.getComponent(CameraComponent.class).scale;
 
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
@@ -99,16 +112,16 @@ public class HomeScene extends Scene {
         settingsComponent.soundOn = localSettings[0];
         settingsComponent.sfxOn = localSettings[1];
 
-        headingText = entityFactory.createText(settingsComponent.username, 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int)(16 * camera.getComponent(CameraComponent.class).scale), true);
+        headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int)(16 * camera.getComponent(CameraComponent.class).scale), true);
+        usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, Color.WHITE, (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 16;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 16;
 
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(headingText);
+        ashleyEngine.addEntity(usernameText);
         ashleyEngine.addEntity(settings);
-
-        Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", true,
                 -36,
@@ -126,6 +139,9 @@ public class HomeScene extends Scene {
                 36,
                 camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, 80, 16));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeLevelStatus", true, -36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeGoldStatus", true, 0, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShardStatus", true, 36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/armory.lvl"))));
 
@@ -157,50 +173,67 @@ public class HomeScene extends Scene {
         ashleyEngine.addSystem(resourceManagementSystem);
         ashleyEngine.addSystem(animationManagerSystem);
         ashleyEngine.addSystem(battleMechanicsSystem);
+
+        while(settingsComponent.id.equals("") ||
+                settingsComponent.rank.equals("") ||
+                settingsComponent.gold.equals("") ||
+                settingsComponent.shards.equals("") ||
+                settingsComponent.xp.equals("") ||
+                settingsComponent.level.equals("") ||
+                settingsComponent.unlockedCharacters.size() == 0){
+            socketAccessor.update();
+            if(socketAccessor.inputQueue.size() > 0) {
+                String[] input = socketAccessor.inputQueue.get(0).split("\\.");
+                socketAccessor.inputQueue.remove(0);
+                if (input[0].equals("id")) {
+                    settingsComponent.id = input[1];
+                    idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
+                    idText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
+                    preIdText = entityFactory.createText("/", 47 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(0.8f, 0.8f, 0.8f, 1), (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
+                    preIdText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
+                    ashleyEngine.addEntity(preIdText);
+                    ashleyEngine.addEntity(idText);
+                } else if (input[0].equals("rank")) {
+                    settingsComponent.rank = input[1];
+                } else if (input[0].equals("level")) {
+                    settingsComponent.level = input[1];
+                    levelText = entityFactory.createText(input[1], -47.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), true);
+                    ashleyEngine.addEntity(levelText);
+                } else if (input[0].equals("xp")) {
+                    settingsComponent.xp = input[1];
+                    xpText = entityFactory.createText(input[1], -21.25f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
+                    ashleyEngine.addEntity(xpText);
+                } else if (input[0].equals("shards")) {
+                    settingsComponent.shards = input[1];
+                    xpText = entityFactory.createText(input[1], 50.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
+                    ashleyEngine.addEntity(xpText);
+                } else if (input[0].equals("gold")) {
+                    settingsComponent.gold = input[1];
+                    xpText = entityFactory.createText(input[1], 14.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
+                    ashleyEngine.addEntity(xpText);
+                } else if (input[0].equals("unlocked-characters")) {
+                    for(int i = 1; i < input.length; i++){
+                        settingsComponent.unlockedCharacters.add(input[i]);
+                    }
+                }
+            }
+        }
+
         System.gc();
     }
 
     @Override
     public int render() throws InterruptedException {
+
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
         headingText.getComponent(TextComponent.class).setText(settingsComponent.homeScreen.substring(4));
-        if(settingsComponent.homeScreen.equals("homeCastle")){
-            headingText.getComponent(TextComponent.class).setText(settingsComponent.username);
-        }
 
         renderSystem.renderEntities = settingsComponent.homeScreen.equals("homeArmory");
         settingsComponent.sfxOn = renderSystem.renderEntities;
-
-        if(socketAccessor.inputQueue.size() > 0) {
-            String[] input = socketAccessor.inputQueue.get(0).split("\\.");
-            socketAccessor.inputQueue.remove(0);
-            if (input[0].equals("rank")) {
-                settingsComponent.rank = input[1];
-            }
-
-            if (input[0].equals("level")) {
-                settingsComponent.level = input[1];
-            }
-
-            if (input[0].equals("xp")) {
-                settingsComponent.xp = input[1];
-            }
-
-            if (input[0].equals("shards")) {
-                settingsComponent.shards = input[1];
-            }
-
-            if (input[0].equals("gold")) {
-                settingsComponent.gold = input[1];
-            }
-
-            if (input[0].equals("rank")) {
-                for(int i = 1; i < input.length; i++){
-                    settingsComponent.unlockedCharacters.add(input[i]);
-                }
-            }
-        }
 
         if(settingsComponent.battle){
             this.dispose();
