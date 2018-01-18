@@ -19,6 +19,11 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static int currentScene; //Current scene number
 
+	public static Scene singlePlayerGameScene;
+	public static Scene openingScene;
+	public static Scene homeScene;
+	public static Scene signUpOrLoginScene;
+
 	public static Vector2 safeAreaInsets;
 
 	public static String version = "Build 53"; //Current build version
@@ -33,7 +38,7 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	public GameEngine(){
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("localhost");
+		socketAccessor = new SocketAccessor("jaredzhao.com");
 	}
 
 	/**
@@ -50,19 +55,15 @@ public class GameEngine extends ApplicationAdapter {
 
 		sceneList = new ArrayList<Scene>();
 
-		Scene gameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
-		Scene openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
-		Scene homeScene = new HomeScene(preferencesAccessor, socketAccessor);
-		Scene loginScene = new LoginScene(preferencesAccessor, socketAccessor);
-		Scene signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
-		Scene signUpScene = new SignUpScene(preferencesAccessor, socketAccessor);
+		singlePlayerGameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
+		openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
+		homeScene = new HomeScene(preferencesAccessor, socketAccessor);
+		signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
 
-		sceneList.add(homeScene); //IDENTIFIER = 3
 		sceneList.add(openingScene); //IDENTIFIER = 0
-		sceneList.add(gameScene); //IDENTIFIER = 1
-		sceneList.add(signUpOrLoginScene); //IDENTIFIER = 4
-		sceneList.add(signUpScene); //IDENTIFIER = 2
-		sceneList.add(loginScene); //IDENTIFIER = 5
+		sceneList.add(signUpOrLoginScene); //IDENTIFIER = 1
+		sceneList.add(homeScene); //IDENTIFIER = 2
+		sceneList.add(singlePlayerGameScene); //IDENTIFIER = 3
 
 		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 
@@ -75,9 +76,9 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	@Override
 	public void render () {
-		if((int)(lifetime * 10) % 2 == 0) {
+		//if((int)(lifetime * 10) % 2 == 0) {
 			socketAccessor.update();
-		}
+		//}
 
 		for(Scene scene : sceneList){
 			if(currentScene == scene.IDENTIFIER){

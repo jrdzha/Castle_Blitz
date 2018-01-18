@@ -3,9 +3,12 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.GameEngine;
+import com.jaredzhao.castleblitz.components.graphics.TextComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
+import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -17,8 +20,6 @@ import com.jaredzhao.castleblitz.servers.GameServer;
 import com.jaredzhao.castleblitz.servers.SinglePlayerGameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
-
-import java.util.Set;
 
 public class SinglePlayerGameScene extends Scene {
 
@@ -33,6 +34,8 @@ public class SinglePlayerGameScene extends Scene {
 
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
+    private Entity battleMechanics;
+    private Entity whosTurnText;
     private SettingsComponent settingsComponent;
     private String[][][] rawMap;
 
@@ -52,7 +55,7 @@ public class SinglePlayerGameScene extends Scene {
     private GameServer singlePlayerGameServer;
 
     public SinglePlayerGameScene(PreferencesAccessor preferencesAccessor){
-        IDENTIFIER = 1;
+        IDENTIFIER = 3;
         this.preferencesAccessor = preferencesAccessor;
     }
 
@@ -85,14 +88,17 @@ public class SinglePlayerGameScene extends Scene {
         }
 
         Entity settings = entityFactory.createSettings();
-        Entity battleMechanics = entityFactory.createBattleMechanics();
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
+        whosTurnText = entityFactory.createText("YOUR TURN", 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int)(10 * camera.getComponent(CameraComponent.class).scale), true);
         settingsComponent = settings.getComponent(SettingsComponent.class);
+        battleMechanics = entityFactory.createBattleMechanics();
+        battleMechanics.getComponent(BattleMechanicsStatesComponent.class).isMyTurn = true;
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
+        ashleyEngine.addEntity(whosTurnText);
 
         Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
 
@@ -152,13 +158,24 @@ public class SinglePlayerGameScene extends Scene {
 
     @Override
     public int render() throws InterruptedException {
+        if (settingsComponent.isPaused){
+            whosTurnText.getComponent(TextComponent.class).setText("PAUSED");
+            whosTurnText.getComponent(PositionComponent.class).y = Gdx.graphics.getHeight() / 5;
+        } else if (battleMechanics.getComponent(BattleMechanicsStatesComponent.class).isMyTurn) {
+            whosTurnText.getComponent(TextComponent.class).setText("YOUR TURN");
+            whosTurnText.getComponent(PositionComponent.class).y = Gdx.graphics.getHeight() * 2 / 5;
+        } else {
+            whosTurnText.getComponent(TextComponent.class).setText("OPPONENT'S TURN");
+            whosTurnText.getComponent(PositionComponent.class).y = Gdx.graphics.getHeight() * 2 / 5;
+        }
+
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
         if(settingsComponent.goHome){
             settingsComponent.goHome = false;
             this.dispose();
             this.isRunning = false;
-            return 3;
+            return GameEngine.homeScene.IDENTIFIER;
         }
         return IDENTIFIER;
     }

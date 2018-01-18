@@ -3,8 +3,10 @@ package com.jaredzhao.castleblitz.scenes;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.GameEngine;
+import com.jaredzhao.castleblitz.components.graphics.TextComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
@@ -31,6 +33,7 @@ public class HomeScene extends Scene {
 
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
+    private Entity headingText;
 
     private SettingsComponent settingsComponent;
 
@@ -52,7 +55,7 @@ public class HomeScene extends Scene {
     public static String team;
 
     public HomeScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
-        IDENTIFIER = 3;
+        IDENTIFIER = 2;
         this.preferencesAccessor = preferencesAccessor;
         this.socketAccessor = socketAccessor;
     }
@@ -88,11 +91,21 @@ public class HomeScene extends Scene {
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         settingsComponent = settings.getComponent(SettingsComponent.class);
+
+        //Load settings
+        boolean[] localSettings = preferencesAccessor.loadLocalSettings();
+        settingsComponent.username = preferencesAccessor.loadUserData()[0];
+        settingsComponent.homeScreen = "homeCastle";
+        settingsComponent.soundOn = localSettings[0];
+        settingsComponent.sfxOn = localSettings[1];
+
+        headingText = entityFactory.createText(settingsComponent.username, 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int)(16 * camera.getComponent(CameraComponent.class).scale), true);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 16;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 16;
 
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
+        ashleyEngine.addEntity(headingText);
         ashleyEngine.addEntity(settings);
 
         Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
@@ -115,13 +128,6 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, 80, 16));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/armory.lvl"))));
-
-        //Load settings
-        boolean[] localSettings = preferencesAccessor.loadLocalSettings();
-        settingsComponent.username = preferencesAccessor.loadUserData()[0];
-        settingsComponent.homeScreen = "homeCastle";
-        settingsComponent.soundOn = localSettings[0];
-        settingsComponent.sfxOn = localSettings[1];
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
@@ -158,6 +164,11 @@ public class HomeScene extends Scene {
     public int render() throws InterruptedException {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
+        headingText.getComponent(TextComponent.class).setText(settingsComponent.homeScreen.substring(4));
+        if(settingsComponent.homeScreen.equals("homeCastle")){
+            headingText.getComponent(TextComponent.class).setText(settingsComponent.username);
+        }
+
         renderSystem.renderEntities = settingsComponent.homeScreen.equals("homeArmory");
         settingsComponent.sfxOn = renderSystem.renderEntities;
 
@@ -191,15 +202,12 @@ public class HomeScene extends Scene {
             }
         }
 
-        int nextScene;
         if(settingsComponent.battle){
-            nextScene = 1;
             this.dispose();
             this.isRunning = false;
-        } else {
-            nextScene = IDENTIFIER;
+            return GameEngine.singlePlayerGameScene.IDENTIFIER;
         }
-        return nextScene;
+        return IDENTIFIER;
     }
 
     @Override

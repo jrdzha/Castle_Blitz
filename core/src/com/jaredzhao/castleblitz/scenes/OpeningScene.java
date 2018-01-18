@@ -55,11 +55,11 @@ public class OpeningScene extends Scene {
 
         if(userData[0].equals("%DOESNOTEXIST%")){
             //send to account creation
-            nextScene = 4;
+            nextScene = GameEngine.signUpOrLoginScene.IDENTIFIER;
         } else {
             //login
             socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
-            nextScene = 3;
+            nextScene = GameEngine.homeScene.IDENTIFIER;
         }
     }
 
@@ -104,7 +104,7 @@ public class OpeningScene extends Scene {
 
         timesRendered++;
         if (timesRendered > 120) {
-            if ((nextScene == 3 && loggedIn) || nextScene == 4) {
+            if ((nextScene == GameEngine.homeScene.IDENTIFIER && loggedIn) || nextScene == GameEngine.signUpOrLoginScene.IDENTIFIER) {
                 this.dispose();
                 this.isRunning = false;
                 return nextScene;

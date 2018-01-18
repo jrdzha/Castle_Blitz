@@ -26,16 +26,6 @@ public class LightSystem extends EntitySystem{
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             lightComponent.x = tileComponent.tileX * 16;
             lightComponent.y = tileComponent.tileY * 16 + 6;
-
-            /*
-            if(lightComponent.intensity > 1) {
-                lightComponent.r = (float) Math.random();
-                lightComponent.g = (float) Math.random();
-                lightComponent.b = (float) Math.random();
-                lightComponent.intensity = 0f;
-            }
-            lightComponent.intensity += .1f;
-            */
         }
     }
 

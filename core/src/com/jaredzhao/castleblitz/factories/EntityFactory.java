@@ -2,8 +2,12 @@ package com.jaredzhao.castleblitz.factories;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
 import com.jaredzhao.castleblitz.components.audio.SoundEffectComponent;
@@ -87,7 +91,7 @@ public class EntityFactory {
         entity.add(new SelectableComponent());
         entity.add(new VisibleComponent());
         entity.add(new DynamicScreenPositionComponent());
-        //entity.add(new LightComponent());
+
         Object[] sprite = animationFactory.createCharacter(type);
         entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
         entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
@@ -100,14 +104,7 @@ public class EntityFactory {
         entity.getComponent(TileComponent.class).type = type;
         entity.getComponent(CharacterPropertiesComponent.class).team = team;
         float[] decodedColor = TeamColorDecoder.decodeColor(team);
-        /*
-        entity.getComponent(LightComponent.class).x = tileX * 16;
-        entity.getComponent(LightComponent.class).y = tileY * 16;
-        entity.getComponent(LightComponent.class).r = decodedColor[0];
-        entity.getComponent(LightComponent.class).g = decodedColor[1];
-        entity.getComponent(LightComponent.class).b = decodedColor[2];
-        entity.getComponent(LightComponent.class).intensity = 2.0f;
-        */
+
         entity.getComponent(HighlightComponent.class).highlight = createHighlight("team", decodedColor[0], decodedColor[1], decodedColor[2], .95f, tileX, tileY);
         return entity;
     }
@@ -277,6 +274,25 @@ public class EntityFactory {
         entity.getComponent(SelectableComponent.class).name = type;
         entity.getComponent(PositionComponent.class).x = x;
         entity.getComponent(PositionComponent.class).y = y;
+        return entity;
+    }
+
+    public Entity createText(String text, float x, float y, Color color, int size, boolean centered){
+        Entity entity = new Entity();
+        entity.add(new PositionComponent());
+        entity.add(new VisibleComponent());
+        entity.add(new TextComponent());
+
+        entity.getComponent(PositionComponent.class).x = x;
+        entity.getComponent(PositionComponent.class).y = y;
+        entity.getComponent(TextComponent.class).freeTypeFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        entity.getComponent(TextComponent.class).freeTypeFontParameter.color = color;
+        entity.getComponent(TextComponent.class).freeTypeFontParameter.size = size;
+        entity.getComponent(TextComponent.class).freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/slkscrb.ttf"));
+        entity.getComponent(TextComponent.class).bitmapFont = entity.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(entity.getComponent(TextComponent.class).freeTypeFontParameter);
+        entity.getComponent(TextComponent.class).glyphLayout = new GlyphLayout();
+        entity.getComponent(TextComponent.class).setText(text);
+        entity.getComponent(TextComponent.class).centered = centered;
         return entity;
     }
 

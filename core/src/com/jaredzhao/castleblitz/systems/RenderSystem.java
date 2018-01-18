@@ -5,7 +5,6 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.RemoveTagComponent;
@@ -35,10 +34,11 @@ public class RenderSystem extends EntitySystem {
     private float brightness = 0.12f;
     private float contrast = 1.6f;
 
-    private FreeTypeFontGenerator fontGenerator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont debugFont, font35, font25, font15, fontUsernamePassword;
-    private GlyphLayout layout;
+    //private FreeTypeFontGenerator fontGenerator;
+    //private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
+    //private BitmapFont debugFont, font35, font25, font15, fontUsernamePassword;
+    //private GlyphLayout layout;
+    private BitmapFont debugFont;
 
     private Engine ashleyEngine;
 
@@ -48,7 +48,7 @@ public class RenderSystem extends EntitySystem {
     private FogOfWarComponent fogOfWarComponent;
     private Entity fogOfWar;
 
-    private ImmutableArray<Entity> renderables, lights, staticUI;
+    private ImmutableArray<Entity> renderables, textRenderables, lights, staticUI;
 
     private LayerSorter layerSorter;
 
@@ -57,6 +57,7 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<StaticScreenPositionComponent> fixedScreenPositionComponentComponentMapper = ComponentMapper.getFor(StaticScreenPositionComponent.class);
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
+    private ComponentMapper<TextComponent> textComponentComponentMapper = ComponentMapper.getFor(TextComponent.class);
 
     /**
      * System used to render entities in the correct order with the correct shaders
@@ -108,11 +109,7 @@ public class RenderSystem extends EntitySystem {
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
 
         debugFont = new BitmapFont();
-        //font = new BitmapFont();
-        //font.setColor(Color.WHITE);
-
-
-        layout = new GlyphLayout();
+        /*
 
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/slkscrb.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -131,6 +128,7 @@ public class RenderSystem extends EntitySystem {
             fontUsernamePassword = fontGenerator.generateFont(fontParameter);
             layout.setText(fontUsernamePassword, "***************");
         } while(layout.width / Gdx.graphics.getWidth() > 0.7f);
+        */
 
         layerSorter = new LayerSorter(mapHeight);
     }
@@ -142,6 +140,7 @@ public class RenderSystem extends EntitySystem {
      */
     public void addedToEngine(Engine engine){
         renderables = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, DynamicScreenPositionComponent.class).get());
+        textRenderables = engine.getEntitiesFor(Family.all(TextComponent.class, VisibleComponent.class, PositionComponent.class).get());
         staticUI = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, StaticScreenPositionComponent.class).get());
         lights = engine.getEntitiesFor(Family.all(LightComponent.class).get());
     }
@@ -256,7 +255,7 @@ public class RenderSystem extends EntitySystem {
         }
 
         drawEntities(staticUI);
-        drawUI();
+        drawText();
     }
 
     /**
@@ -352,10 +351,26 @@ public class RenderSystem extends EntitySystem {
     /**
      * Render static UI
      */
-    public void drawUI(){
+    public void drawText(){
 
-        spriteBatch.begin(); //Render UI
+        spriteBatch.begin();
 
+        for (Entity entity : textRenderables) {
+            PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
+            TextComponent textComponent = textComponentComponentMapper.get(entity);
+
+            if(textComponent.centered) {
+                textComponent.bitmapFont.draw(spriteBatch, textComponent.glyphLayout,
+                        Gdx.graphics.getWidth() / 2 - textComponent.glyphLayout.width / 2 + positionComponent.x,
+                        Gdx.graphics.getHeight() / 2 - textComponent.glyphLayout.height / 2  + positionComponent.y);
+            } else {
+                textComponent.bitmapFont.draw(spriteBatch, textComponent.glyphLayout,
+                        Gdx.graphics.getWidth() / 2 + positionComponent.x,
+                        Gdx.graphics.getHeight() / 2 + positionComponent.y);
+            }
+        }
+
+        /*
         {
             if (settingsComponent.isPaused) {
                 layout.setText(font25, "PAUSED");
@@ -494,26 +509,26 @@ public class RenderSystem extends EntitySystem {
                 fontUsernamePassword.setColor(Color.WHITE);
             }
 
-            if (settingsComponent.debug) {
+        }
+        */
+        if (settingsComponent.debug) {
 
-                debugFont.draw(spriteBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
-                debugFont.draw(spriteBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);
-                debugFont.draw(spriteBatch, "Y: " + (orthographicCamera.position.y - (orthographicCamera.viewportHeight / 2)), 10, Gdx.graphics.getHeight() - 70);
-                debugFont.draw(spriteBatch, "Lifetime: " + ((int) (GameEngine.lifetime * 10f)) / 10f + " s", 10, Gdx.graphics.getHeight() - 110);
-                debugFont.draw(spriteBatch, "Render Calls: " + (float) ((int) (((float) (shaderBatch.totalRenderCalls)) / 100)) / 10 + " x 1000", 10, Gdx.graphics.getHeight() - 130);
-                debugFont.draw(spriteBatch, "Render Calls / Frame: " + spriteBatch.renderCalls + shaderBatch.renderCalls + fogOfWarBatch.renderCalls, 10, Gdx.graphics.getHeight() - 150);
-                debugFont.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 170);
-                debugFont.draw(spriteBatch, "Entities: " + ashleyEngine.getEntities().size(), 10, Gdx.graphics.getHeight() - 190);
-                debugFont.draw(spriteBatch, "Memory Usage: " + (float) (Gdx.app.getNativeHeap() / 100000) / 10f + "M", 10, Gdx.graphics.getHeight() - 210);
-                MusicComponent musicComponent = ashleyEngine.getEntitiesFor(Family.all(MusicComponent.class).get()).get(0).getComponent(MusicComponent.class);
-                String currentTrack = "";
-                if (musicComponent.currentMusicIndex != -1) {
-                    currentTrack = musicComponent.currentMusicName;
-                    currentTrack = currentTrack.substring(33, currentTrack.length() - 4);
-                }
-                debugFont.draw(spriteBatch, "Music Playing: " + currentTrack, 10, Gdx.graphics.getHeight() - 230);
-
+            debugFont.draw(spriteBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
+            debugFont.draw(spriteBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);
+            debugFont.draw(spriteBatch, "Y: " + (orthographicCamera.position.y - (orthographicCamera.viewportHeight / 2)), 10, Gdx.graphics.getHeight() - 70);
+            debugFont.draw(spriteBatch, "Lifetime: " + ((int) (GameEngine.lifetime * 10f)) / 10f + " s", 10, Gdx.graphics.getHeight() - 110);
+            debugFont.draw(spriteBatch, "Render Calls: " + (float) ((int) (((float) (shaderBatch.totalRenderCalls)) / 100)) / 10 + " x 1000", 10, Gdx.graphics.getHeight() - 130);
+            debugFont.draw(spriteBatch, "Render Calls / Frame: " + spriteBatch.renderCalls + shaderBatch.renderCalls + fogOfWarBatch.renderCalls, 10, Gdx.graphics.getHeight() - 150);
+            debugFont.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 170);
+            debugFont.draw(spriteBatch, "Entities: " + ashleyEngine.getEntities().size(), 10, Gdx.graphics.getHeight() - 190);
+            debugFont.draw(spriteBatch, "Memory Usage: " + (float) (Gdx.app.getNativeHeap() / 100000) / 10f + "M", 10, Gdx.graphics.getHeight() - 210);
+            MusicComponent musicComponent = ashleyEngine.getEntitiesFor(Family.all(MusicComponent.class).get()).get(0).getComponent(MusicComponent.class);
+            String currentTrack = "";
+            if (musicComponent.currentMusicIndex != -1) {
+                currentTrack = musicComponent.currentMusicName;
+                currentTrack = currentTrack.substring(33, currentTrack.length() - 4);
             }
+            debugFont.draw(spriteBatch, "Music Playing: " + currentTrack, 10, Gdx.graphics.getHeight() - 230);
 
         }
 
@@ -526,10 +541,6 @@ public class RenderSystem extends EntitySystem {
     public void dispose() {
         shaderBatch.dispose();
         spriteBatch.dispose();
-        fontGenerator.dispose();
-        font15.dispose();
-        font25.dispose();
-        font35.dispose();
         debugFont.dispose();
     }
 }

@@ -414,7 +414,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
         if(Math.abs(screenX - lastTouchX) / scale > 2 || Math.abs(screenY - lastTouchY) / scale > 2){
             beingDragged = true;
         }
-        if(!settingsComponent.isPaused && GameEngine.currentScene == 1) {
+        if(!settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(camera);
             CameraComponent cameraComponent = cameraComponentComponentMapper.get(camera);
             positionComponent.x -= ((screenX - lastDragX) / cameraComponent.scale);

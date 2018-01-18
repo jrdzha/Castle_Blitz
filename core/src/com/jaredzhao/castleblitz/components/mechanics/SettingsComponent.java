@@ -12,6 +12,7 @@ public class SettingsComponent implements Component {
     public boolean soundOn = true;
     public boolean sfxOn = true;
     public String homeScreen = "homeCastle";
+    public String accountScreen = "signUpOrLogin";
     public String username = "";
     public String password = "";
     public String confirmPassword = "";

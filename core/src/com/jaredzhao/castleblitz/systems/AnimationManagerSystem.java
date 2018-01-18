@@ -10,6 +10,7 @@ import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.mechanics.UIComponent;
+import com.jaredzhao.castleblitz.scenes.SinglePlayerGameScene;
 
 import java.util.ArrayList;
 
@@ -181,7 +182,7 @@ public class AnimationManagerSystem extends EntitySystem{
                         || selectableComponent.name.equals("sound")
                         || selectableComponent.name.equals("sfx")
                         || selectableComponent.name.equals("fastforward")){
-                    if(settingsComponent.isPaused && GameEngine.currentScene == 1){
+                    if(settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER){
                         if(entity.getComponent(VisibleComponent.class) == null) {
                             entity.add(new VisibleComponent());
                         }

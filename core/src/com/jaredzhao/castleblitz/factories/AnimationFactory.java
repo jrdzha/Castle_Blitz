@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture props, tiles, castle, highlight, ui, ui2;
+    private Texture props, tiles, castle, highlight, ui, ui2, homeui;
 
     public AnimationFactory(){ //Load assets
         props = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
@@ -19,6 +19,7 @@ public class AnimationFactory {
         highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
+        homeui = new Texture(Gdx.files.internal("ui/home-ui.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
@@ -100,6 +101,15 @@ public class AnimationFactory {
             alpha = 1f;
         } else if(type.equals("homeRankingOn")){
             sprites.add(spriteRegionForTile(ui2, 9, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeLevelStatus")){
+            sprites.add(spriteRegionForTile(homeui, 0, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeGoldStatus")){
+            sprites.add(spriteRegionForTile(homeui, 2, 0, sizeX, sizeY));
+            alpha = 1f;
+        } else if(type.equals("homeShardStatus")){
+            sprites.add(spriteRegionForTile(homeui, 4, 0, sizeX, sizeY));
             alpha = 1f;
         }
         sprites.get(0).setScale(scale);
