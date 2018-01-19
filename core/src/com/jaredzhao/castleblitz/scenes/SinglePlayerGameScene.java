@@ -81,11 +81,7 @@ public class SinglePlayerGameScene extends Scene {
         map = mapFactory.loadMap(rawMap);
 
         //Create entities
-        if(GameEngine.safeAreaInsets.y != 0) {
-            camera = entityFactory.createCamera(300);
-        } else {
-            camera = entityFactory.createCamera(250);
-        }
+        camera = entityFactory.createCamera(115);
 
         Entity settings = entityFactory.createSettings();
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);

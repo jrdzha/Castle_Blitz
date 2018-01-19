@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -31,15 +30,15 @@ public class EntityFactory {
         this.audioFactory = audioFactory;
     }
 
-    public Entity createCamera(int height){ //Create camera (only called once per game)
+    public Entity createCamera(int width){ //Create camera (only called once per game)
         Entity entity = new Entity();
         entity.add(new CameraComponent());
         entity.add(new PositionComponent());
-        float scale = ((float) Gdx.graphics.getHeight() / height);
-        float width = Gdx.graphics.getWidth() / scale;
+        float scale = ((float) Gdx.graphics.getWidth() / width);
+        float height = Gdx.graphics.getHeight() / scale;
+        entity.getComponent(CameraComponent.class).cameraWidth = width;
         entity.getComponent(CameraComponent.class).cameraHeight = height;
         entity.getComponent(CameraComponent.class).scale = scale;
-        entity.getComponent(CameraComponent.class).cameraWidth = width;
         entity.getComponent(CameraComponent.class).camera = new OrthographicCamera(width, height);
         return entity;
     }

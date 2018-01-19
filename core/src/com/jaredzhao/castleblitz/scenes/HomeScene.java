@@ -93,11 +93,7 @@ public class HomeScene extends Scene {
         characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        if(GameEngine.safeAreaInsets.y != 0) {
-            camera = entityFactory.createCamera(300);
-        } else {
-            camera = entityFactory.createCamera(250);
-        }
+        camera = entityFactory.createCamera(115);
         cameraScale = camera.getComponent(CameraComponent.class).scale;
 
         Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);

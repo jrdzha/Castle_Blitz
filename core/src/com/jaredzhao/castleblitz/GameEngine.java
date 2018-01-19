@@ -38,7 +38,7 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	public GameEngine(){
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("localhost");
+		socketAccessor = new SocketAccessor("jaredzhao.com");
 	}
 
 	/**
@@ -68,6 +68,7 @@ public class GameEngine extends ApplicationAdapter {
 		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 
 		safeAreaInsets = getIOSSafeAreaInsets();
+		//safeAreaInsets = new Vector2(Gdx.graphics.getWidth(), 32);
 	}
 
 	/**
