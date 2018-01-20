@@ -17,7 +17,7 @@ import com.jaredzhao.castleblitz.factories.EntityFactory;
 
 import java.util.HashMap;
 
-public class AudioSystem extends EntitySystem {
+public class AudioEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> soundEffectsSources, musicSources;
     private HashMap soundEffects = new HashMap();
@@ -32,7 +32,7 @@ public class AudioSystem extends EntitySystem {
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<MusicComponent> musicComponentComponentMapper = ComponentMapper.getFor(MusicComponent.class);
 
-    public AudioSystem(EntityFactory entityFactory, AudioFactory audioFactory, Entity camera, Entity settings){
+    public AudioEntitySystem(EntityFactory entityFactory, AudioFactory audioFactory, Entity camera, Entity settings){
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.camera = camera;
         this.entityFactory = entityFactory;
@@ -155,6 +155,7 @@ public class AudioSystem extends EntitySystem {
         }
     }
 
+    @Override
     public void dispose() {
         for(Entity entity : musicSources){
             MusicComponent musicComponent = musicComponentComponentMapper.get(entity);

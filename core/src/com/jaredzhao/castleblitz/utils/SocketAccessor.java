@@ -17,7 +17,6 @@ public class SocketAccessor {
     private Socket socket;
     public ArrayList<String> outputQueue, inputQueue;
     private int lastPing;
-    private boolean isConnected = false;
     public String host;
     BufferedReader bufferedReader;
 
@@ -35,7 +34,6 @@ public class SocketAccessor {
         inputQueue = new ArrayList<String>();
 
         connectToServer();
-        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     /**
@@ -43,13 +41,21 @@ public class SocketAccessor {
      */
     public void connectToServer(){
         try {
+            if(socket != null){
+                System.out.println("DISPOSING SOCKET");
+                socket.dispose();
+            }
             System.out.println("CONNECTING");
             socket = Gdx.net.newClientSocket(Protocol.TCP, host, 4000, new SocketHints());
             System.out.println("CONNECTION SUCCESSFUL");
-            isConnected = true;
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (GdxRuntimeException e) {
             System.out.println("FAILED TO CONNECT");
-            isConnected = false;
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             connectToServer();
         }
     }
@@ -70,11 +76,10 @@ public class SocketAccessor {
             try {
                 socket.getOutputStream().write((outputQueue.get(0) + "\n").getBytes());
                 socket.getOutputStream().flush();
-                System.out.println("OUT " + outputQueue.get(0));
+                System.out.println(socket.getRemoteAddress() + " - OUT  - " + outputQueue.get(0));
                 outputQueue.remove(0);
             } catch (IOException e) {
                 System.out.println("DISCONNECTED");
-                isConnected = false;
                 connectToServer();
             }
         }
@@ -83,8 +88,14 @@ public class SocketAccessor {
         try {
             while (socket != null && bufferedReader.ready()) {
                 String input = bufferedReader.readLine();
-                inputQueue.add(input);
-                System.out.println("IN  " + input);
+                if(input.equals("PING.OK")){
+                    GameEngine.loggedInToServer = true;
+                } else if(input.equals("PING.ANON")){
+                    GameEngine.loggedInToServer = false;
+                } else {
+                    inputQueue.add(input);
+                }
+                System.out.println(socket.getRemoteAddress() + " - IN   - " + input);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 public class HomeScene extends Scene {
 
-    private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
+    private Engine ashleyEngine; //Engine controlling the Entity-Component DisposableEntitySystem (ECS)
 
     private EntityFactory entityFactory; //Entity factory used for creating all entities
     private AudioFactory audioFactory; //Audio factory for loading audio files
@@ -47,16 +47,7 @@ public class HomeScene extends Scene {
 
     private SettingsComponent settingsComponent;
 
-    private CameraSystem cameraSystem; //System for moving the camera
-    private RenderSystem renderSystem; //System for rendering to the screen
-    private MapSystem mapSystem; //System to create screen positions for new map entities
-    private InputSystem inputSystem; //System for user input
-    private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
-    private LightSystem lightSystem; //System to retrieve light components from new entities to add to ashleyEngine
-    private AudioSystem audioSystem; //System for dynamic audio
-    private HighlightSystem highlightSystem; //System for handling highlight updates
-    private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
-    private BattleMechanicsSystem battleMechanicsSystem;
+    private HashMap<String, DisposableEntitySystem> systems = new HashMap<String, DisposableEntitySystem>();
 
     private PreferencesAccessor preferencesAccessor;
     private SocketAccessor socketAccessor;
@@ -73,7 +64,7 @@ public class HomeScene extends Scene {
 
     @Override
     public void init() {
-        socketAccessor.outputQueue.add("request.stats");
+        socketAccessor.outputQueue.add("REQUEST.STATS");
 
         //Initialize ashleyEngine
         ashleyEngine = new Engine();
@@ -144,31 +135,23 @@ public class HomeScene extends Scene {
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
         //Initialize systems
-        cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight, 1.6f, .12f);
-        mapSystem = new MapSystem(characterSelectionServer, map, fogOfWar, battleMechanics);
-        inputSystem = new InputSystem(ashleyEngine, characterSelectionServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
-        resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        lightSystem = new LightSystem();
-        audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine);
-        animationManagerSystem = new AnimationManagerSystem(settings);
-        battleMechanicsSystem = new BattleMechanicsSystem(map, characterSelectionServer, battleMechanics);
-
-        renderSystem.renderEntities = false;
-        renderSystem.renderFogOfWar = false;
+        systems.put("CameraEntitySystem", new CameraEntitySystem(map));
+        systems.put("RenderEntitySystem", new RenderEntitySystem(ashleyEngine, camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
+        systems.put("MapEntitySystem", new MapEntitySystem(characterSelectionServer, map, fogOfWar, battleMechanics));
+        systems.put("InputEntitySystem", new InputEntitySystem(ashleyEngine, characterSelectionServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
+        systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem(ashleyEngine));
+        systems.put("LightEntitySystem", new LightEntitySystem());
+        systems.put("AudioEntitySystem", new AudioEntitySystem(entityFactory, audioFactory, camera, settings));
+        systems.put("HighlightEntitySystem", new HighlightEntitySystem(ashleyEngine));
+        systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
+        systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
+        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderGaussianBlur = false;
+        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderEntities = false;
 
         //Add systems to ashleyEngine
-        ashleyEngine.addSystem(mapSystem);
-        ashleyEngine.addSystem(highlightSystem);
-        ashleyEngine.addSystem(inputSystem);
-        ashleyEngine.addSystem(cameraSystem);
-        ashleyEngine.addSystem(lightSystem);
-        ashleyEngine.addSystem(audioSystem);
-        ashleyEngine.addSystem(renderSystem);
-        ashleyEngine.addSystem(resourceManagementSystem);
-        ashleyEngine.addSystem(animationManagerSystem);
-        ashleyEngine.addSystem(battleMechanicsSystem);
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            ashleyEngine.addSystem(entry.getValue());
+        }
 
         while(settingsComponent.id.equals("") ||
                 settingsComponent.rank.equals("") ||
@@ -181,7 +164,7 @@ public class HomeScene extends Scene {
             if(socketAccessor.inputQueue.size() > 0) {
                 String[] input = socketAccessor.inputQueue.get(0).split("\\.");
                 socketAccessor.inputQueue.remove(0);
-                if (input[0].equals("id")) {
+                if (input[0].equals("ID")) {
                     settingsComponent.id = input[1];
                     idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
                     idText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
@@ -189,28 +172,28 @@ public class HomeScene extends Scene {
                     preIdText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(preIdText);
                     ashleyEngine.addEntity(idText);
-                } else if (input[0].equals("rank")) {
+                } else if (input[0].equals("RANK")) {
                     settingsComponent.rank = input[1];
-                } else if (input[0].equals("level")) {
+                } else if (input[0].equals("LEVEL")) {
                     settingsComponent.level = input[1];
                     levelText = entityFactory.createText(input[1], -47.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), true);
                     ashleyEngine.addEntity(levelText);
-                } else if (input[0].equals("xp")) {
+                } else if (input[0].equals("XP")) {
                     settingsComponent.xp = input[1];
                     xpText = entityFactory.createText(input[1], -21.25f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
-                } else if (input[0].equals("shards")) {
+                } else if (input[0].equals("SHARDS")) {
                     settingsComponent.shards = input[1];
                     xpText = entityFactory.createText(input[1], 50.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
-                } else if (input[0].equals("gold")) {
+                } else if (input[0].equals("GOLD")) {
                     settingsComponent.gold = input[1];
                     xpText = entityFactory.createText(input[1], 14.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
-                } else if (input[0].equals("unlocked-characters")) {
+                } else if (input[0].equals("UNLOCKED-CHARACTERS")) {
                     for(int i = 1; i < input.length; i++){
                         settingsComponent.unlockedCharacters.add(input[i]);
                     }
@@ -228,8 +211,8 @@ public class HomeScene extends Scene {
 
         headingText.getComponent(TextComponent.class).setText(settingsComponent.homeScreen.substring(4));
 
-        renderSystem.renderEntities = settingsComponent.homeScreen.equals("homeArmory");
-        settingsComponent.sfxOn = renderSystem.renderEntities;
+        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderEntities = settingsComponent.homeScreen.equals("homeArmory");
+        settingsComponent.sfxOn = settingsComponent.homeScreen.equals("homeArmory");
 
         if(settingsComponent.battle){
             this.dispose();
@@ -241,16 +224,10 @@ public class HomeScene extends Scene {
 
     @Override
     public void dispose() {
-        mapSystem.dispose();
-        highlightSystem.dispose();
-        inputSystem.dispose();
-        cameraSystem.dispose();
-        lightSystem.dispose();
-        audioSystem.dispose();
-        renderSystem.dispose();
-        animationManagerSystem.dispose();
-        battleMechanicsSystem.dispose();
-        resourceManagementSystem.disposeAll();
-        resourceManagementSystem.dispose();
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if(entry.getValue() != null) {
+                entry.getValue().dispose();
+            }
+        }
     }
 }

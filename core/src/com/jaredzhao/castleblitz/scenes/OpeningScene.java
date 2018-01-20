@@ -58,7 +58,7 @@ public class OpeningScene extends Scene {
             nextScene = GameEngine.signUpOrLoginScene.IDENTIFIER;
         } else {
             //login
-            socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
+            socketAccessor.outputQueue.add("LOGIN." + userData[0] + "." + userData[1]);
             nextScene = GameEngine.homeScene.IDENTIFIER;
         }
     }
@@ -92,14 +92,14 @@ public class OpeningScene extends Scene {
         batch.end();
 
         if(socketAccessor.inputQueue.size() != 0){
-            if(socketAccessor.inputQueue.get(0).equals("login.successful")) {
+            if(socketAccessor.inputQueue.get(0).equals("LOGIN.OK")) {
                 loggedIn = true;
                 socketAccessor.inputQueue.remove(0);
             }
         }
 
         if(!loggedIn && timesRendered % 600 == 599){
-            socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
+            socketAccessor.outputQueue.add("LOGIN." + userData[0] + "." + userData[1]);
         }
 
         timesRendered++;

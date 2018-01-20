@@ -3,7 +3,6 @@ package com.jaredzhao.castleblitz.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.jaredzhao.castleblitz.GameEngine;
@@ -21,7 +20,7 @@ import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class InputSystem extends EntitySystem implements InputProcessor {
+public class InputEntitySystem extends DisposableEntitySystem implements InputProcessor {
 
     private ImmutableArray<Entity> selectables;
 
@@ -48,7 +47,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
 
     private LayerSorter layerSorter;
 
-    public InputSystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
+    public InputEntitySystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
         Gdx.input.setInputProcessor(this);
         this.gameServer = gameServer;
         this.preferencesAccessor = preferencesAccessor;
@@ -436,6 +435,7 @@ public class InputSystem extends EntitySystem implements InputProcessor {
         return false;
     }
 
+    @Override
     public void dispose() {
 
     }

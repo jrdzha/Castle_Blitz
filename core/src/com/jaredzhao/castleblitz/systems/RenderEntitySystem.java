@@ -16,7 +16,7 @@ import com.jaredzhao.castleblitz.components.player.CameraComponent;
 import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.ShaderBatch;
 
-public class RenderSystem extends EntitySystem {
+public class RenderEntitySystem extends DisposableEntitySystem {
 
     private SpriteBatch spriteBatch;
     private ShaderBatch shaderBatch, fogOfWarBatch, blurBatch;
@@ -34,17 +34,12 @@ public class RenderSystem extends EntitySystem {
     private float brightness = 0.12f;
     private float contrast = 1.6f;
 
-    //private FreeTypeFontGenerator fontGenerator;
-    //private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    //private BitmapFont debugFont, font35, font25, font15, fontUsernamePassword;
-    //private GlyphLayout layout;
     private BitmapFont debugFont;
 
     private Engine ashleyEngine;
 
     private SettingsComponent settingsComponent;
     private CameraComponent cameraComponent;
-    private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
     private FogOfWarComponent fogOfWarComponent;
     private Entity fogOfWar;
 
@@ -60,7 +55,7 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<TextComponent> textComponentComponentMapper = ComponentMapper.getFor(TextComponent.class);
 
     /**
-     * System used to render entities in the correct order with the correct shaders
+     * DisposableEntitySystem used to render entities in the correct order with the correct shaders
      *
      * @param ashleyEngine      AshleyEngine
      * @param camera            Orthographic Camera
@@ -68,12 +63,11 @@ public class RenderSystem extends EntitySystem {
      * @param battleMechanics   Entity used to store game states
      * @param fogOfWar          Entity used to store fog of war data
      */
-    public RenderSystem(Engine ashleyEngine, Entity camera, Entity settings, Entity battleMechanics, Entity fogOfWar, int mapHeight, float contrast, float brightness){
+    public RenderEntitySystem(Engine ashleyEngine, Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness){
 
         this.ashleyEngine = ashleyEngine;
         this.cameraComponent = camera.getComponent(CameraComponent.class);
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
-        this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
         this.fogOfWar = fogOfWar;
 
@@ -109,26 +103,6 @@ public class RenderSystem extends EntitySystem {
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
 
         debugFont = new BitmapFont();
-        /*
-
-        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/slkscrb.ttf"));
-        fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-        fontParameter.color = Color.WHITE;
-
-        fontParameter.size = Gdx.graphics.getHeight() / 15;
-        font35 = fontGenerator.generateFont(fontParameter);
-        fontParameter.size = Gdx.graphics.getHeight() / 25;
-        font25 = fontGenerator.generateFont(fontParameter);
-        fontParameter.size = Gdx.graphics.getHeight() / 35;
-        font15 = fontGenerator.generateFont(fontParameter);
-        fontParameter.size = 50;
-        do {
-            fontParameter.size -= 1;
-            fontUsernamePassword = fontGenerator.generateFont(fontParameter);
-            layout.setText(fontUsernamePassword, "***************");
-        } while(layout.width / Gdx.graphics.getWidth() > 0.7f);
-        */
 
         layerSorter = new LayerSorter(mapHeight);
     }
@@ -370,147 +344,6 @@ public class RenderSystem extends EntitySystem {
             }
         }
 
-        /*
-        {
-            if (settingsComponent.isPaused) {
-                layout.setText(font25, "PAUSED");
-                font25.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 3 / 4 + 1.5f * layout.height);
-            } else if (GameEngine.currentScene == 1) {
-                if (battleMechanicsStatesComponent.isMyTurn) {
-                    layout.setText(font15, "YOUR TURN");
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
-                } else {
-                    layout.setText(font15, "OPPONENT'S TURN");
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 13 / 16 + 1.5f * layout.height);
-                }
-            } else if (GameEngine.currentScene == 3) {
-                if (settingsComponent.homeScreen.equals("homeShop")) {
-                    layout.setText(font35, "Shop");
-                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homeArmory")) {
-                    layout.setText(font35, "Armory");
-                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homeCastle")) {
-                    layout.setText(font15, "Rank " + settingsComponent.rank);
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 24 / 32 + 1.5f * layout.height);
-                    layout.setText(font15, "Level " + settingsComponent.level);
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 23 / 32 + 1.5f * layout.height);
-                    layout.setText(font15, "XP " + settingsComponent.xp);
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 22 / 32 + 1.5f * layout.height);
-                    layout.setText(font15, "Shards " + settingsComponent.shards);
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 21 / 32 + 1.5f * layout.height);
-                    layout.setText(font15, "Gold " + settingsComponent.gold);
-                    font15.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 20 / 32 + 1.5f * layout.height);
-
-                    layout.setText(font35, settingsComponent.username);
-                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homePotions")) {
-                    layout.setText(font35, "Potions");
-                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                } else if (settingsComponent.homeScreen.equals("homeRanking")) {
-                    layout.setText(font35, "Ranking");
-                    font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-                }
-            } else if (GameEngine.currentScene == 2) {
-                layout.setText(font35, "Sign Up");
-                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-
-                if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
-                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
-                    layout.setText(fontUsernamePassword, "Username");
-                } else {
-                    String cursor = "";
-                    if(settingsComponent.editUsername && (int)GameEngine.lifetime % 2 == 0){
-                        cursor = "|";
-                    }
-
-                    layout.setText(fontUsernamePassword, settingsComponent.username + cursor);
-                }
-                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-
-                if(settingsComponent.password.equals("") && !settingsComponent.editPassword){
-                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
-                    layout.setText(fontUsernamePassword, "Password");
-                } else {
-                    String cursor = "";
-                    if(settingsComponent.editPassword && (int)GameEngine.lifetime % 2 == 0){
-                        cursor = "|";
-                    }
-
-                    String placeHolder = "";
-                    for(int i = 0; i < settingsComponent.password.length(); i++){
-                        placeHolder = placeHolder + "*";
-                    }
-                    layout.setText(fontUsernamePassword, placeHolder + cursor);
-                }
-                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-
-                if(settingsComponent.confirmPassword.equals("") && !settingsComponent.editConfirmPassword){
-                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
-                    layout.setText(fontUsernamePassword, "Confirm Password");
-                } else {
-                    String cursor = "";
-                    if(settingsComponent.editConfirmPassword && (int)GameEngine.lifetime % 2 == 0){
-                        cursor = "|";
-                    }
-
-                    String placeHolder = "";
-                    for(int i = 0; i < settingsComponent.confirmPassword.length(); i++){
-                        placeHolder = placeHolder + "*";
-                    }
-                    layout.setText(fontUsernamePassword, placeHolder + cursor);
-                }
-                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-
-                layout.setText(fontUsernamePassword, settingsComponent.signUpLoginError);
-                fontUsernamePassword.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 15 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-            } else if (GameEngine.currentScene == 5) {
-                layout.setText(font35, "Login");
-                font35.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() * 7 / 8 + 1.5f * layout.height);
-
-                if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
-                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
-                    layout.setText(fontUsernamePassword, "Username");
-                } else {
-                    String cursor = "";
-                    if(settingsComponent.editUsername && (int)GameEngine.lifetime % 2 == 0){
-                        cursor = "|";
-                    }
-
-                    layout.setText(fontUsernamePassword, settingsComponent.username + cursor);
-                }
-                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 75 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-
-                if(settingsComponent.password.equals("") && !settingsComponent.editPassword){
-                    fontUsernamePassword.setColor(1, 1, 1, 0.5f);
-                    layout.setText(fontUsernamePassword, "Password");
-                } else {
-                    String cursor = "";
-                    if(settingsComponent.editPassword && (int)GameEngine.lifetime % 2 == 0){
-                        cursor = "|";
-                    }
-
-                    String placeHolder = "";
-                    for(int i = 0; i < settingsComponent.password.length(); i++){
-                        placeHolder = placeHolder + "*";
-                    }
-                    layout.setText(fontUsernamePassword, placeHolder + cursor);
-                }
-                fontUsernamePassword.draw(spriteBatch, layout, 32 * cameraComponent.scale, Gdx.graphics.getHeight() / 2 + 55 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-
-                layout.setText(fontUsernamePassword, settingsComponent.signUpLoginError);
-                fontUsernamePassword.draw(spriteBatch, layout, Gdx.graphics.getWidth() / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2 + 35 * cameraComponent.scale);
-                fontUsernamePassword.setColor(Color.WHITE);
-            }
-
-        }
-        */
         if (settingsComponent.debug) {
 
             debugFont.draw(spriteBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
@@ -538,6 +371,7 @@ public class RenderSystem extends EntitySystem {
     /**
      * Dispose the system
      */
+    @Override
     public void dispose() {
         shaderBatch.dispose();
         spriteBatch.dispose();

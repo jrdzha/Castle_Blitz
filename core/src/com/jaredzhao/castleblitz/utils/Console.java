@@ -3,7 +3,7 @@ package com.jaredzhao.castleblitz.utils;
 import java.util.ArrayList;
 
 /**
- * System-wide console for exchanging commands between various systems and servers
+ * DisposableEntitySystem-wide console for exchanging commands between various systems and servers
  */
 public class Console {
 

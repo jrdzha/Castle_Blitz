@@ -3,16 +3,10 @@ package com.jaredzhao.castleblitz.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.jaredzhao.castleblitz.components.graphics.AddHighlightComponent;
-import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
-import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
-import com.jaredzhao.castleblitz.components.map.MapComponent;
-import com.jaredzhao.castleblitz.components.mechanics.BattleMechanicsStatesComponent;
-import com.jaredzhao.castleblitz.components.mechanics.CharacterPropertiesComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
-import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 
-public class HighlightSystem extends EntitySystem{
+public class HighlightEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> newHighlights, highlights;
 
@@ -21,7 +15,7 @@ public class HighlightSystem extends EntitySystem{
 
     private Engine ashleyEngine;
 
-    public HighlightSystem(Engine ashleyEngine){
+    public HighlightEntitySystem(Engine ashleyEngine){
         this.ashleyEngine = ashleyEngine;
     }
 
@@ -45,6 +39,7 @@ public class HighlightSystem extends EntitySystem{
         }
     }
 
+    @Override
     public void dispose() {
 
     }

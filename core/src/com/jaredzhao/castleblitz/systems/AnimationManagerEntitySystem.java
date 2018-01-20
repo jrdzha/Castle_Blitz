@@ -2,19 +2,16 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.components.mechanics.SettingsComponent;
 import com.jaredzhao.castleblitz.components.mechanics.UIComponent;
-import com.jaredzhao.castleblitz.scenes.SinglePlayerGameScene;
 
 import java.util.ArrayList;
 
-public class AnimationManagerSystem extends EntitySystem{
+public class AnimationManagerEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> selectableHighlights, selectableUI, pointLights;
 
@@ -26,7 +23,7 @@ public class AnimationManagerSystem extends EntitySystem{
 
     private SettingsComponent settingsComponent;
 
-    public AnimationManagerSystem(Entity settings){
+    public AnimationManagerEntitySystem(Entity settings){
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
     }
 
@@ -194,6 +191,7 @@ public class AnimationManagerSystem extends EntitySystem{
         }
     }
 
+    @Override
     public void dispose() {
 
     }

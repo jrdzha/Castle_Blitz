@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.TextComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
@@ -18,7 +17,6 @@ import com.jaredzhao.castleblitz.factories.AudioFactory;
 import com.jaredzhao.castleblitz.factories.EntityFactory;
 import com.jaredzhao.castleblitz.factories.MapFactory;
 import com.jaredzhao.castleblitz.servers.CharacterSelectionServer;
-import com.jaredzhao.castleblitz.servers.EmptyServer;
 import com.jaredzhao.castleblitz.servers.GameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
@@ -27,10 +25,11 @@ import com.jaredzhao.castleblitz.utils.SocketAccessor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class SignUpOrLoginScene extends Scene {
 
-    private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
+    private Engine ashleyEngine; //Engine controlling the Entity-Component DisposableEntitySystem (ECS)
 
     private float cameraScale;
 
@@ -54,20 +53,9 @@ public class SignUpOrLoginScene extends Scene {
     private Entity confirmPasswordText;
     private Entity signUpLoginErrorText;
 
-    private boolean loggedIn = false;
-
     private SettingsComponent settingsComponent;
 
-    private CameraSystem cameraSystem; //System for moving the camera
-    private RenderSystem renderSystem; //System for rendering to the screen
-    private MapSystem mapSystem; //System to create screen positions for new map entities
-    private InputSystem inputSystem; //System for user input
-    private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
-    private LightSystem lightSystem; //System to retrieve light components from new entities to add to ashleyEngine
-    private AudioSystem audioSystem; //System for dynamic audio
-    private HighlightSystem highlightSystem; //System for handling highlight updates
-    private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
-    private BattleMechanicsSystem battleMechanicsSystem;
+    private HashMap<String, DisposableEntitySystem> systems = new HashMap<String, DisposableEntitySystem>();
 
     private PreferencesAccessor preferencesAccessor;
     private SocketAccessor socketAccessor;
@@ -129,7 +117,6 @@ public class SignUpOrLoginScene extends Scene {
         Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
         while(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.65f){
             textScale++;
-            System.out.println(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() + "    " + textScale);
             testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
             testText.getComponent(TextComponent.class).bitmapFont = testText.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(testText.getComponent(TextComponent.class).freeTypeFontParameter);
             testText.getComponent(TextComponent.class).glyphLayout.setText(testText.getComponent(TextComponent.class).bitmapFont, "***************");
@@ -169,37 +156,29 @@ public class SignUpOrLoginScene extends Scene {
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
-        //Initialize systems
-        cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight, 1.6f, .12f);
-        mapSystem = new MapSystem(characterSelectionServer, map, fogOfWar, battleMechanics);
-        inputSystem = new InputSystem(ashleyEngine, characterSelectionServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
-        resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        lightSystem = new LightSystem();
-        audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine);
-        animationManagerSystem = new AnimationManagerSystem(settings);
-        battleMechanicsSystem = new BattleMechanicsSystem(map, characterSelectionServer, battleMechanics);
-
-        renderSystem.renderGaussianBlur = true;
-
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 
+        //Initialize systems
+        systems.put("CameraEntitySystem", new CameraEntitySystem(map));
+        systems.put("RenderEntitySystem", new RenderEntitySystem(ashleyEngine, camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
+        systems.put("MapEntitySystem", new MapEntitySystem(characterSelectionServer, map, fogOfWar, battleMechanics));
+        systems.put("InputEntitySystem", new InputEntitySystem(ashleyEngine, characterSelectionServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
+        systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem(ashleyEngine));
+        systems.put("LightEntitySystem", new LightEntitySystem());
+        systems.put("AudioEntitySystem", new AudioEntitySystem(entityFactory, audioFactory, camera, settings));
+        systems.put("HighlightEntitySystem", new HighlightEntitySystem(ashleyEngine));
+        systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
+        systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
+        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderGaussianBlur = true;
+
         //Add systems to ashleyEngine
-        ashleyEngine.addSystem(mapSystem);
-        ashleyEngine.addSystem(highlightSystem);
-        ashleyEngine.addSystem(inputSystem);
-        ashleyEngine.addSystem(cameraSystem);
-        ashleyEngine.addSystem(lightSystem);
-        ashleyEngine.addSystem(audioSystem);
-        ashleyEngine.addSystem(renderSystem);
-        ashleyEngine.addSystem(resourceManagementSystem);
-        ashleyEngine.addSystem(animationManagerSystem);
-        ashleyEngine.addSystem(battleMechanicsSystem);
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            ashleyEngine.addSystem(entry.getValue());
+        }
         System.gc();
     }
 
@@ -257,20 +236,19 @@ public class SignUpOrLoginScene extends Scene {
         }
 
         if (socketAccessor.inputQueue.size() != 0) {
-            if (socketAccessor.inputQueue.get(0).equals("register.successful")) {
+            if (socketAccessor.inputQueue.get(0).equals("REGISTER.OK")) {
                 String[] userData = preferencesAccessor.loadUserData();
-                socketAccessor.outputQueue.add("login." + userData[0] + "." + userData[1]);
+                socketAccessor.outputQueue.add("LOGIN." + userData[0] + "." + userData[1]);
                 socketAccessor.inputQueue.remove(0);
-            } else if (socketAccessor.inputQueue.get(0).equals("login.successful")) {
-                loggedIn = true;
+            } else if (socketAccessor.inputQueue.get(0).equals("LOGIN.OK")) {
+                GameEngine.loggedInToServer = true;
                 socketAccessor.inputQueue.remove(0);
-            } else if (socketAccessor.inputQueue.get(0).equals("username.exists")) {
+            } else if (socketAccessor.inputQueue.get(0).equals("USERNAME.EXISTS")) {
                 settingsComponent.signUpLoginError = "Username Exists Already";
                 socketAccessor.inputQueue.remove(0);
-            } else if (socketAccessor.inputQueue.get(0).equals("login.successful")) {
-                loggedIn = true;
+            } else if (socketAccessor.inputQueue.get(0).equals("LOGIN.OK")) {
                 socketAccessor.inputQueue.remove(0);
-            } else if (socketAccessor.inputQueue.get(0).equals("login.fail")) {
+            } else if (socketAccessor.inputQueue.get(0).equals("LOGIN.FAIL")) {
                 settingsComponent.signUpLoginError = "Incorrect Login";
                 socketAccessor.inputQueue.remove(0);
             }
@@ -332,9 +310,9 @@ public class SignUpOrLoginScene extends Scene {
                                 for (Byte b : digest.digest(settingsComponent.password.getBytes())) {
                                     hashedPasswordBuffer.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
                                 }
-                                preferencesAccessor.putString("username", settingsComponent.username.toUpperCase());
-                                preferencesAccessor.putString("password", hashedPasswordBuffer.toString());
-                                socketAccessor.outputQueue.add("register." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
+                                preferencesAccessor.putString("USERNAME", settingsComponent.username.toUpperCase());
+                                preferencesAccessor.putString("PASSWORD", hashedPasswordBuffer.toString());
+                                socketAccessor.outputQueue.add("REGISTER." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
                             } else {
                                 settingsComponent.signUpLoginError = "Passwords don't match";
                             }
@@ -384,7 +362,7 @@ public class SignUpOrLoginScene extends Scene {
                         }
                         preferencesAccessor.putString("username", settingsComponent.username.toUpperCase());
                         preferencesAccessor.putString("password", hashedPasswordBuffer.toString());
-                        socketAccessor.outputQueue.add("login." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
+                        socketAccessor.outputQueue.add("LOGIN." + settingsComponent.username.toUpperCase() + "." + hashedPasswordBuffer.toString());
                         settingsComponent.login = false;
                     } else {
                         settingsComponent.signUpLoginError = "Enter password";
@@ -403,7 +381,7 @@ public class SignUpOrLoginScene extends Scene {
 
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        if(loggedIn){
+        if(GameEngine.loggedInToServer){
             this.dispose();
             this.isRunning = false;
             return GameEngine.homeScene.IDENTIFIER;
@@ -431,16 +409,10 @@ public class SignUpOrLoginScene extends Scene {
 
     @Override
     public void dispose() {
-        mapSystem.dispose();
-        highlightSystem.dispose();
-        inputSystem.dispose();
-        cameraSystem.dispose();
-        lightSystem.dispose();
-        audioSystem.dispose();
-        renderSystem.dispose();
-        animationManagerSystem.dispose();
-        battleMechanicsSystem.dispose();
-        resourceManagementSystem.disposeAll();
-        resourceManagementSystem.dispose();
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if(entry.getValue() != null) {
+                entry.getValue().dispose();
+            }
+        }
     }
 }

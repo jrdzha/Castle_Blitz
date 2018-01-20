@@ -53,7 +53,7 @@ public class FacebookAccessor {
             @Override
             public void onSuccess(SignInResult result) {
                 if(gdxFacebook.getAccessToken().getToken() != null) {
-                    System.out.println("POST SIGN IN: " + gdxFacebook.getAccessToken().getToken());
+                    DisposableEntitySystem.out.println("POST SIGN IN: " + gdxFacebook.getAccessToken().getToken());
                 }
             }
 

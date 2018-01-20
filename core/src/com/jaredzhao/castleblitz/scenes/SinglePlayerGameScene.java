@@ -21,9 +21,12 @@ import com.jaredzhao.castleblitz.servers.SinglePlayerGameServer;
 import com.jaredzhao.castleblitz.systems.*;
 import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
+import java.lang.System;
+import java.util.HashMap;
+
 public class SinglePlayerGameScene extends Scene {
 
-    private Engine ashleyEngine; //Engine controlling the Entity-Component System (ECS)
+    private Engine ashleyEngine; //Engine controlling the Entity-Component DisposableEntitySystem (ECS)
 
     private PreferencesAccessor preferencesAccessor;
 
@@ -39,16 +42,7 @@ public class SinglePlayerGameScene extends Scene {
     private SettingsComponent settingsComponent;
     private String[][][] rawMap;
 
-    private CameraSystem cameraSystem; //System for moving the camera
-    private RenderSystem renderSystem; //System for rendering to the screen
-    private MapSystem mapSystem; //System to create screen positions for new map entities
-    private InputSystem inputSystem; //System for user input
-    private ResourceManagementSystem resourceManagementSystem; //Garbage-Collection System
-    private LightSystem lightSystem; //System to retrieve light components from new entities to add to ashleyEngine
-    private AudioSystem audioSystem; //System for dynamic audio
-    private HighlightSystem highlightSystem; //System for handling highlight updates
-    private AnimationManagerSystem animationManagerSystem; //System for changing between different animation tracks
-    private BattleMechanicsSystem battleMechanicsSystem;
+    private HashMap<String, DisposableEntitySystem> systems = new HashMap<String, DisposableEntitySystem>();
 
     public static String team;
 
@@ -127,28 +121,21 @@ public class SinglePlayerGameScene extends Scene {
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
         //Initialize systems
-        cameraSystem = new CameraSystem(map);
-        renderSystem = new RenderSystem(ashleyEngine, camera, settings, battleMechanics, fogOfWar, mapHeight, 1.6f, .12f);
-        mapSystem = new MapSystem(singlePlayerGameServer, map, fogOfWar, battleMechanics);
-        inputSystem = new InputSystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight);
-        resourceManagementSystem = new ResourceManagementSystem(ashleyEngine);
-        lightSystem = new LightSystem();
-        audioSystem = new AudioSystem(entityFactory, audioFactory, camera, settings);
-        highlightSystem = new HighlightSystem(ashleyEngine);
-        animationManagerSystem = new AnimationManagerSystem(settings);
-        battleMechanicsSystem = new BattleMechanicsSystem(map, singlePlayerGameServer, battleMechanics);
+        systems.put("CameraEntitySystem", new CameraEntitySystem(map));
+        systems.put("RenderEntitySystem", new RenderEntitySystem(ashleyEngine, camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
+        systems.put("MapEntitySystem", new MapEntitySystem(singlePlayerGameServer, map, fogOfWar, battleMechanics));
+        systems.put("InputEntitySystem", new InputEntitySystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
+        systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem(ashleyEngine));
+        systems.put("LightEntitySystem", new LightEntitySystem());
+        systems.put("AudioEntitySystem", new AudioEntitySystem(entityFactory, audioFactory, camera, settings));
+        systems.put("HighlightEntitySystem", new HighlightEntitySystem(ashleyEngine));
+        systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
+        systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, singlePlayerGameServer, battleMechanics));
 
         //Add systems to ashleyEngine
-        ashleyEngine.addSystem(mapSystem);
-        ashleyEngine.addSystem(highlightSystem);
-        ashleyEngine.addSystem(inputSystem);
-        ashleyEngine.addSystem(cameraSystem);
-        ashleyEngine.addSystem(lightSystem);
-        ashleyEngine.addSystem(audioSystem);
-        ashleyEngine.addSystem(renderSystem);
-        ashleyEngine.addSystem(resourceManagementSystem);
-        ashleyEngine.addSystem(animationManagerSystem);
-        ashleyEngine.addSystem(battleMechanicsSystem);
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            ashleyEngine.addSystem(entry.getValue());
+        }
         System.gc();
     }
 
@@ -178,16 +165,10 @@ public class SinglePlayerGameScene extends Scene {
 
     @Override
     public void dispose() {
-        mapSystem.dispose();
-        highlightSystem.dispose();
-        inputSystem.dispose();
-        cameraSystem.dispose();
-        lightSystem.dispose();
-        audioSystem.dispose();
-        renderSystem.dispose();
-        animationManagerSystem.dispose();
-        battleMechanicsSystem.dispose();
-        resourceManagementSystem.disposeAll();
-        resourceManagementSystem.dispose();
+        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if(entry.getValue() != null) {
+                entry.getValue().dispose();
+            }
+        }
     }
 }

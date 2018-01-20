@@ -17,7 +17,7 @@ import com.jaredzhao.castleblitz.utils.Console;
 
 import java.util.ArrayList;
 
-public class MapSystem extends EntitySystem {
+public class MapEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> updateTileEntities, selectableCharacters, selectableTiles, visibleCharacters;
 
@@ -33,13 +33,13 @@ public class MapSystem extends EntitySystem {
     private GameServer gameServer;
 
     /**
-     * Initialize MapSystem
+     * Initialize MapEntitySystem
      *
      * @param gameServer    Server used to provide gameplay data
      * @param map           Map to be used in gameplay
      * @param fogOfWar      Entity used to store fog of war data
      */
-    public MapSystem(GameServer gameServer, Entity map, Entity fogOfWar, Entity battleMechanics){
+    public MapEntitySystem(GameServer gameServer, Entity map, Entity fogOfWar, Entity battleMechanics){
         this.gameServer = gameServer;
         this.map = map;
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
@@ -293,6 +293,7 @@ public class MapSystem extends EntitySystem {
         return filteredRange;
     }
 
+    @Override
     public void dispose() {
 
     }

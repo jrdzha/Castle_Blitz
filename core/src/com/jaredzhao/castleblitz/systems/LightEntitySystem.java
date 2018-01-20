@@ -5,14 +5,14 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.jaredzhao.castleblitz.components.graphics.LightComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 
-public class LightSystem extends EntitySystem{
+public class LightEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> lights;
 
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
 
-    public LightSystem(){
+    public LightEntitySystem(){
 
     }
 
@@ -29,6 +29,7 @@ public class LightSystem extends EntitySystem{
         }
     }
 
+    @Override
     public void dispose() {
 
     }

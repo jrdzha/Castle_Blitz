@@ -18,6 +18,7 @@ public class GameEngine extends ApplicationAdapter {
 	private ArrayList<Scene> sceneList; //ArrayList containing all scenes
 
 	public static int currentScene; //Current scene number
+	public static boolean loggedInToServer = false;
 
 	public static Scene singlePlayerGameScene;
 	public static Scene openingScene;
@@ -38,7 +39,7 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	public GameEngine(){
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("jaredzhao.com");
+		socketAccessor = new SocketAccessor("localhost");
 	}
 
 	/**
@@ -55,6 +56,15 @@ public class GameEngine extends ApplicationAdapter {
 
 		sceneList = new ArrayList<Scene>();
 
+		initiateScenes();
+
+		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
+
+		safeAreaInsets = getIOSSafeAreaInsets();
+		//safeAreaInsets = new Vector2(Gdx.graphics.getWidth(), 32);
+	}
+
+	public void initiateScenes(){
 		singlePlayerGameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
 		openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
 		homeScene = new HomeScene(preferencesAccessor, socketAccessor);
@@ -64,11 +74,6 @@ public class GameEngine extends ApplicationAdapter {
 		sceneList.add(signUpOrLoginScene); //IDENTIFIER = 1
 		sceneList.add(homeScene); //IDENTIFIER = 2
 		sceneList.add(singlePlayerGameScene); //IDENTIFIER = 3
-
-		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
-
-		safeAreaInsets = getIOSSafeAreaInsets();
-		//safeAreaInsets = new Vector2(Gdx.graphics.getWidth(), 32);
 	}
 
 	/**
@@ -77,9 +82,11 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	@Override
 	public void render () {
-		//if((int)(lifetime * 10) % 2 == 0) {
-			socketAccessor.update();
-		//}
+		socketAccessor.update();
+
+		if(!loggedInToServer && currentScene != openingScene.IDENTIFIER && currentScene != signUpOrLoginScene.IDENTIFIER){
+			currentScene = openingScene.IDENTIFIER;
+		}
 
 		for(Scene scene : sceneList){
 			if(currentScene == scene.IDENTIFIER){

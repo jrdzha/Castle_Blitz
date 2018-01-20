@@ -2,12 +2,11 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.math.MathUtils;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
 
-public class CameraSystem extends EntitySystem{
+public class CameraEntitySystem extends DisposableEntitySystem {
     private ImmutableArray<Entity> cameras;
 
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
@@ -15,7 +14,7 @@ public class CameraSystem extends EntitySystem{
 
     private Entity map;
 
-    public CameraSystem(Entity map){
+    public CameraEntitySystem(Entity map){
         this.map = map;
     }
 
@@ -44,6 +43,7 @@ public class CameraSystem extends EntitySystem{
         }
     }
 
+    @Override
     public void dispose() {
 
     }

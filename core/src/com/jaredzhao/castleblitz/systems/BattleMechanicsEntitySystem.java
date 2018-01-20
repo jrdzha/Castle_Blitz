@@ -12,7 +12,7 @@ import com.jaredzhao.castleblitz.components.mechanics.SelectableComponent;
 import com.jaredzhao.castleblitz.servers.GameServer;
 import com.jaredzhao.castleblitz.utils.Console;
 
-public class BattleMechanicsSystem extends EntitySystem{
+public class BattleMechanicsEntitySystem extends DisposableEntitySystem {
     private ImmutableArray<Entity> selectedCharacters;
 
     private ComponentMapper<SelectableComponent> selectableComponentComponentMapper = ComponentMapper.getFor(SelectableComponent.class);
@@ -23,7 +23,7 @@ public class BattleMechanicsSystem extends EntitySystem{
     private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
     private GameServer gameServer;
 
-    public BattleMechanicsSystem(Entity map, GameServer gameServer, Entity battleMechanics){
+    public BattleMechanicsEntitySystem(Entity map, GameServer gameServer, Entity battleMechanics){
         this.map = map;
         this.gameServer = gameServer;
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
@@ -90,6 +90,7 @@ public class BattleMechanicsSystem extends EntitySystem{
         }
     }
 
+    @Override
     public void dispose() {
 
     }
