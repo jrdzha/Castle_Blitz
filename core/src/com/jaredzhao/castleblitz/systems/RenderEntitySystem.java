@@ -60,7 +60,6 @@ public class RenderEntitySystem extends DisposableEntitySystem {
      * @param ashleyEngine      AshleyEngine
      * @param camera            Orthographic Camera
      * @param settings          Game Settings
-     * @param battleMechanics   Entity used to store game states
      * @param fogOfWar          Entity used to store fog of war data
      */
     public RenderEntitySystem(Engine ashleyEngine, Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness){

@@ -105,8 +105,6 @@ public class OpeningScene extends Scene {
         timesRendered++;
         if (timesRendered > 120) {
             if ((nextScene == GameEngine.homeScene.IDENTIFIER && loggedIn) || nextScene == GameEngine.signUpOrLoginScene.IDENTIFIER) {
-                this.dispose();
-                this.isRunning = false;
                 return nextScene;
             }
         }

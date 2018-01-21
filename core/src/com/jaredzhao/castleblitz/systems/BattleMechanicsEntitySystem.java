@@ -37,7 +37,7 @@ public class BattleMechanicsEntitySystem extends DisposableEntitySystem {
         Console console = gameServer.getConsole();
         if (console != null && console.peekConsoleNewEntries() != null) {
             String nextEntry = console.peekConsoleNewEntries();
-            if (nextEntry.equals("client.turn.")) {
+            if (nextEntry.equals("CLIENT.TURN")) {
                 battleMechanicsStatesComponent.isMyTurn = true;
                 console.pollConsoleNewEntries();
             }

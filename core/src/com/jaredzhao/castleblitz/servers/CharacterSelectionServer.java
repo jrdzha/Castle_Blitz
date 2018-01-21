@@ -38,7 +38,7 @@ public class CharacterSelectionServer implements GameServer {
                 playerViewMap[j][k] = true;
             }
         }
-        playerViewMaps.put("client", playerViewMap);
+        playerViewMaps.put("CLIENT", playerViewMap);
     }
 
     public int[][] retrieveTeamPositions(){
@@ -59,7 +59,7 @@ public class CharacterSelectionServer implements GameServer {
     }
 
     public boolean[][] retrieveViewMap(){
-        return playerViewMaps.get("client"); //Only return what has been adjusted for fog of war
+        return playerViewMaps.get("CLIENT"); //Only return what has been adjusted for fog of war
     }
 
     public Console getConsole(){

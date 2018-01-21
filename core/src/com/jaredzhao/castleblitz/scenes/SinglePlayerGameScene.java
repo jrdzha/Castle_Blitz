@@ -23,6 +23,7 @@ import com.jaredzhao.castleblitz.utils.PreferencesAccessor;
 
 import java.lang.System;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class SinglePlayerGameScene extends Scene {
 
@@ -42,7 +43,7 @@ public class SinglePlayerGameScene extends Scene {
     private SettingsComponent settingsComponent;
     private String[][][] rawMap;
 
-    private HashMap<String, DisposableEntitySystem> systems = new HashMap<String, DisposableEntitySystem>();
+    private HashMap<String, DisposableEntitySystem> systems = new LinkedHashMap<String, DisposableEntitySystem>();
 
     public static String team;
 
@@ -156,8 +157,6 @@ public class SinglePlayerGameScene extends Scene {
 
         if(settingsComponent.goHome){
             settingsComponent.goHome = false;
-            this.dispose();
-            this.isRunning = false;
             return GameEngine.homeScene.IDENTIFIER;
         }
         return IDENTIFIER;

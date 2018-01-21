@@ -18,30 +18,25 @@ public class SinglePlayerGameServer implements GameServer {
 
         console = new Console();
         //initialization sequence
-        console.putConsoleNewEntries("client.turn.");
+        console.putConsoleNewEntries("CLIENT.TURN");
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (running) {
                     if (console.peekConsoleNewEntries() != null) {
-                        String nextEntry = console.peekConsoleNewEntries();
+                        String[] nextEntry = console.peekConsoleNewEntries().split("\\.");
 
-                        if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("server")) {
-                            nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                            if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("move")) {
-                                nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                                int fromX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
-                                nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
-                                int fromY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
-                                nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                                nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                                int toX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
-                                nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
-                                int toY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
+                        if (nextEntry[0].equals("SERVER")) {
+                            if (nextEntry[1].equals("MOVE")) {
+                                int fromX = Integer.parseInt(nextEntry[2].split(",")[0]);
+                                int fromY = Integer.parseInt(nextEntry[2].split(",")[1]);
+                                int toX = Integer.parseInt(nextEntry[4].split(",")[0]);
+                                int toY = Integer.parseInt(nextEntry[4].split(",")[1]);
+
                                 rawMap[1][toX][toY] = rawMap[1][fromX][fromY];
                                 rawMap[1][fromX][fromY] = "--";
-                                //console.putConsoleNewEntries("client.move." + fromX + "," + fromY + ".to." + toX + "," + toY + ".");
+                                //console.putConsoleNewEntries("CLIENT.MOVE." + fromX + "," + fromY + ".TO." + toX + "," + toY);
                                 console.pollConsoleNewEntries();
                                 updateViewMap();
                             }
@@ -85,7 +80,7 @@ public class SinglePlayerGameServer implements GameServer {
                 }
             }
         }
-        playerViewMaps.put("client", playerViewMap);
+        playerViewMaps.put("CLIENT", playerViewMap);
     }
 
     public int[][] retrieveTeamPositions(){
@@ -106,7 +101,7 @@ public class SinglePlayerGameServer implements GameServer {
     }
 
     public boolean[][] retrieveViewMap(){
-        return playerViewMaps.get("client"); //Only return what has been adjusted for fog of war
+        return playerViewMaps.get("CLIENT"); //Only return what has been adjusted for fog of war
     }
 
     public Console getConsole(){

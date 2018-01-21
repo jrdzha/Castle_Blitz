@@ -36,8 +36,6 @@ public class HomeScene extends Scene {
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
     private Entity headingText;
     private Entity usernameText;
-    private Entity goldText;
-    private Entity shardsText;
     private Entity levelText;
     private Entity xpText;
     private Entity idText;
@@ -51,7 +49,6 @@ public class HomeScene extends Scene {
 
     private PreferencesAccessor preferencesAccessor;
     private SocketAccessor socketAccessor;
-    private HashMap<String, String> userData = new HashMap<String, String>();
 
     private GameServer characterSelectionServer;
     public static String team;
@@ -146,6 +143,7 @@ public class HomeScene extends Scene {
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
         ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderGaussianBlur = false;
+        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderFogOfWar = false;
         ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderEntities = false;
 
         //Add systems to ashleyEngine
@@ -215,8 +213,6 @@ public class HomeScene extends Scene {
         settingsComponent.sfxOn = settingsComponent.homeScreen.equals("homeArmory");
 
         if(settingsComponent.battle){
-            this.dispose();
-            this.isRunning = false;
             return GameEngine.singlePlayerGameScene.IDENTIFIER;
         }
         return IDENTIFIER;

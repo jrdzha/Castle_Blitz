@@ -67,20 +67,14 @@ public class MapEntitySystem extends DisposableEntitySystem {
 
         Console console = gameServer.getConsole();
         if (console.peekConsoleNewEntries() != null) {
-            String nextEntry = console.peekConsoleNewEntries();
+            String[] nextEntry = console.peekConsoleNewEntries().split("\\.");
 
-            if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("client")) {
-                nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                if (nextEntry.substring(0, nextEntry.indexOf('.')).equals("move")) {
-                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                    int fromX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
-                    nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
-                    int fromY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
-                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                    nextEntry = nextEntry.substring(nextEntry.indexOf('.') + 1);
-                    int toX = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf(',')));
-                    nextEntry = nextEntry.substring(nextEntry.indexOf(',') + 1);
-                    int toY = Integer.parseInt(nextEntry.substring(0, nextEntry.indexOf('.')));
+            if (nextEntry[0].equals("CLIENT")) {
+                if (nextEntry[1].equals("MOVE")) {
+                    int fromX = Integer.parseInt(nextEntry[2].split(",")[0]);
+                    int fromY = Integer.parseInt(nextEntry[2].split(",")[1]);
+                    int toX = Integer.parseInt(nextEntry[4].split(",")[0]);
+                    int toY = Integer.parseInt(nextEntry[4].split(",")[1]);
 
                     map.getComponent(MapComponent.class).mapEntities[1][toX][toY] = map.getComponent(MapComponent.class).mapEntities[1][fromX][fromY];
                     map.getComponent(MapComponent.class).mapEntities[1][fromX][fromY] = null;
@@ -107,8 +101,8 @@ public class MapEntitySystem extends DisposableEntitySystem {
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             if(selectableComponent.isSelected && moveTo[0] != -1){
-                gameServer.getConsole().putConsoleNewEntries("client.move." + tileComponent.tileX + "," + tileComponent.tileY + ".to." + moveTo[0] + "," + moveTo[1] + ".");
-                gameServer.getConsole().putConsoleNewEntries("server.move." + tileComponent.tileX + "," + tileComponent.tileY + ".to." + moveTo[0] + "," + moveTo[1] + ".");
+                gameServer.getConsole().putConsoleNewEntries("CLIENT.MOVE." + tileComponent.tileX + "," + tileComponent.tileY + ".TO." + moveTo[0] + "," + moveTo[1]);
+                gameServer.getConsole().putConsoleNewEntries("SERVER.MOVE." + tileComponent.tileX + "," + tileComponent.tileY + ".TO." + moveTo[0] + "," + moveTo[1]);
             }
         }
 

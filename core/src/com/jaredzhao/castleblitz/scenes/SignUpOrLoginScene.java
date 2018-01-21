@@ -382,8 +382,6 @@ public class SignUpOrLoginScene extends Scene {
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
         if(GameEngine.loggedInToServer){
-            this.dispose();
-            this.isRunning = false;
             return GameEngine.homeScene.IDENTIFIER;
         }
         return IDENTIFIER;
