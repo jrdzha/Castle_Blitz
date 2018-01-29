@@ -29,7 +29,6 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
     private boolean beingDragged, beingTapped;
     private int lastTouchX, lastTouchY, lastDragX, lastDragY, selectedX, selectedY;
 
-    private Engine ashleyEngine;
     private EntityFactory entityFactory;
     private OrthographicCamera orthographicCamera;
     private Entity camera;
@@ -47,13 +46,12 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
     private LayerSorter layerSorter;
 
-    public InputEntitySystem(Engine ashleyEngine, GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
+    public InputEntitySystem(GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
         Gdx.input.setInputProcessor(this);
         this.gameServer = gameServer;
         this.preferencesAccessor = preferencesAccessor;
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.scale = camera.getComponent(CameraComponent.class).scale;
-        this.ashleyEngine = ashleyEngine;
         this.entityFactory = entityFactory;
         this.camera = camera;
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
@@ -97,8 +95,8 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
                 entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
                 entity.getComponent(HasSoundEffectComponent.class).soundLength = .038f;
 
-                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18, 16, 16));
-                ashleyEngine.addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18, 16, 16));
+                getEngine().addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18, 16, 16));
+                getEngine().addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18, 16, 16));
 
                 battleMechanicsStatesComponent.characterSelected = true;
             }
@@ -114,7 +112,7 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
             Entity entity1 = selectables.get(i);
             SelectableComponent selectableComponent1 = selectableComponentComponentMapper.get(entity1);
             if(selectableComponent1.name.equals("move") || selectableComponent1.name.equals("attack")){
-                ashleyEngine.removeEntity(entity1);
+                getEngine().removeEntity(entity1);
             }
         }
     }

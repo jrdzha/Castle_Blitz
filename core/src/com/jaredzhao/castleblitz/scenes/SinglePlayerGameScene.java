@@ -123,13 +123,13 @@ public class SinglePlayerGameScene extends Scene {
 
         //Initialize systems
         systems.put("CameraEntitySystem", new CameraEntitySystem(map));
-        systems.put("RenderEntitySystem", new RenderEntitySystem(ashleyEngine, camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
+        systems.put("RenderEntitySystem", new RenderEntitySystem(camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
         systems.put("MapEntitySystem", new MapEntitySystem(singlePlayerGameServer, map, fogOfWar, battleMechanics));
-        systems.put("InputEntitySystem", new InputEntitySystem(ashleyEngine, singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
-        systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem(ashleyEngine));
+        systems.put("InputEntitySystem", new InputEntitySystem(singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
+        systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem());
         systems.put("LightEntitySystem", new LightEntitySystem());
         systems.put("AudioEntitySystem", new AudioEntitySystem(entityFactory, audioFactory, camera, settings));
-        systems.put("HighlightEntitySystem", new HighlightEntitySystem(ashleyEngine));
+        systems.put("HighlightEntitySystem", new HighlightEntitySystem());
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, singlePlayerGameServer, battleMechanics));
 
@@ -164,10 +164,13 @@ public class SinglePlayerGameScene extends Scene {
 
     @Override
     public void dispose() {
+        systems.get("AudioEntitySystem").dispose();
         for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
             if(entry.getValue() != null) {
                 entry.getValue().dispose();
+                ashleyEngine.removeSystem(entry.getValue());
             }
         }
+        ashleyEngine.removeAllEntities();
     }
 }

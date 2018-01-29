@@ -12,15 +12,12 @@ import com.jaredzhao.castleblitz.components.RemoveTagComponent;
 public class ResourceManagementEntitySystem extends DisposableEntitySystem {
 
     private ImmutableArray<Entity> toBeRemoved;
-    private Engine ashleyEngine;
 
     /**
      * Initialize ResourceManagementEntitySystem
-     *
-     * @param ashleyEngine      Ashley Engine
      */
-    public ResourceManagementEntitySystem(Engine ashleyEngine){
-        this.ashleyEngine = ashleyEngine;
+    public ResourceManagementEntitySystem(){
+
     }
 
     /**
@@ -40,7 +37,7 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
     public void update(float deltaTime){
         for(Entity entity : toBeRemoved){
             entity.removeAll();
-            ashleyEngine.removeEntity(entity);
+            getEngine().removeEntity(entity);
         }
     }
 
@@ -49,11 +46,11 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
      */
     @Override
     public void dispose() {
-        while(ashleyEngine.getEntities().size() > 0) {
-            ImmutableArray<Entity> removeArray = ashleyEngine.getEntities();
+        while(getEngine().getEntities().size() > 0) {
+            ImmutableArray<Entity> removeArray = getEngine().getEntities();
             for (Entity entity : removeArray) {
                 entity.removeAll();
-                ashleyEngine.removeEntity(entity);
+                getEngine().removeEntity(entity);
             }
         }
     }

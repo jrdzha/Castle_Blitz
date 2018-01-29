@@ -27,7 +27,7 @@ public class GameEngine extends ApplicationAdapter {
 
 	public static Vector2 safeAreaInsets;
 
-	public static String version = "Build 56"; //Current build version
+	public static String version = "Build 57"; //Current build version
 
 	public static float lifetime;
 
@@ -39,7 +39,7 @@ public class GameEngine extends ApplicationAdapter {
 	 */
 	public GameEngine(){
 		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("localhost");
+		socketAccessor = new SocketAccessor("jaredzhao.com");
 	}
 
 	/**

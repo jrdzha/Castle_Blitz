@@ -13,10 +13,7 @@ public class HighlightEntitySystem extends DisposableEntitySystem {
     private ComponentMapper<HighlightComponent> highlightComponentComponentMapper = ComponentMapper.getFor(HighlightComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
 
-    private Engine ashleyEngine;
-
-    public HighlightEntitySystem(Engine ashleyEngine){
-        this.ashleyEngine = ashleyEngine;
+    public HighlightEntitySystem(){
     }
 
     public void addedToEngine(Engine engine){
@@ -34,7 +31,7 @@ public class HighlightEntitySystem extends DisposableEntitySystem {
 
         for(Entity entity : newHighlights){
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
-            ashleyEngine.addEntity(highlightComponent.highlight);
+            getEngine().addEntity(highlightComponent.highlight);
             entity.remove(AddHighlightComponent.class);
         }
     }

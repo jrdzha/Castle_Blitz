@@ -36,8 +36,6 @@ public class RenderEntitySystem extends DisposableEntitySystem {
 
     private BitmapFont debugFont;
 
-    private Engine ashleyEngine;
-
     private SettingsComponent settingsComponent;
     private CameraComponent cameraComponent;
     private FogOfWarComponent fogOfWarComponent;
@@ -57,14 +55,11 @@ public class RenderEntitySystem extends DisposableEntitySystem {
     /**
      * DisposableEntitySystem used to render entities in the correct order with the correct shaders
      *
-     * @param ashleyEngine      AshleyEngine
      * @param camera            Orthographic Camera
      * @param settings          Game Settings
      * @param fogOfWar          Entity used to store fog of war data
      */
-    public RenderEntitySystem(Engine ashleyEngine, Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness){
-
-        this.ashleyEngine = ashleyEngine;
+    public RenderEntitySystem(Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness){
         this.cameraComponent = camera.getComponent(CameraComponent.class);
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
@@ -352,9 +347,9 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             debugFont.draw(spriteBatch, "Render Calls: " + (float) ((int) (((float) (shaderBatch.totalRenderCalls)) / 100)) / 10 + " x 1000", 10, Gdx.graphics.getHeight() - 130);
             debugFont.draw(spriteBatch, "Render Calls / Frame: " + spriteBatch.renderCalls + shaderBatch.renderCalls + fogOfWarBatch.renderCalls, 10, Gdx.graphics.getHeight() - 150);
             debugFont.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 170);
-            debugFont.draw(spriteBatch, "Entities: " + ashleyEngine.getEntities().size(), 10, Gdx.graphics.getHeight() - 190);
+            debugFont.draw(spriteBatch, "Entities: " + getEngine().getEntities().size(), 10, Gdx.graphics.getHeight() - 190);
             debugFont.draw(spriteBatch, "Memory Usage: " + (float) (Gdx.app.getNativeHeap() / 100000) / 10f + "M", 10, Gdx.graphics.getHeight() - 210);
-            MusicComponent musicComponent = ashleyEngine.getEntitiesFor(Family.all(MusicComponent.class).get()).get(0).getComponent(MusicComponent.class);
+            MusicComponent musicComponent = getEngine().getEntitiesFor(Family.all(MusicComponent.class).get()).get(0).getComponent(MusicComponent.class);
             String currentTrack = "";
             if (musicComponent.currentMusicIndex != -1) {
                 currentTrack = musicComponent.currentMusicName;

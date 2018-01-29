@@ -1,10 +1,9 @@
 // Exclude all files from Gradle's test runner
 test { exclude '**' }
-
 task copyNatives << {
     file("xcode/native/ios/").mkdirs();
     def LD_FLAGS = "LIBGDX_NATIVES = "
-    configurations.natives.files.each { jar->
+    configurations.natives.files.each { jar ->
         def outputDir = null
         if (jar.name.endsWith("natives-ios.jar")) outputDir = file("xcode/native/ios")
         if (outputDir != null) {
@@ -30,9 +29,7 @@ task copyNatives << {
         proguard << "-keep enum com.badlogic.** { *; }\n"
     }
 }
-
-sourceSets.main.java.srcDirs = [ "src/" ]
-
+sourceSets.main.java.srcDirs = ["src/"]
 // Setup Multi-OS Engine
 moe {
     xcode {
@@ -42,15 +39,13 @@ moe {
     }
 
     remoteBuild {
-        resources = [ file("../android/assets") ]
+        resources = [file("../android/assets")]
     }
 }
-
 moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
-
 // Setup Eclipse
 eclipse {
     // Set Multi-OS Engine nature
@@ -58,4 +53,6 @@ eclipse {
         name = appName + "-ios-moe"
         natures 'org.multi-os-engine.project'
     }
+}
+dependencies {
 }

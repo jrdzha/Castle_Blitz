@@ -133,6 +133,7 @@ public class AudioEntitySystem extends DisposableEntitySystem {
 
                 if (music.currentMusic != null) {
                     music.currentMusic.dispose();
+                    music.currentMusic = null;
                 }
 
                 String nextSong = "";
@@ -161,12 +162,14 @@ public class AudioEntitySystem extends DisposableEntitySystem {
             MusicComponent musicComponent = musicComponentComponentMapper.get(entity);
             musicComponent.currentMusic.stop();
             musicComponent.currentMusic.dispose();
+            getEngine().removeEntity(entity);
         }
 
         for (Object object : soundEffects.values()) {
             SoundEffectComponent soundEffectComponent = ((Entity) object).getComponent(SoundEffectComponent.class);
             soundEffectComponent.sound.stop();
             soundEffectComponent.sound.dispose();
+            getEngine().removeEntity((Entity) object);
         }
     }
 }
