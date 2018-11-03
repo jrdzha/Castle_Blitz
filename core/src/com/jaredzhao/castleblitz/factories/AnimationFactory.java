@@ -12,7 +12,7 @@ public class AnimationFactory {
 
     private Texture props, tiles, castle, highlight, ui, ui2, homeui;
 
-    public AnimationFactory(){ //Load assets
+    public AnimationFactory() { //Load assets
         props = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
         tiles = new Texture(Gdx.files.internal("graphics/dungeon_textures4.png"));
         castle = new Texture(Gdx.files.internal("graphics/castle1.png"));
@@ -20,95 +20,97 @@ public class AnimationFactory {
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
         homeui = new Texture(Gdx.files.internal("ui/home-ui.png"));
+
+        tiles.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
-    public Sprite spriteRegion(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
+    public Sprite spriteRegion(Texture tex, int x, int y, int w, int h) { //Generate sprite with given dimensions and location from a texture
         return new Sprite(new TextureRegion(tex, x * w, y * h, w, h));
     }
 
-    public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h){ //Generate sprite with given dimensions and location from a texture
+    public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h) { //Generate sprite with given dimensions and location from a texture
         return new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
     }
 
-    public Object[] createUI(String type, int sizeX, int sizeY, float scale){ //Create UI elements
+    public Object[] createUI(String type, int sizeX, int sizeY, float scale) { //Create UI elements
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         float alpha = 0.75f;
-        if(type.equals("pause")) {
+        if (type.equals("pause")) {
             sprites.add(spriteRegionForTile(ui, 0, 0, sizeX, sizeY));
-        } else if(type.equals("fastforward")){
+        } else if (type.equals("fastforward")) {
             sprites.add(spriteRegionForTile(ui, 1, 0, sizeX, sizeY));
-        } else if(type.equals("home")){
+        } else if (type.equals("home")) {
             sprites.add(spriteRegionForTile(ui, 34, 0, sizeX, sizeY));
-        } else if(type.equals("debug")){
+        } else if (type.equals("debug")) {
             sprites.add(spriteRegionForTile(ui, 2, 0, sizeX, sizeY));
-        } else if(type.equals("move")){
+        } else if (type.equals("move")) {
             sprites.add(spriteRegionForTile(ui, 3, 0, sizeX, sizeY));
-        } else if(type.equals("attack")){
+        } else if (type.equals("attack")) {
             sprites.add(spriteRegionForTile(ui, 4, 0, sizeX, sizeY));
-        } else if(type.equals("facebookLogin")){
+        } else if (type.equals("facebookLogin")) {
             sprites.add(spriteRegionForTile(ui, 5, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("battle")){
+        } else if (type.equals("battle")) {
             sprites.add(spriteRegionForTile(ui, 13, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("editUsername") || type.equals("editPassword") || type.equals("editConfirmPassword")){
+        } else if (type.equals("editUsername") || type.equals("editPassword") || type.equals("editConfirmPassword")) {
             sprites.add(spriteRegionForTile(ui, 18, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("signUp")){
+        } else if (type.equals("signUp")) {
             sprites.add(spriteRegionForTile(ui, 19, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("login")){
+        } else if (type.equals("login")) {
             sprites.add(spriteRegionForTile(ui, 24, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("back")){
+        } else if (type.equals("back")) {
             sprites.add(spriteRegionForTile(ui, 35, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("sfxOn")){
+        } else if (type.equals("sfxOn")) {
             sprites.add(spriteRegionForTile(ui, 9, 0, sizeX, sizeY));
-        } else if(type.equals("sfxOff")){
+        } else if (type.equals("sfxOff")) {
             sprites.add(spriteRegionForTile(ui, 10, 0, sizeX, sizeY));
-        } else if(type.equals("soundOn")){
+        } else if (type.equals("soundOn")) {
             sprites.add(spriteRegionForTile(ui, 11, 0, sizeX, sizeY));
-        } else if(type.equals("soundOff")){
+        } else if (type.equals("soundOff")) {
             sprites.add(spriteRegionForTile(ui, 12, 0, sizeX, sizeY));
-        } else if(type.equals("homeCastleOff")){
+        } else if (type.equals("homeCastleOff")) {
             sprites.add(spriteRegionForTile(ui2, 0, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeCastleOn")){
+        } else if (type.equals("homeCastleOn")) {
             sprites.add(spriteRegionForTile(ui2, 1, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homePotionsOff")){
+        } else if (type.equals("homePotionsOff")) {
             sprites.add(spriteRegionForTile(ui2, 2, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homePotionsOn")){
+        } else if (type.equals("homePotionsOn")) {
             sprites.add(spriteRegionForTile(ui2, 3, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeShopOff")){
+        } else if (type.equals("homeShopOff")) {
             sprites.add(spriteRegionForTile(ui2, 4, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeShopOn")){
+        } else if (type.equals("homeShopOn")) {
             sprites.add(spriteRegionForTile(ui2, 5, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeArmoryOff")){
+        } else if (type.equals("homeArmoryOff")) {
             sprites.add(spriteRegionForTile(ui2, 6, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeArmoryOn")){
+        } else if (type.equals("homeArmoryOn")) {
             sprites.add(spriteRegionForTile(ui2, 7, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeRankingOff")){
+        } else if (type.equals("homeRankingOff")) {
             sprites.add(spriteRegionForTile(ui2, 8, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeRankingOn")){
+        } else if (type.equals("homeRankingOn")) {
             sprites.add(spriteRegionForTile(ui2, 9, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeLevelStatus")){
+        } else if (type.equals("homeLevelStatus")) {
             sprites.add(spriteRegionForTile(homeui, 0, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeGoldStatus")){
+        } else if (type.equals("homeGoldStatus")) {
             sprites.add(spriteRegionForTile(homeui, 2, 0, sizeX, sizeY));
             alpha = 1f;
-        } else if(type.equals("homeShardStatus")){
+        } else if (type.equals("homeShardStatus")) {
             sprites.add(spriteRegionForTile(homeui, 4, 0, sizeX, sizeY));
             alpha = 1f;
         }
@@ -122,11 +124,11 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createTile(int type){ //Create tile
+    public Object[] createTile(int type) { //Create tile
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         sprites.add(spriteRegionForTile(tiles, type % 21, type / 21, 16, 16));
-        sprites.get(0).setScale(1.003f);
+        sprites.get(0).setScale(1.005f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
         animations.add(Integer.valueOf(-1));
@@ -134,7 +136,7 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createCastle(){ //Create castle
+    public Object[] createCastle() { //Create castle
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         Sprite castleSprite = spriteRegionForTile(castle, 0, 0, 48, 48);
@@ -147,18 +149,18 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createHighlight(float r, float g, float b, float a, float scale, boolean flash){ //Generate highlight under characters when clicked
+    public Object[] createHighlight(float r, float g, float b, float a, float scale, boolean flash) { //Generate highlight under characters when clicked
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
 
         Sprite tile;
 
-        if(flash) {
+        if (flash) {
             for (double i = 0; i <= Math.PI; i += 0.1) {
                 tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
-                tile.setColor(r, g, b, a * (float)Math.sin(i));
-                tile.setScale(scale * 0.75f + scale * (float)Math.sin(i) * 0.25f);
+                tile.setColor(r, g, b, a * (float) Math.sin(i));
+                tile.setScale(scale * 0.75f + scale * (float) Math.sin(i) * 0.25f);
                 sprites.add(tile);
                 animations.add(Integer.valueOf(1));
             }
@@ -176,11 +178,11 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createTorch(){ //Generate torch animation
+    public Object[] createTorch() { //Generate torch animation
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        for(int i = 2; i < 8; i++){
+        for (int i = 2; i < 8; i++) {
             Sprite sprite = spriteRegion(props, i, 0, 24, 24);
             sprites.add(sprite);
             animations.add(Integer.valueOf(4));
@@ -190,32 +192,32 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createCharacter(String type){ //Generate character animation
+    public Object[] createCharacter(String type) { //Generate character animation
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
         int animationTime = 40;
-        if(type.equals("R")){
+        if (type.equals("R")) {
             sprites.add(spriteRegion(props, 4, 1, 24, 24));
             sprites.add(spriteRegion(props, 5, 1, 24, 24));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
-        } else if(type.equals("G")){
+        } else if (type.equals("G")) {
             sprites.add(spriteRegion(props, 2, 1, 24, 24));
             sprites.add(spriteRegion(props, 3, 1, 24, 24));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
-        } else if(type.equals("B")){
+        } else if (type.equals("B")) {
             sprites.add(spriteRegion(props, 0, 1, 24, 24));
             sprites.add(spriteRegion(props, 1, 1, 24, 24));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
-        } else if(type.equals("D")){
+        } else if (type.equals("D")) {
             sprites.add(spriteRegion(props, 0, 0, 24, 24));
             sprites.add(spriteRegion(props, 1, 0, 24, 24));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
-        } else if(type.equals("K")){
+        } else if (type.equals("K")) {
             sprites.add(spriteRegion(props, 6, 1, 24, 24));
             sprites.add(spriteRegion(props, 7, 1, 24, 24));
             animations.add(Integer.valueOf(animationTime));
@@ -223,7 +225,7 @@ public class AnimationFactory {
         } else {
             return null; //git remote set-url origin git://
         }
-        for(Sprite s : sprites){
+        for (Sprite s : sprites) {
             s.setScale(.7f);
         }
         completeAnimation[0] = sprites;
@@ -231,32 +233,32 @@ public class AnimationFactory {
         return completeAnimation;
     }
 
-    public Object[] createProp(String type){ //Generate character animation
+    public Object[] createProp(String type) { //Generate character animation
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
-        if(type.equals("CH")){
+        if (type.equals("CH")) {
             sprites.add(spriteRegion(props, 4, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("BV")){
+        } else if (type.equals("BV")) {
             sprites.add(spriteRegion(props, 2, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("BH")){
+        } else if (type.equals("BH")) {
             sprites.add(spriteRegion(props, 3, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("BA")){
+        } else if (type.equals("BA")) {
             sprites.add(spriteRegion(props, 0, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("SC")){
+        } else if (type.equals("SC")) {
             sprites.add(spriteRegion(props, 1, 2, 24, 24));
             animations.add(-1);
-        } else if(type.equals("LC")){
+        } else if (type.equals("LC")) {
             sprites.add(spriteRegion(props, 5, 2, 24, 24));
             animations.add(-1);
         } else {
             return null;
         }
-        for(Sprite s : sprites){
+        for (Sprite s : sprites) {
             s.setScale(.7f);
         }
         completeAnimation[0] = sprites;

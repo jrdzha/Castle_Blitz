@@ -32,7 +32,7 @@ public class AudioEntitySystem extends DisposableEntitySystem {
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<MusicComponent> musicComponentComponentMapper = ComponentMapper.getFor(MusicComponent.class);
 
-    public AudioEntitySystem(EntityFactory entityFactory, AudioFactory audioFactory, Entity camera, Entity settings){
+    public AudioEntitySystem(EntityFactory entityFactory, AudioFactory audioFactory, Entity camera, Entity settings) {
         this.orthographicCamera = camera.getComponent(CameraComponent.class).camera;
         this.camera = camera;
         this.entityFactory = entityFactory;
@@ -40,7 +40,7 @@ public class AudioEntitySystem extends DisposableEntitySystem {
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         soundEffectsSources = engine.getEntitiesFor(Family.all(HasSoundEffectComponent.class, PositionComponent.class, VisibleComponent.class).get());
         musicSources = engine.getEntitiesFor(Family.all(MusicComponent.class).get());
     }
@@ -60,9 +60,9 @@ public class AudioEntitySystem extends DisposableEntitySystem {
 
             SoundEffectComponent soundEffectComponent = ((Entity) soundEffects.get(hasSoundEffectComponent.soundName.hashCode())).getComponent(SoundEffectComponent.class);
 
-            if(!settingsComponent.sfxOn){
+            if (!settingsComponent.sfxOn) {
                 soundEffectComponent.volume = 0;
-            } else if(hasSoundEffectComponent.dynamicVolume) {
+            } else if (hasSoundEffectComponent.dynamicVolume) {
                 float xPosition = Math.abs((positionComponent.x) - (orthographicCamera.position.x - (camera.getComponent(CameraComponent.class).cameraWidth / 2f)));
                 float yPosition = Math.abs((positionComponent.y) - (orthographicCamera.position.y - (camera.getComponent(CameraComponent.class).cameraHeight / 2f)));
 
@@ -148,7 +148,7 @@ public class AudioEntitySystem extends DisposableEntitySystem {
             if (music.currentMusic != null) {
                 music.currentMusic.play();
             }
-            if(settingsComponent.soundOn){
+            if (settingsComponent.soundOn) {
                 music.currentMusic.setVolume(music.volume);
             } else {
                 music.currentMusic.setVolume(0f);
@@ -158,7 +158,7 @@ public class AudioEntitySystem extends DisposableEntitySystem {
 
     @Override
     public void dispose() {
-        for(Entity entity : musicSources){
+        for (Entity entity : musicSources) {
             MusicComponent musicComponent = musicComponentComponentMapper.get(entity);
             musicComponent.currentMusic.stop();
             musicComponent.currentMusic.dispose();

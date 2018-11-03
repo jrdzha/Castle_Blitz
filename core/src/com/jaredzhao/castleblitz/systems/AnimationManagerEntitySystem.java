@@ -23,22 +23,22 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
 
     private SettingsComponent settingsComponent;
 
-    public AnimationManagerEntitySystem(Entity settings){
+    public AnimationManagerEntitySystem(Entity settings) {
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         selectableHighlights = engine.getEntitiesFor(Family.all(SelectableComponent.class, HighlightComponent.class).get());
         selectableUI = engine.getEntitiesFor(Family.all(SelectableComponent.class, AnimationComponent.class).get());
         pointLights = engine.getEntitiesFor(Family.all(LightComponent.class).get());
     }
 
-    public void update(float deltaTime){
-        for(Entity entity : selectableHighlights){
+    public void update(float deltaTime) {
+        for (Entity entity : selectableHighlights) {
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             AnimationComponent animationComponent = animationComponentComponentMapper.get(highlightComponent.highlight);
-            if(selectableComponent.isSelected){
+            if (selectableComponent.isSelected) {
                 animationComponent.currentFrame = 0;
                 animationComponent.currentTrack = 1;
                 animationComponent.framesDisplayed = 0;
@@ -49,37 +49,37 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
             }
         }
 
-        for(Entity entity : pointLights){
+        for (Entity entity : pointLights) {
             LightComponent lightComponent = lightComponentMapper.get(entity);
-            lightComponent.intensity = 13f + (float)(Math.sin(GameEngine.lifetime) * 1.5f);
+            lightComponent.intensity = 13f + (float) (Math.sin(GameEngine.lifetime) * 1.5f);
         }
 
-        for(Entity entity : selectableUI){
-            if(entity.getComponent(UIComponent.class) != null) {
+        for (Entity entity : selectableUI) {
+            if (entity.getComponent(UIComponent.class) != null) {
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
                 SpriteComponent spriteComponent = spriteComponentComponentMapper.get(entity);
                 AnimationComponent animationComponent = animationComponentComponentMapper.get(entity);
 
                 Sprite currentFrame = spriteComponent.spriteList.get(animationComponent.currentTrack).get(animationComponent.currentFrame);
 
-                if(selectableComponent.touchDown && selectableComponent.canShrink) {
-                    if(currentFrame.getScaleX() > .93f) {
+                if (selectableComponent.touchDown && selectableComponent.canShrink) {
+                    if (currentFrame.getScaleX() > .93f) {
                         currentFrame.scale(-.03f);
                     }
                 } else {
-                    if(currentFrame.getScaleX() < 1f) {
+                    if (currentFrame.getScaleX() < 1f) {
                         currentFrame.scale(.03f);
                     }
                 }
 
-                for(ArrayList<Sprite> track : spriteComponent.spriteList){
-                    for(Sprite frame : track){
+                for (ArrayList<Sprite> track : spriteComponent.spriteList) {
+                    for (Sprite frame : track) {
                         frame.setScale(currentFrame.getScaleX());
                     }
                 }
 
-                if(selectableComponent.name.equals("sound")){
-                    if(settingsComponent.soundOn){
+                if (selectableComponent.name.equals("sound")) {
+                    if (settingsComponent.soundOn) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 0;
                         animationComponent.framesDisplayed = 0;
@@ -90,8 +90,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("sfx")){
-                    if(settingsComponent.sfxOn){
+                if (selectableComponent.name.equals("sfx")) {
+                    if (settingsComponent.sfxOn) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 0;
                         animationComponent.framesDisplayed = 0;
@@ -102,8 +102,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("homeCastle")){
-                    if(settingsComponent.homeScreen.equals("homeCastle")){
+                if (selectableComponent.name.equals("homeCastle")) {
+                    if (settingsComponent.homeScreen.equals("homeCastle")) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -114,8 +114,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("homePotions")){
-                    if(settingsComponent.homeScreen.equals("homePotions")){
+                if (selectableComponent.name.equals("homePotions")) {
+                    if (settingsComponent.homeScreen.equals("homePotions")) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -126,8 +126,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("homeShop")){
-                    if(settingsComponent.homeScreen.equals("homeShop")){
+                if (selectableComponent.name.equals("homeShop")) {
+                    if (settingsComponent.homeScreen.equals("homeShop")) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -138,8 +138,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("homeArmory")){
-                    if(settingsComponent.homeScreen.equals("homeArmory")){
+                if (selectableComponent.name.equals("homeArmory")) {
+                    if (settingsComponent.homeScreen.equals("homeArmory")) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -150,8 +150,8 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("homeRanking")){
-                    if(settingsComponent.homeScreen.equals("homeRanking")){
+                if (selectableComponent.name.equals("homeRanking")) {
+                    if (settingsComponent.homeScreen.equals("homeRanking")) {
                         animationComponent.currentFrame = 0;
                         animationComponent.currentTrack = 1;
                         animationComponent.framesDisplayed = 0;
@@ -162,25 +162,25 @@ public class AnimationManagerEntitySystem extends DisposableEntitySystem {
                     }
                 }
 
-                if(selectableComponent.name.equals("battle")){
-                    if(settingsComponent.homeScreen.equals("homeCastle")){
-                        if(entity.getComponent(VisibleComponent.class) == null){
+                if (selectableComponent.name.equals("battle")) {
+                    if (settingsComponent.homeScreen.equals("homeCastle")) {
+                        if (entity.getComponent(VisibleComponent.class) == null) {
                             entity.add(new VisibleComponent());
                         }
                     } else {
-                        if(entity.getComponent(VisibleComponent.class) != null){
+                        if (entity.getComponent(VisibleComponent.class) != null) {
                             entity.remove(VisibleComponent.class);
                         }
                     }
                 }
 
-                if(selectableComponent.name.equals("debug")
+                if (selectableComponent.name.equals("debug")
                         || selectableComponent.name.equals("home")
                         || selectableComponent.name.equals("sound")
                         || selectableComponent.name.equals("sfx")
-                        || selectableComponent.name.equals("fastforward")){
-                    if(settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER){
-                        if(entity.getComponent(VisibleComponent.class) == null) {
+                        || selectableComponent.name.equals("fastforward")) {
+                    if (settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER) {
+                        if (entity.getComponent(VisibleComponent.class) == null) {
                             entity.add(new VisibleComponent());
                         }
                     } else {

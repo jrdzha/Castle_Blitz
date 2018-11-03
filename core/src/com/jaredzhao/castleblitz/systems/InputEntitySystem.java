@@ -46,7 +46,7 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
     private LayerSorter layerSorter;
 
-    public InputEntitySystem(GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight){
+    public InputEntitySystem(GameServer gameServer, PreferencesAccessor preferencesAccessor, EntityFactory entityFactory, Entity camera, Entity settings, Entity battleMechanics, int mapHeight) {
         Gdx.input.setInputProcessor(this);
         this.gameServer = gameServer;
         this.preferencesAccessor = preferencesAccessor;
@@ -60,13 +60,13 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
     }
 
     @SuppressWarnings("unchecked")
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         selectables = engine.getEntitiesFor(Family.all(SelectableComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class).get());
     }
 
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
 
-        for(Entity entity : selectables){
+        for (Entity entity : selectables) {
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             if (selectableComponent.removeSelection) {
@@ -101,17 +101,17 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
                 battleMechanicsStatesComponent.characterSelected = true;
             }
 
-            if(battleMechanicsStatesComponent.move || battleMechanicsStatesComponent.attack){
+            if (battleMechanicsStatesComponent.move || battleMechanicsStatesComponent.attack) {
                 removeMoveAndAttackButtons();
             }
         }
     }
 
-    public void removeMoveAndAttackButtons(){
-        for(int i = 0; i < selectables.size(); i++){
+    public void removeMoveAndAttackButtons() {
+        for (int i = 0; i < selectables.size(); i++) {
             Entity entity1 = selectables.get(i);
             SelectableComponent selectableComponent1 = selectableComponentComponentMapper.get(entity1);
-            if(selectableComponent1.name.equals("move") || selectableComponent1.name.equals("attack")){
+            if (selectableComponent1.name.equals("move") || selectableComponent1.name.equals("attack")) {
                 getEngine().removeEntity(entity1);
             }
         }
@@ -129,19 +129,19 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
     @Override
     public boolean keyTyped(char character) {
-        if(character == '\b'){
-            if(settingsComponent.editUsername && settingsComponent.username.length() != 0){
+        if (character == '\b') {
+            if (settingsComponent.editUsername && settingsComponent.username.length() != 0) {
                 settingsComponent.username = settingsComponent.username.substring(0, settingsComponent.username.length() - 1);
-            } else if(settingsComponent.editPassword && settingsComponent.password.length() != 0){
+            } else if (settingsComponent.editPassword && settingsComponent.password.length() != 0) {
                 settingsComponent.password = settingsComponent.password.substring(0, settingsComponent.password.length() - 1);
-            } else if(settingsComponent.editConfirmPassword && settingsComponent.confirmPassword.length() != 0){
+            } else if (settingsComponent.editConfirmPassword && settingsComponent.confirmPassword.length() != 0) {
                 settingsComponent.confirmPassword = settingsComponent.confirmPassword.substring(0, settingsComponent.confirmPassword.length() - 1);
             }
-        } else if(character >= 32 && character <= 126){
+        } else if (character >= 32 && character <= 126) {
             if (settingsComponent.editUsername && settingsComponent.username.length() < 17 &&
                     ((character >= 48 && character <= 57)
-                    || (character >= 65 && character <= 90)
-                    || (character >= 97 && character <= 122))) {
+                            || (character >= 65 && character <= 90)
+                            || (character >= 97 && character <= 122))) {
                 settingsComponent.username = settingsComponent.username + character;
             } else if (settingsComponent.editPassword && settingsComponent.password.length() < 15) {
                 settingsComponent.password = settingsComponent.password + character;
@@ -168,7 +168,7 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
         selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth);
         selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y);
 
-        for (Entity entity : sortedSelectables){
+        for (Entity entity : sortedSelectables) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
@@ -201,10 +201,10 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
                     nothingSelectedYet = false;
                 }
 
-                if(!settingsComponent.isPaused && (
+                if (!settingsComponent.isPaused && (
                         selectableComponent.name.equals("move")
-                        || selectableComponent.name.equals("attack")
-                        )){
+                                || selectableComponent.name.equals("attack")
+                )) {
                     selectableComponent.touchDown = true;
                     nothingSelectedYet = false;
                 }
@@ -216,12 +216,12 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) { //User input for selecting characters
-        for (Entity entity : selectables){
+        for (Entity entity : selectables) {
             SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
 
             selectableComponent.touchDown = false;
         }
-        if(beingTapped && !beingDragged) {
+        if (beingTapped && !beingDragged) {
 
             ArrayList<Entity> sortedSelectables = new ArrayList<Entity>(layerSorter.sortByLayers(selectables).values());
             Collections.reverse(sortedSelectables);
@@ -231,7 +231,7 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
             selectedX = (int) Math.floor((screenX / scale) + orthographicCamera.position.x - orthographicCamera.viewportWidth);
             selectedY = (int) Math.floor(((-1) * screenY / scale) + orthographicCamera.position.y);
 
-            for (Entity entity : sortedSelectables){
+            for (Entity entity : sortedSelectables) {
                 PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
                 SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
                 CharacterPropertiesComponent characterPropertiesComponent = characterPropertiesComponentComponentMapper.get(entity);
@@ -338,8 +338,8 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
                             && battleMechanicsStatesComponent.isMyTurn
                             && characterPropertiesComponent.team.equals(SinglePlayerGameScene.team)
                             && !settingsComponent.isPaused) {
-                        if(!selectableComponent.isSelected) {
-                            if(!battleMechanicsStatesComponent.move && !battleMechanicsStatesComponent.attack && !battleMechanicsStatesComponent.characterSelected) {
+                        if (!selectableComponent.isSelected) {
+                            if (!battleMechanicsStatesComponent.move && !battleMechanicsStatesComponent.attack && !battleMechanicsStatesComponent.characterSelected) {
                                 selectableComponent.addSelection = true;
                                 nothingSelectedYet = false;
                             } else {
@@ -375,7 +375,7 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
                 }
             }
-            if(nothingSelectedYet){
+            if (nothingSelectedYet) {
                 for (Entity entity : sortedSelectables) {
                     SelectableComponent selectableComponent = selectableComponentComponentMapper.get(entity);
                     if (selectableComponent.name.equals("character")) {
@@ -408,10 +408,10 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) { //Move camera when screen is dragged
-        if(Math.abs(screenX - lastTouchX) / scale > 2 || Math.abs(screenY - lastTouchY) / scale > 2){
+        if (Math.abs(screenX - lastTouchX) / scale > 2 || Math.abs(screenY - lastTouchY) / scale > 2) {
             beingDragged = true;
         }
-        if(!settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER) {
+        if (!settingsComponent.isPaused && GameEngine.currentScene == GameEngine.singlePlayerGameScene.IDENTIFIER) {
             PositionComponent positionComponent = positionComponentComponentMapper.get(camera);
             CameraComponent cameraComponent = cameraComponentComponentMapper.get(camera);
             positionComponent.x -= ((screenX - lastDragX) / cameraComponent.scale);

@@ -14,27 +14,27 @@ public class CameraEntitySystem extends DisposableEntitySystem {
 
     private Entity map;
 
-    public CameraEntitySystem(Entity map){
+    public CameraEntitySystem(Entity map) {
         this.map = map;
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         cameras = engine.getEntitiesFor(Family.all(PositionComponent.class, CameraComponent.class).get());
     }
 
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
 
-        for(Entity entity : cameras){
+        for (Entity entity : cameras) {
             PositionComponent position = positionComponentComponentMapper.get(entity);
             CameraComponent camera = cameraComponentComponentMapper.get(entity);
-            if(position.x < 0){
+            if (position.x < 0) {
                 position.x = 0;
-            } else if(position.x > map.getComponent(MapComponent.class).mapEntities[0].length * 16){
+            } else if (position.x > map.getComponent(MapComponent.class).mapEntities[0].length * 16) {
                 position.x = map.getComponent(MapComponent.class).mapEntities[0].length * 16;
             }
-            if(position.y < 0){
+            if (position.y < 0) {
                 position.y = 0;
-            } else if(position.y > map.getComponent(MapComponent.class).mapEntities[0][0].length * 16){
+            } else if (position.y > map.getComponent(MapComponent.class).mapEntities[0][0].length * 16) {
                 position.y = map.getComponent(MapComponent.class).mapEntities[0][0].length * 16;
             }
             camera.camera.position.set(

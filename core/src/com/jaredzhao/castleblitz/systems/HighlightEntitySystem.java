@@ -13,23 +13,23 @@ public class HighlightEntitySystem extends DisposableEntitySystem {
     private ComponentMapper<HighlightComponent> highlightComponentComponentMapper = ComponentMapper.getFor(HighlightComponent.class);
     private ComponentMapper<PositionComponent> positionComponentComponentMapper = ComponentMapper.getFor(PositionComponent.class);
 
-    public HighlightEntitySystem(){
+    public HighlightEntitySystem() {
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         newHighlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, AddHighlightComponent.class).get());
         highlights = engine.getEntitiesFor(Family.all(HighlightComponent.class, PositionComponent.class).get());
     }
 
-    public void update(float deltaTime){
-        for(Entity entity : highlights){
+    public void update(float deltaTime) {
+        for (Entity entity : highlights) {
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             highlightComponent.highlight.getComponent(PositionComponent.class).x = positionComponent.x;
             highlightComponent.highlight.getComponent(PositionComponent.class).y = positionComponent.y;
         }
 
-        for(Entity entity : newHighlights){
+        for (Entity entity : newHighlights) {
             HighlightComponent highlightComponent = highlightComponentComponentMapper.get(entity);
             getEngine().addEntity(highlightComponent.highlight);
             entity.remove(AddHighlightComponent.class);

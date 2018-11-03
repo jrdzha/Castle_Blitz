@@ -53,7 +53,7 @@ public class HomeScene extends Scene {
     private GameServer characterSelectionServer;
     public static String team;
 
-    public HomeScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
+    public HomeScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor) {
         IDENTIFIER = 2;
         this.preferencesAccessor = preferencesAccessor;
         this.socketAccessor = socketAccessor;
@@ -84,7 +84,7 @@ public class HomeScene extends Scene {
         camera = entityFactory.createCamera(115);
         cameraScale = camera.getComponent(CameraComponent.class).scale;
 
-        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
+        Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         settingsComponent = settings.getComponent(SettingsComponent.class);
@@ -96,8 +96,8 @@ public class HomeScene extends Scene {
         settingsComponent.soundOn = localSettings[0];
         settingsComponent.sfxOn = localSettings[1];
 
-        headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int)(16 * camera.getComponent(CameraComponent.class).scale), true);
-        usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, Color.WHITE, (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
+        headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int) (16 * camera.getComponent(CameraComponent.class).scale), true);
+        usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, Color.WHITE, (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 16;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 16;
 
@@ -142,31 +142,31 @@ public class HomeScene extends Scene {
         systems.put("HighlightEntitySystem", new HighlightEntitySystem());
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
-        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderGaussianBlur = false;
-        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderFogOfWar = false;
-        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderEntities = false;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = false;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderFogOfWar = false;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderEntities = false;
 
         //Add systems to ashleyEngine
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
             ashleyEngine.addSystem(entry.getValue());
         }
 
-        while(settingsComponent.id.equals("") ||
+        while (settingsComponent.id.equals("") ||
                 settingsComponent.rank.equals("") ||
                 settingsComponent.gold.equals("") ||
                 settingsComponent.shards.equals("") ||
                 settingsComponent.xp.equals("") ||
                 settingsComponent.level.equals("") ||
-                settingsComponent.unlockedCharacters.size() == 0){
+                settingsComponent.unlockedCharacters.size() == 0) {
             socketAccessor.update();
-            if(socketAccessor.inputQueue.size() > 0) {
+            if (socketAccessor.inputQueue.size() > 0) {
                 String[] input = socketAccessor.inputQueue.get(0).split("\\.");
                 socketAccessor.inputQueue.remove(0);
                 if (input[0].equals("ID")) {
                     settingsComponent.id = input[1];
-                    idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
+                    idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
                     idText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
-                    preIdText = entityFactory.createText("/", 47 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(0.8f, 0.8f, 0.8f, 1), (int)(8 * camera.getComponent(CameraComponent.class).scale), false);
+                    preIdText = entityFactory.createText("/", 47 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(0.8f, 0.8f, 0.8f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
                     preIdText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(preIdText);
                     ashleyEngine.addEntity(idText);
@@ -174,25 +174,25 @@ public class HomeScene extends Scene {
                     settingsComponent.rank = input[1];
                 } else if (input[0].equals("LEVEL")) {
                     settingsComponent.level = input[1];
-                    levelText = entityFactory.createText(input[1], -47.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), true);
+                    levelText = entityFactory.createText(input[1], -47.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), true);
                     ashleyEngine.addEntity(levelText);
                 } else if (input[0].equals("XP")) {
                     settingsComponent.xp = input[1];
-                    xpText = entityFactory.createText(input[1], -21.25f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], -21.25f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("SHARDS")) {
                     settingsComponent.shards = input[1];
-                    xpText = entityFactory.createText(input[1], 50.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], 50.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("GOLD")) {
                     settingsComponent.gold = input[1];
-                    xpText = entityFactory.createText(input[1], 14.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int)(6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], 14.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("UNLOCKED-CHARACTERS")) {
-                    for(int i = 1; i < input.length; i++){
+                    for (int i = 1; i < input.length; i++) {
                         settingsComponent.unlockedCharacters.add(input[i]);
                     }
                 }
@@ -209,10 +209,10 @@ public class HomeScene extends Scene {
 
         headingText.getComponent(TextComponent.class).setText(settingsComponent.homeScreen.substring(4));
 
-        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderEntities = settingsComponent.homeScreen.equals("homeArmory");
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderEntities = settingsComponent.homeScreen.equals("homeArmory");
         settingsComponent.sfxOn = settingsComponent.homeScreen.equals("homeArmory");
 
-        if(settingsComponent.battle){
+        if (settingsComponent.battle) {
             return GameEngine.singlePlayerGameScene.IDENTIFIER;
         }
         return IDENTIFIER;
@@ -221,8 +221,8 @@ public class HomeScene extends Scene {
     @Override
     public void dispose() {
         systems.get("AudioEntitySystem").dispose();
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
-            if(entry.getValue() != null) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if (entry.getValue() != null) {
                 entry.getValue().dispose();
                 ashleyEngine.removeSystem(entry.getValue());
             }

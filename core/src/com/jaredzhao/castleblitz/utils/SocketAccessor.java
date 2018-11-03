@@ -20,14 +20,14 @@ public class SocketAccessor {
     public String host;
     BufferedReader bufferedReader;
 
-    public SocketAccessor(String host){
+    public SocketAccessor(String host) {
         this.host = host;
     }
 
     /**
      * Initializes SocketAccessor and attempts to connect to server
      */
-    public void init(){
+    public void init() {
         lastPing = -1;
 
         outputQueue = new ArrayList<String>();
@@ -39,14 +39,14 @@ public class SocketAccessor {
     /**
      * Attempt to connect to server
      */
-    public void connectToServer(){
+    public void connectToServer() {
         try {
-            if(socket != null){
+            if (socket != null) {
                 System.out.println("DISPOSING SOCKET");
                 socket.dispose();
             }
             System.out.println("CONNECTING");
-            socket = Gdx.net.newClientSocket(Protocol.TCP, host, 4000, new SocketHints());
+            socket = Gdx.net.newClientSocket(Protocol.TCP, host, 443, new SocketHints());
             System.out.println("CONNECTION SUCCESSFUL");
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (GdxRuntimeException e) {
@@ -63,10 +63,10 @@ public class SocketAccessor {
     /**
      * Multi-threaded send / receive data from server
      */
-    public void update(){
+    public void update() {
         //Ping
 
-        if(lastPing != (int) GameEngine.lifetime && (int) GameEngine.lifetime % 10 == 0){
+        if (lastPing != (int) GameEngine.lifetime && (int) GameEngine.lifetime % 10 == 0) {
             outputQueue.add("PING");
             lastPing = (int) GameEngine.lifetime;
         }
@@ -88,9 +88,9 @@ public class SocketAccessor {
         try {
             while (socket != null && bufferedReader.ready()) {
                 String input = bufferedReader.readLine();
-                if(input.equals("PING.OK")){
+                if (input.equals("PING.OK")) {
                     GameEngine.loggedInToServer = true;
-                } else if(input.equals("PING.ANON")){
+                } else if (input.equals("PING.ANON")) {
                     GameEngine.loggedInToServer = false;
                 } else {
                     inputQueue.add(input);

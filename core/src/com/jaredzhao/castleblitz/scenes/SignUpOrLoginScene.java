@@ -65,7 +65,7 @@ public class SignUpOrLoginScene extends Scene {
 
     MessageDigest digest;
 
-    public SignUpOrLoginScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
+    public SignUpOrLoginScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor) {
         IDENTIFIER = 1;
         this.preferencesAccessor = preferencesAccessor;
         this.socketAccessor = socketAccessor;
@@ -94,7 +94,7 @@ public class SignUpOrLoginScene extends Scene {
 
         camera = entityFactory.createCamera(115);
 
-        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
+        Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         settingsComponent = settings.getComponent(SettingsComponent.class);
@@ -115,7 +115,7 @@ public class SignUpOrLoginScene extends Scene {
 
         int textScale = 3;
         Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
-        while(testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.65f){
+        while (testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.65f) {
             textScale++;
             testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
             testText.getComponent(TextComponent.class).bitmapFont = testText.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(testText.getComponent(TextComponent.class).freeTypeFontParameter);
@@ -173,10 +173,11 @@ public class SignUpOrLoginScene extends Scene {
         systems.put("HighlightEntitySystem", new HighlightEntitySystem());
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
-        ((RenderEntitySystem)systems.get("RenderEntitySystem")).renderGaussianBlur = true;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = true;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderFogOfWar = false;
 
         //Add systems to ashleyEngine
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
             ashleyEngine.addSystem(entry.getValue());
         }
         System.gc();
@@ -193,11 +194,11 @@ public class SignUpOrLoginScene extends Scene {
 
         signUpLoginErrorText.getComponent(TextComponent.class).setText(settingsComponent.signUpLoginError);
 
-        if(settingsComponent.username.equals("") && !settingsComponent.editUsername){
+        if (settingsComponent.username.equals("") && !settingsComponent.editUsername) {
             usernameText.getComponent(TextComponent.class).setText("Username");
             usernameText.getComponent(TextComponent.class).setColor(new Color(1, 1, 1, 0.5f));
         } else {
-            if(settingsComponent.editUsername && (int)(GameEngine.lifetime * 10) % 10 < 5){
+            if (settingsComponent.editUsername && (int) (GameEngine.lifetime * 10) % 10 < 5) {
                 usernameText.getComponent(TextComponent.class).setText(settingsComponent.username + "|");
             } else {
                 usernameText.getComponent(TextComponent.class).setText(settingsComponent.username);
@@ -205,14 +206,14 @@ public class SignUpOrLoginScene extends Scene {
             usernameText.getComponent(TextComponent.class).setColor(Color.WHITE);
         }
 
-        if(settingsComponent.password.equals("") && !settingsComponent.editPassword){
+        if (settingsComponent.password.equals("") && !settingsComponent.editPassword) {
             passwordText.getComponent(TextComponent.class).setText("Password");
             passwordText.getComponent(TextComponent.class).setColor(new Color(1, 1, 1, 0.5f));
         } else {
             char[] chars = new char[settingsComponent.password.length()];
             Arrays.fill(chars, '*');
             String text = new String(chars);
-            if(settingsComponent.editPassword && (int)(GameEngine.lifetime * 10) % 10 < 5) {
+            if (settingsComponent.editPassword && (int) (GameEngine.lifetime * 10) % 10 < 5) {
                 passwordText.getComponent(TextComponent.class).setText(text + "|");
             } else {
                 passwordText.getComponent(TextComponent.class).setText(text);
@@ -220,14 +221,14 @@ public class SignUpOrLoginScene extends Scene {
             passwordText.getComponent(TextComponent.class).setColor(Color.WHITE);
         }
 
-        if(settingsComponent.confirmPassword.equals("") && !settingsComponent.editConfirmPassword){
+        if (settingsComponent.confirmPassword.equals("") && !settingsComponent.editConfirmPassword) {
             confirmPasswordText.getComponent(TextComponent.class).setText("Confirm");
             confirmPasswordText.getComponent(TextComponent.class).setColor(new Color(1, 1, 1, 0.5f));
         } else {
             char[] chars = new char[settingsComponent.confirmPassword.length()];
             Arrays.fill(chars, '*');
             String text = new String(chars);
-            if(settingsComponent.editConfirmPassword && (int)(GameEngine.lifetime * 10) % 10 < 5){
+            if (settingsComponent.editConfirmPassword && (int) (GameEngine.lifetime * 10) % 10 < 5) {
                 confirmPasswordText.getComponent(TextComponent.class).setText(text + "|");
             } else {
                 confirmPasswordText.getComponent(TextComponent.class).setText(text);
@@ -254,7 +255,7 @@ public class SignUpOrLoginScene extends Scene {
             }
         }
 
-        if(settingsComponent.accountScreen.equals("signUpOrLogin")){
+        if (settingsComponent.accountScreen.equals("signUpOrLogin")) {
             setVisible(loginButton, true);
             setVisible(signUpButton, true);
             setVisible(backButton, false);
@@ -268,20 +269,20 @@ public class SignUpOrLoginScene extends Scene {
             setYPosition(loginButton, -70);
             setYPosition(signUpButton, -90);
 
-            if(settingsComponent.login){
+            if (settingsComponent.login) {
                 settingsComponent.login = false;
                 settingsComponent.accountScreen = "login";
                 settingsComponent.editUsername = false;
                 settingsComponent.editPassword = false;
                 settingsComponent.editConfirmPassword = false;
-            } else if(settingsComponent.signUp){
+            } else if (settingsComponent.signUp) {
                 settingsComponent.signUp = false;
                 settingsComponent.accountScreen = "signUp";
                 settingsComponent.editUsername = false;
                 settingsComponent.editPassword = false;
                 settingsComponent.editConfirmPassword = false;
             }
-        } else if(settingsComponent.accountScreen.equals("signUp")){
+        } else if (settingsComponent.accountScreen.equals("signUp")) {
             setVisible(loginButton, false);
             setVisible(signUpButton, true);
             setVisible(backButton, true);
@@ -295,7 +296,7 @@ public class SignUpOrLoginScene extends Scene {
             setYPosition(signUpButton, -70);
             setYPosition(backButton, -90);
 
-            if(settingsComponent.signUp){
+            if (settingsComponent.signUp) {
                 settingsComponent.signUp = false;
                 settingsComponent.editUsername = false;
                 settingsComponent.editPassword = false;
@@ -327,14 +328,14 @@ public class SignUpOrLoginScene extends Scene {
                 }
                 settingsComponent.signUp = false;
                 settingsComponent.login = false;
-            } else if(settingsComponent.back){
+            } else if (settingsComponent.back) {
                 settingsComponent.back = false;
                 settingsComponent.accountScreen = "signUpOrLogin";
                 settingsComponent.editUsername = false;
                 settingsComponent.editPassword = false;
                 settingsComponent.editConfirmPassword = false;
             }
-        } else if(settingsComponent.accountScreen.equals("login")){
+        } else if (settingsComponent.accountScreen.equals("login")) {
             setVisible(loginButton, true);
             setVisible(signUpButton, false);
             setVisible(backButton, true);
@@ -348,14 +349,14 @@ public class SignUpOrLoginScene extends Scene {
             setYPosition(loginButton, -70);
             setYPosition(backButton, -90);
 
-            if(settingsComponent.login){
+            if (settingsComponent.login) {
                 settingsComponent.login = false;
                 settingsComponent.editUsername = false;
                 settingsComponent.editPassword = false;
                 settingsComponent.editConfirmPassword = false;
                 settingsComponent.signUpLoginError = "";
-                if(settingsComponent.username.length() > 0) {
-                    if(settingsComponent.password.length() > 0) {
+                if (settingsComponent.username.length() > 0) {
+                    if (settingsComponent.password.length() > 0) {
                         StringBuffer hashedPasswordBuffer = new StringBuffer();
                         for (Byte b : digest.digest(settingsComponent.password.getBytes())) {
                             hashedPasswordBuffer.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
@@ -370,7 +371,7 @@ public class SignUpOrLoginScene extends Scene {
                 } else {
                     settingsComponent.signUpLoginError = "Enter username";
                 }
-            } else if(settingsComponent.back){
+            } else if (settingsComponent.back) {
                 settingsComponent.back = false;
                 settingsComponent.accountScreen = "signUpOrLogin";
                 settingsComponent.editUsername = false;
@@ -381,25 +382,25 @@ public class SignUpOrLoginScene extends Scene {
 
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        if(GameEngine.loggedInToServer){
+        if (GameEngine.loggedInToServer) {
             return GameEngine.homeScene.IDENTIFIER;
         }
         return IDENTIFIER;
     }
 
-    public void setYPosition(Entity entity, float y){
-        if(entity.getComponent(StaticScreenPositionComponent.class).y != y){
+    public void setYPosition(Entity entity, float y) {
+        if (entity.getComponent(StaticScreenPositionComponent.class).y != y) {
             entity.getComponent(StaticScreenPositionComponent.class).y = y;
         }
     }
 
-    public void setVisible(Entity entity, boolean visible){
-        if(visible){
-            if(entity.getComponent(VisibleComponent.class) == null){
+    public void setVisible(Entity entity, boolean visible) {
+        if (visible) {
+            if (entity.getComponent(VisibleComponent.class) == null) {
                 entity.add(new VisibleComponent());
             }
         } else {
-            if(entity.getComponent(VisibleComponent.class) != null){
+            if (entity.getComponent(VisibleComponent.class) != null) {
                 entity.remove(VisibleComponent.class);
             }
         }
@@ -408,8 +409,8 @@ public class SignUpOrLoginScene extends Scene {
     @Override
     public void dispose() {
         systems.get("AudioEntitySystem").dispose();
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
-            if(entry.getValue() != null) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if (entry.getValue() != null) {
                 entry.getValue().dispose();
                 ashleyEngine.removeSystem(entry.getValue());
             }

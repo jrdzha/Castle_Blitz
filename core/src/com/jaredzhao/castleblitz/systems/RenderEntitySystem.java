@@ -6,6 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.RemoveTagComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
@@ -13,8 +16,14 @@ import com.jaredzhao.castleblitz.components.graphics.*;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 import com.jaredzhao.castleblitz.components.mechanics.*;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
+import com.jaredzhao.castleblitz.utils.DebugRenderer;
 import com.jaredzhao.castleblitz.utils.LayerSorter;
 import com.jaredzhao.castleblitz.utils.ShaderBatch;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RenderEntitySystem extends DisposableEntitySystem {
 
@@ -26,20 +35,19 @@ public class RenderEntitySystem extends DisposableEntitySystem {
     private FrameBuffer frameBufferA, frameBufferB;
     private TextureRegion frameBufferRegion;
 
+    private DebugRenderer debugRenderer;
+    private LinkedList<double[]> profile;
+    private int profilerValues = 180;
+
     private int maxPointLights = 15;
     public boolean renderEntities = true;
     public boolean renderFogOfWar = true;
     public boolean renderGaussianBlur = false;
 
-    private float brightness = 0.12f;
-    private float contrast = 1.6f;
-
-    private BitmapFont debugFont;
-
     private SettingsComponent settingsComponent;
     private CameraComponent cameraComponent;
     private FogOfWarComponent fogOfWarComponent;
-    private Entity fogOfWar;
+    private ShapeRenderer shapeRenderer;
 
     private ImmutableArray<Entity> renderables, textRenderables, lights, staticUI;
 
@@ -52,18 +60,22 @@ public class RenderEntitySystem extends DisposableEntitySystem {
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
     private ComponentMapper<TextComponent> textComponentComponentMapper = ComponentMapper.getFor(TextComponent.class);
 
+    private PerformanceCounter renderEntitiesPerformanceCounter;
+    private PerformanceCounter renderFogOfWarPerformanceCounter;
+    private PerformanceCounter renderStaticUIPerformanceCounter;
+    private PerformanceCounter renderTextPerformanceCounter;
+
     /**
      * DisposableEntitySystem used to render entities in the correct order with the correct shaders
      *
-     * @param camera            Orthographic Camera
-     * @param settings          Game Settings
-     * @param fogOfWar          Entity used to store fog of war data
+     * @param camera   Orthographic Camera
+     * @param settings Game Settings
+     * @param fogOfWar Entity used to store fog of war data
      */
-    public RenderEntitySystem(Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness){
+    public RenderEntitySystem(Entity camera, Entity settings, Entity fogOfWar, int mapHeight, float contrast, float brightness) {
         this.cameraComponent = camera.getComponent(CameraComponent.class);
         this.settingsComponent = settings.getComponent(SettingsComponent.class);
         this.fogOfWarComponent = fogOfWar.getComponent(FogOfWarComponent.class);
-        this.fogOfWar = fogOfWar;
 
         shaderBatch = new ShaderBatch(
                 Gdx.files.internal("graphics/shaders/default.vert").readString(),
@@ -77,6 +89,8 @@ public class RenderEntitySystem extends DisposableEntitySystem {
                 Gdx.files.internal("graphics/shaders/default.vert").readString(),
                 Gdx.files.internal("graphics/shaders/blur.frag").readString(), 2);
         spriteBatch = new SpriteBatch(); //SpriteBatch for rendering UI / debug text
+
+        shapeRenderer = new ShapeRenderer();
 
         shaderBatch.begin();
         shaderBatch.shader.setUniformf("contrast", contrast);
@@ -96,9 +110,21 @@ public class RenderEntitySystem extends DisposableEntitySystem {
 
         orthographicCamera = camera.getComponent(CameraComponent.class).camera; //Camera for easy access and for determing render location
 
-        debugFont = new BitmapFont();
-
         layerSorter = new LayerSorter(mapHeight);
+
+        ArrayList<Color> colors = new ArrayList<Color>();
+        colors.add(Color.WHITE);
+        colors.add(Color.GREEN);
+        colors.add(Color.RED);
+        colors.add(Color.BLUE);
+        debugRenderer = new DebugRenderer(spriteBatch, profilerValues, colors);
+
+        profile = new LinkedList<double[]>();
+
+        renderEntitiesPerformanceCounter = new PerformanceCounter("RenderEntities");
+        renderFogOfWarPerformanceCounter = new PerformanceCounter("RenderEntities");
+        renderStaticUIPerformanceCounter = new PerformanceCounter("RenderEntities");
+        renderTextPerformanceCounter = new PerformanceCounter("RenderEntities");
     }
 
     /**
@@ -106,7 +132,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
      *
      * @param engine
      */
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         renderables = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, DynamicScreenPositionComponent.class).get());
         textRenderables = engine.getEntitiesFor(Family.all(TextComponent.class, VisibleComponent.class, PositionComponent.class).get());
         staticUI = engine.getEntitiesFor(Family.all(AnimationComponent.class, SpriteComponent.class, PositionComponent.class, LayerComponent.class, VisibleComponent.class, StaticScreenPositionComponent.class).get());
@@ -116,11 +142,11 @@ public class RenderEntitySystem extends DisposableEntitySystem {
     /**
      * Update position of entities that should have a fixed position on the screen relative to camera movement
      */
-    public void updateFixedPositionRenderables(){
-        for(Entity entity : staticUI){
+    public void updateFixedPositionRenderables() {
+        for (Entity entity : staticUI) {
             PositionComponent position = positionComponentComponentMapper.get(entity);
             StaticScreenPositionComponent staticScreenPositionComponent = fixedScreenPositionComponentComponentMapper.get(entity);
-            if(staticScreenPositionComponent != null) {
+            if (staticScreenPositionComponent != null) {
                 position.x = staticScreenPositionComponent.x + orthographicCamera.position.x - orthographicCamera.viewportWidth / 2;
                 position.y = staticScreenPositionComponent.y + orthographicCamera.position.y - orthographicCamera.viewportHeight / 2;
             }
@@ -133,6 +159,12 @@ public class RenderEntitySystem extends DisposableEntitySystem {
      * @param deltaTime
      */
     public void update(float deltaTime) {
+
+        renderEntitiesPerformanceCounter.tick();
+        renderFogOfWarPerformanceCounter.tick();
+        renderStaticUIPerformanceCounter.tick();
+        renderTextPerformanceCounter.tick();
+
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
         //Gdx.gl.glClearColor(.06f, .06f, .22f, 1f); //Background color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
@@ -143,21 +175,25 @@ public class RenderEntitySystem extends DisposableEntitySystem {
         shaderBatch.setProjectionMatrix(orthographicCamera.projection);
         fogOfWarBatch.setProjectionMatrix(orthographicCamera.projection);
 
-        if(settingsComponent.isPaused || renderGaussianBlur){
+        if (settingsComponent.isPaused || renderGaussianBlur) {
             frameBufferA.begin();
             Gdx.gl.glClearColor(0f, 0f, 0f, 1f); //Background color
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); //Clear screen
         }
 
-        if(renderEntities) {
+        renderEntitiesPerformanceCounter.start();
+        if (renderEntities) {
             drawEntities(renderables);
         }
+        renderEntitiesPerformanceCounter.stop();
 
-        if(renderFogOfWar){
+        renderFogOfWarPerformanceCounter.start();
+        if (renderFogOfWar) {
             drawFogOfWar();
         }
+        renderFogOfWarPerformanceCounter.stop();
 
-        if(settingsComponent.isPaused || renderGaussianBlur){
+        if (settingsComponent.isPaused || renderGaussianBlur) {
             frameBufferA.end();
             frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
 
@@ -222,16 +258,24 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             blurBatch.end();
         }
 
+        renderStaticUIPerformanceCounter.start();
         drawEntities(staticUI);
+        renderStaticUIPerformanceCounter.stop();
+
+        renderTextPerformanceCounter.start();
         drawText();
+        renderTextPerformanceCounter.stop();
+
+        //System.out.println("" + renderEntitiesPerformanceCounter.load.value + ", " + renderFogOfWarPerformanceCounter.load.value + ", " + renderStaticUIPerformanceCounter.load.value + ", " + renderTextPerformanceCounter.load.value);
+        this.updatePerformanceProfile(new double[]{renderEntitiesPerformanceCounter.load.latest, renderFogOfWarPerformanceCounter.load.latest, renderStaticUIPerformanceCounter.load.latest, renderTextPerformanceCounter.load.latest});
     }
 
     /**
      * Draw in-game entities that should be rendered with the ShaderBatch
      *
-     * @param entities      List of entities to be rendered
+     * @param entities List of entities to be rendered
      */
-    public void drawEntities(ImmutableArray<Entity> entities){
+    public void drawEntities(ImmutableArray<Entity> entities) {
         shaderBatch.begin(); //Render entities
 
         {
@@ -241,7 +285,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             float[] pointLightXY = new float[maxPointLights * 2];
             float[] pointLightIntensity = new float[maxPointLights];
             for (Entity entity : lights) {
-                if(pointLightIntensityCounter >= maxPointLights){
+                if (pointLightIntensityCounter >= maxPointLights) {
                     break;
                 }
                 LightComponent lightComponent = lightComponentComponentMapper.get(entity);
@@ -301,25 +345,35 @@ public class RenderEntitySystem extends DisposableEntitySystem {
      */
     public void drawFogOfWar() {
 
-        fogOfWarBatch.begin();
-        fogOfWarBatch.shader.setUniformf("contrast", contrast);
-        fogOfWarBatch.shader.setUniformf("brightness", brightness);
-        SpriteComponent fogOfWarSpriteComponent = spriteComponentComponentMapper.get(fogOfWar);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        shapeRenderer.setProjectionMatrix(fogOfWarBatch.getProjectionMatrix());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < fogOfWarComponent.viewMap.length; i++) {
             for (int j = 0; j < fogOfWarComponent.viewMap[0].length; j++) {
                 int tileTypeInt = fogOfWarComponent.viewMap[i][j];
-                fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).setPosition((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)),
-                        (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
-                fogOfWarSpriteComponent.spriteList.get(tileTypeInt).get(0).draw(fogOfWarBatch);
+                if (tileTypeInt == 0) {
+                    shapeRenderer.setColor(new Color(0, 0, 0, 1f));
+                } else if (tileTypeInt == 1) {
+                    shapeRenderer.setColor(new Color(0, 0, 0, 0.75f));
+                } else if (tileTypeInt == 2) {
+                    shapeRenderer.setColor(new Color(0, 0, 0, 0.5f));
+                } else if (tileTypeInt == 3) {
+                    shapeRenderer.setColor(new Color(0, 0, 0, 0.25f));
+                } else if (tileTypeInt == 4) {
+                    shapeRenderer.setColor(new Color(0, 0, 0, 0f));
+                }
+                shapeRenderer.rect((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)), (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8), 16, 16);
+
             }
         }
-        fogOfWarBatch.end();
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     /**
      * Render static UI
      */
-    public void drawText(){
+    public void drawText() {
 
         spriteBatch.begin();
 
@@ -327,10 +381,10 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             PositionComponent positionComponent = positionComponentComponentMapper.get(entity);
             TextComponent textComponent = textComponentComponentMapper.get(entity);
 
-            if(textComponent.centered) {
+            if (textComponent.centered) {
                 textComponent.bitmapFont.draw(spriteBatch, textComponent.glyphLayout,
                         Gdx.graphics.getWidth() / 2 - textComponent.glyphLayout.width / 2 + positionComponent.x,
-                        Gdx.graphics.getHeight() / 2 - textComponent.glyphLayout.height / 2  + positionComponent.y);
+                        Gdx.graphics.getHeight() / 2 - textComponent.glyphLayout.height / 2 + positionComponent.y);
             } else {
                 textComponent.bitmapFont.draw(spriteBatch, textComponent.glyphLayout,
                         Gdx.graphics.getWidth() / 2 + positionComponent.x,
@@ -338,28 +392,43 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             }
         }
 
-        if (settingsComponent.debug) {
+        spriteBatch.end();
 
-            debugFont.draw(spriteBatch, "Castle Blitz - " + GameEngine.version, 10, Gdx.graphics.getHeight() - 10);
-            debugFont.draw(spriteBatch, "X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)), 10, Gdx.graphics.getHeight() - 50);
-            debugFont.draw(spriteBatch, "Y: " + (orthographicCamera.position.y - (orthographicCamera.viewportHeight / 2)), 10, Gdx.graphics.getHeight() - 70);
-            debugFont.draw(spriteBatch, "Lifetime: " + ((int) (GameEngine.lifetime * 10f)) / 10f + " s", 10, Gdx.graphics.getHeight() - 110);
-            debugFont.draw(spriteBatch, "Render Calls: " + (float) ((int) (((float) (shaderBatch.totalRenderCalls)) / 100)) / 10 + " x 1000", 10, Gdx.graphics.getHeight() - 130);
-            debugFont.draw(spriteBatch, "Render Calls / Frame: " + spriteBatch.renderCalls + shaderBatch.renderCalls + fogOfWarBatch.renderCalls, 10, Gdx.graphics.getHeight() - 150);
-            debugFont.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 170);
-            debugFont.draw(spriteBatch, "Entities: " + getEngine().getEntities().size(), 10, Gdx.graphics.getHeight() - 190);
-            debugFont.draw(spriteBatch, "Memory Usage: " + (float) (Gdx.app.getNativeHeap() / 100000) / 10f + "M", 10, Gdx.graphics.getHeight() - 210);
+        if (settingsComponent.debug) {
+            ArrayList<String> debugText = new ArrayList<String>();
+
+            debugText.add("Castle Blitz - " + GameEngine.version);
+            debugText.add("");
+            debugText.add("X: " + (orthographicCamera.position.x - (orthographicCamera.viewportWidth / 2)));
+            debugText.add("Y: " + (orthographicCamera.position.y - (orthographicCamera.viewportHeight / 2)));
+            debugText.add("");
+            debugText.add("Lifetime: " + ((int) (GameEngine.lifetime * 10f)) / 10f + " s");
+            debugText.add("Render Calls: " + (float) ((int) (((float) (shaderBatch.totalRenderCalls + spriteBatch.totalRenderCalls + fogOfWarBatch.totalRenderCalls)) / 100)) / 10 + " x 1000");
+//            debugText.add("Sprite Render Calls / Frame: " + spriteBatch.renderCalls);
+//            debugText.add("Shader Render Calls / Frame: " + shaderBatch.renderCalls);
+//            debugText.add("FOW Render Calls / Frame: " + fogOfWarBatch.renderCalls);
+//            debugText.add("Total Render Calls / Frame: " + (spriteBatch.renderCalls + shaderBatch.renderCalls + fogOfWarBatch.renderCalls));
+            debugText.add("FPS: " + Gdx.graphics.getFramesPerSecond());
+            debugText.add("Entities: " + getEngine().getEntities().size());
+            debugText.add("Memory Usage: " + (float) (Gdx.app.getNativeHeap() / 100000) / 10f + "M");
+            debugText.add("");
             MusicComponent musicComponent = getEngine().getEntitiesFor(Family.all(MusicComponent.class).get()).get(0).getComponent(MusicComponent.class);
             String currentTrack = "";
             if (musicComponent.currentMusicIndex != -1) {
                 currentTrack = musicComponent.currentMusicName;
                 currentTrack = currentTrack.substring(33, currentTrack.length() - 4);
             }
-            debugFont.draw(spriteBatch, "Music Playing: " + currentTrack, 10, Gdx.graphics.getHeight() - 230);
+            debugText.add("Music Playing: " + currentTrack);
 
+            debugRenderer.render(debugText, profile);
         }
+    }
 
-        spriteBatch.end();
+    public void updatePerformanceProfile(double[] profileUpdate) {
+        profile.addLast(profileUpdate);
+        while (profile.size() > profilerValues) {
+            profile.removeFirst();
+        }
     }
 
     /**
@@ -369,6 +438,6 @@ public class RenderEntitySystem extends DisposableEntitySystem {
     public void dispose() {
         shaderBatch.dispose();
         spriteBatch.dispose();
-        debugFont.dispose();
+        debugRenderer.dispose();
     }
 }

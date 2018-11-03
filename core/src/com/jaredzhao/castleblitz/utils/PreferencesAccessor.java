@@ -13,7 +13,7 @@ public class PreferencesAccessor {
     /**
      * Initialize preference access at correct location
      */
-    public void init(){
+    public void init() {
         preferences = Gdx.app.getPreferences("local");
     }
 
@@ -22,9 +22,9 @@ public class PreferencesAccessor {
      *
      * @return boolean array of settings
      */
-    public boolean[] loadLocalSettings(){
+    public boolean[] loadLocalSettings() {
         boolean[] localSettings = new boolean[2];
-        if(!getBoolean("loadedSettingsPreviously")){
+        if (!getBoolean("loadedSettingsPreviously")) {
             putBoolean("soundOn", true);
             putBoolean("sfxOn", true);
             putBoolean("loadedSettingsPreviously", true);
@@ -34,9 +34,9 @@ public class PreferencesAccessor {
         return localSettings;
     }
 
-    public String[] loadUserData(){
+    public String[] loadUserData() {
         String[] userData = new String[2];
-        if(getString("username") == null){
+        if (getString("username") == null) {
             putString("username", "%DOESNOTEXIST%");
             putString("password", "%DOESNOTEXIST%");
         }
@@ -48,10 +48,10 @@ public class PreferencesAccessor {
     /**
      * Save String data
      *
-     * @param key   Key for data
-     * @param val   String
+     * @param key Key for data
+     * @param val String
      */
-    public void putString(String key, String val){
+    public void putString(String key, String val) {
         preferences.putString(key, val);
         preferences.flush();
     }
@@ -59,10 +59,10 @@ public class PreferencesAccessor {
     /**
      * Save Boolean data
      *
-     * @param key   Key for data
-     * @param val   Boolean
+     * @param key Key for data
+     * @param val Boolean
      */
-    public void putBoolean(String key, boolean val){
+    public void putBoolean(String key, boolean val) {
         preferences.putBoolean(key, val);
         preferences.flush();
     }
@@ -70,10 +70,10 @@ public class PreferencesAccessor {
     /**
      * Save Int data
      *
-     * @param key   Key for data
-     * @param val   Int
+     * @param key Key for data
+     * @param val Int
      */
-    public void putInt(String key, int val){
+    public void putInt(String key, int val) {
         preferences.putInteger(key, val);
         preferences.flush();
     }
@@ -81,10 +81,10 @@ public class PreferencesAccessor {
     /**
      * Save Float data
      *
-     * @param key   Key for data
-     * @param val   Float
+     * @param key Key for data
+     * @param val Float
      */
-    public void putFloat(String key, float val){
+    public void putFloat(String key, float val) {
         preferences.putFloat(key, val);
         preferences.flush();
     }
@@ -92,39 +92,40 @@ public class PreferencesAccessor {
     /**
      * Retrieve String data
      *
-     * @param key   Key for data
-     * @return      String
+     * @param key Key for data
+     * @return String
      */
-    public String getString(String key){
+    public String getString(String key) {
         return preferences.getString(key);
     }
 
     /**
      * Retrieve Boolean data
      *
-     * @param key   Key for data
-     * @return      Boolean
+     * @param key Key for data
+     * @return Boolean
      */
-    public boolean getBoolean(String key){
+    public boolean getBoolean(String key) {
         return preferences.getBoolean(key);
     }
 
     /**
      * Retrieve Int data
-     * @param key   Key for data
-     * @return      Int
+     *
+     * @param key Key for data
+     * @return Int
      */
-    public int getInt(String key){
+    public int getInt(String key) {
         return preferences.getInteger(key);
     }
 
     /**
      * Retrieve Float data
      *
-     * @param key   Key for data
-     * @return      Float
+     * @param key Key for data
+     * @return Float
      */
-    public float getFloat(String key){
+    public float getFloat(String key) {
         return preferences.getFloat(key);
     }
 

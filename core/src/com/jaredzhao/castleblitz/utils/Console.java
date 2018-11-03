@@ -13,7 +13,7 @@ public class Console {
     /**
      * Initializes console
      */
-    public Console(){
+    public Console() {
         consoleHistory = new ArrayList<String>();
         consoleNewEntries = new ArrayList<String>();
     }
@@ -21,10 +21,10 @@ public class Console {
     /**
      * Polls next console entry
      *
-     * @return  Next console entry
+     * @return Next console entry
      */
-    public String pollConsoleNewEntries(){
-        if(consoleNewEntries.size() == 0 ){
+    public String pollConsoleNewEntries() {
+        if (consoleNewEntries.size() == 0) {
             return null;
         }
         String nextEntry = consoleNewEntries.get(0);
@@ -36,10 +36,10 @@ public class Console {
     /**
      * Peeks next console entry
      *
-     * @return  Next console entry
+     * @return Next console entry
      */
-    public String peekConsoleNewEntries(){
-        if(consoleNewEntries.size() == 0 ){
+    public String peekConsoleNewEntries() {
+        if (consoleNewEntries.size() == 0) {
             return null;
         }
         String nextEntry = consoleNewEntries.get(0);
@@ -49,9 +49,9 @@ public class Console {
     /**
      * Put new console entry
      *
-     * @param nextEntry     New console entry
+     * @param nextEntry New console entry
      */
-    public void putConsoleNewEntries(String nextEntry){
+    public void putConsoleNewEntries(String nextEntry) {
         System.out.println(nextEntry);
         consoleNewEntries.add(nextEntry);
     }
@@ -59,36 +59,36 @@ public class Console {
     /**
      * Retrieve console history
      *
-     * @return      Console history
+     * @return Console history
      */
-    public ArrayList<String> getConsoleHistory(){
+    public ArrayList<String> getConsoleHistory() {
         return consoleHistory;
     }
 
     /**
      * Retrieve full console stack
      *
-     * @return      Full console stack
+     * @return Full console stack
      */
-    public ArrayList<String> getConsoleNewEntries(){
+    public ArrayList<String> getConsoleNewEntries() {
         return consoleNewEntries;
     }
 
     /**
      * Retrieve console history size
      *
-     * @return      Size of history console
+     * @return Size of history console
      */
-    public int getConsoleHistorySize(){
+    public int getConsoleHistorySize() {
         return consoleHistory.size();
     }
 
     /**
      * Retrieve console size
      *
-     * @return      Size of console
+     * @return Size of console
      */
-    public int getConsoleNewEntriesSize(){
+    public int getConsoleNewEntriesSize() {
         return consoleNewEntries.size();
     }
 }

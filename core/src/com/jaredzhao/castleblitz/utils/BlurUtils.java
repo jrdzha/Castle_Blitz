@@ -17,16 +17,11 @@ public class BlurUtils {
      * format.
      * </p>
      *
-     * @param srcPixels
-     *            the source pixels
-     * @param dstPixels
-     *            the destination pixels
-     * @param width
-     *            the width of the source picture
-     * @param height
-     *            the height of the source picture
-     * @param radius
-     *            the radius of the blur effect
+     * @param srcPixels the source pixels
+     * @param dstPixels the destination pixels
+     * @param width     the width of the source picture
+     * @param height    the height of the source picture
+     * @param radius    the radius of the blur effect
      * @author Romain Guy <romain.guy@mac.com>
      */
     public static void blurPass(int[] srcPixels, int[] dstPixels, int width,
@@ -121,17 +116,12 @@ public class BlurUtils {
      * Blurs (in both horizontal and vertical directions) the specified RGBA
      * image with the given radius and iterations.
      *
-     * @param inputRGBA
-     *            the image pixels, in RGBA format
-     * @param width
-     *            the width of the image in pixels
-     * @param height
-     *            the height of the image in pixels
-     * @param radius
-     *            the radius of the blur effect
-     * @param iterations
-     *            the number of times to perform the blur; i.e. to increase
-     *            quality
+     * @param inputRGBA  the image pixels, in RGBA format
+     * @param width      the width of the image in pixels
+     * @param height     the height of the image in pixels
+     * @param radius     the radius of the blur effect
+     * @param iterations the number of times to perform the blur; i.e. to increase
+     *                   quality
      * @return the blurred pixels
      */
     public static int[] blur(int[] inputRGBA, int width, int height,
@@ -197,8 +187,7 @@ public class BlurUtils {
      * and alpha bytes in order; it is then flipped to "read mode" before being
      * returned.
      *
-     * @param pixels
-     *            the pixels to use
+     * @param pixels the pixels to use
      * @return the new byte buffer using RGBA bytes
      */
     public static ByteBuffer unpack(int[] pixels) {
@@ -217,14 +206,10 @@ public class BlurUtils {
     /**
      * A convenience method to apply the blur to the entire Pixmap.
      *
-     * @param pixmap
-     *            the pixmap to blur
-     * @param radius
-     *            the radius of the blur effect
-     * @param iterations
-     *            the number of iterations to blur
-     * @param disposePixmap
-     *            whether to dispose the given pixmap after blurring
+     * @param pixmap        the pixmap to blur
+     * @param radius        the radius of the blur effect
+     * @param iterations    the number of iterations to blur
+     * @param disposePixmap whether to dispose the given pixmap after blurring
      * @return a new Pixmap containing the blurred image
      */
     public static Pixmap blur(Pixmap pixmap, int radius, int iterations,
@@ -236,40 +221,28 @@ public class BlurUtils {
 
     /**
      * Blurs the specified pixmap with the given source and destination regions.
-     *
+     * <p>
      * The pixmap does not need to be in RGBA8888 format, however, it is
      * recommended for better performance.
-     *
+     * <p>
      * A new pixmap will be returned containing the blurred image. The old
      * pixmap will only be disposed of if <tt>disposePixmap</tt> returns true.
      *
-     * @param pixmap
-     *            the pixmap to blur
-     * @param srcx
-     *            the x of the pixmap region to blur
-     * @param srcy
-     *            the y of the pixmap region to blur
-     * @param srcwidth
-     *            the width of the pixmap region to blur
-     * @param srcheight
-     *            the height of the pixmap region to blur
-     * @param dstx
-     *            the destination x to place the blurred image on the resulting
-     *            pixmap
-     * @param dsty
-     *            the destination y to place the blurred image on the resulting
-     *            pixmap
-     * @param dstwidth
-     *            the desired width of the resulting pixmap
-     * @param dstheight
-     *            the desired height of the resulting pixmap
-     * @param radius
-     *            the radius of the blur effect, in pixels
-     * @param iterations
-     *            the number of iterations to apply the blur
-     * @param disposePixmap
-     *            whether to dispose the specified pixmap after applying the
-     *            blur
+     * @param pixmap        the pixmap to blur
+     * @param srcx          the x of the pixmap region to blur
+     * @param srcy          the y of the pixmap region to blur
+     * @param srcwidth      the width of the pixmap region to blur
+     * @param srcheight     the height of the pixmap region to blur
+     * @param dstx          the destination x to place the blurred image on the resulting
+     *                      pixmap
+     * @param dsty          the destination y to place the blurred image on the resulting
+     *                      pixmap
+     * @param dstwidth      the desired width of the resulting pixmap
+     * @param dstheight     the desired height of the resulting pixmap
+     * @param radius        the radius of the blur effect, in pixels
+     * @param iterations    the number of iterations to apply the blur
+     * @param disposePixmap whether to dispose the specified pixmap after applying the
+     *                      blur
      * @return a new RGBA8888 Pixmap containing the blurred image
      */
     public static Pixmap blur(Pixmap pixmap, int srcx, int srcy, int srcwidth,

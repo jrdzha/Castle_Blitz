@@ -16,7 +16,7 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
     /**
      * Initialize ResourceManagementEntitySystem
      */
-    public ResourceManagementEntitySystem(){
+    public ResourceManagementEntitySystem() {
 
     }
 
@@ -25,7 +25,7 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
      *
      * @param engine
      */
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         toBeRemoved = engine.getEntitiesFor(Family.all(RemoveTagComponent.class).get());
     }
 
@@ -34,8 +34,8 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
      *
      * @param deltaTime
      */
-    public void update(float deltaTime){
-        for(Entity entity : toBeRemoved){
+    public void update(float deltaTime) {
+        for (Entity entity : toBeRemoved) {
             entity.removeAll();
             getEngine().removeEntity(entity);
         }
@@ -46,7 +46,7 @@ public class ResourceManagementEntitySystem extends DisposableEntitySystem {
      */
     @Override
     public void dispose() {
-        while(getEngine().getEntities().size() > 0) {
+        while (getEngine().getEntities().size() > 0) {
             ImmutableArray<Entity> removeArray = getEngine().getEntities();
             for (Entity entity : removeArray) {
                 entity.removeAll();

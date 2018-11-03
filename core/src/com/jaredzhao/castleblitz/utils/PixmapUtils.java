@@ -10,8 +10,8 @@ public class PixmapUtils {
     /**
      * Returns pixmap flipped in the y-direction
      *
-     * @param src   Source Pixmap
-     * @return      Flipped Pixmap
+     * @param src Source Pixmap
+     * @return Flipped Pixmap
      */
     public static Pixmap flipPixmap(Pixmap src) {
         final int width = src.getWidth();

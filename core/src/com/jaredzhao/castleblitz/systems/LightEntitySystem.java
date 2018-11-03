@@ -12,16 +12,16 @@ public class LightEntitySystem extends DisposableEntitySystem {
     private ComponentMapper<LightComponent> lightComponentComponentMapper = ComponentMapper.getFor(LightComponent.class);
     private ComponentMapper<TileComponent> tileComponentComponentMapper = ComponentMapper.getFor(TileComponent.class);
 
-    public LightEntitySystem(){
+    public LightEntitySystem() {
 
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         lights = engine.getEntitiesFor(Family.all(LightComponent.class).get());
     }
 
-    public void update(float deltaTime){
-        for(Entity entity : lights){
+    public void update(float deltaTime) {
+        for (Entity entity : lights) {
             LightComponent lightComponent = lightComponentComponentMapper.get(entity);
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             lightComponent.x = tileComponent.tileX * 16;

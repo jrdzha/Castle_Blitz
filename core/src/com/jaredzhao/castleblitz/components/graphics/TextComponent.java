@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-public class TextComponent implements Component{
+public class TextComponent implements Component {
 
     public BitmapFont bitmapFont;
     public GlyphLayout glyphLayout;
@@ -15,12 +15,12 @@ public class TextComponent implements Component{
     public String text;
     public boolean centered;
 
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
         glyphLayout.setText(bitmapFont, text);
     }
 
-    public void setColor(Color color){
+    public void setColor(Color color) {
         freeTypeFontParameter.color = color;
         bitmapFont.dispose();
         bitmapFont = freeTypeFontGenerator.generateFont(freeTypeFontParameter);

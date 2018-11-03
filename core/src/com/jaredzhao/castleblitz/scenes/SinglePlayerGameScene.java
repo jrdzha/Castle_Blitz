@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.TextComponent;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
@@ -36,6 +37,8 @@ public class SinglePlayerGameScene extends Scene {
     private AnimationFactory animationFactory; //Animation factory for generating animations
     private MapFactory mapFactory; //Create map entity and load level data
 
+    private RenderEntitySystem renderEntitySystem; //Because we need reference to feed debug data later
+
     private Entity camera; //Camera for viewport
     private Entity map; //Map entity for easy access here *** Can probably be removed later on
     private Entity battleMechanics;
@@ -49,7 +52,9 @@ public class SinglePlayerGameScene extends Scene {
 
     private GameServer singlePlayerGameServer;
 
-    public SinglePlayerGameScene(PreferencesAccessor preferencesAccessor){
+    private PerformanceCounter performanceCounter;
+
+    public SinglePlayerGameScene(PreferencesAccessor preferencesAccessor) {
         IDENTIFIER = 3;
         this.preferencesAccessor = preferencesAccessor;
     }
@@ -79,8 +84,8 @@ public class SinglePlayerGameScene extends Scene {
         camera = entityFactory.createCamera(115);
 
         Entity settings = entityFactory.createSettings();
-        Entity fogOfWar = entityFactory.createFogOfWar(0, 0, 0, .3f, rawMap[0].length, rawMap[0][0].length);
-        whosTurnText = entityFactory.createText("YOUR TURN", 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int)(10 * camera.getComponent(CameraComponent.class).scale), true);
+        Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
+        whosTurnText = entityFactory.createText("YOUR TURN", 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int) (10 * camera.getComponent(CameraComponent.class).scale), true);
         settingsComponent = settings.getComponent(SettingsComponent.class);
         battleMechanics = entityFactory.createBattleMechanics();
         battleMechanics.getComponent(BattleMechanicsStatesComponent.class).isMyTurn = true;
@@ -121,9 +126,11 @@ public class SinglePlayerGameScene extends Scene {
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
+        renderEntitySystem = new RenderEntitySystem(camera, settings, fogOfWar, mapHeight, 1.6f, .12f);
+
         //Initialize systems
         systems.put("CameraEntitySystem", new CameraEntitySystem(map));
-        systems.put("RenderEntitySystem", new RenderEntitySystem(camera, settings, fogOfWar, mapHeight, 1.6f, .12f));
+        systems.put("RenderEntitySystem", renderEntitySystem);
         systems.put("MapEntitySystem", new MapEntitySystem(singlePlayerGameServer, map, fogOfWar, battleMechanics));
         systems.put("InputEntitySystem", new InputEntitySystem(singlePlayerGameServer, preferencesAccessor, entityFactory, camera, settings, battleMechanics, mapHeight));
         systems.put("ResourceManagementEntitySystem", new ResourceManagementEntitySystem());
@@ -134,15 +141,21 @@ public class SinglePlayerGameScene extends Scene {
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, singlePlayerGameServer, battleMechanics));
 
         //Add systems to ashleyEngine
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
             ashleyEngine.addSystem(entry.getValue());
         }
+
+        performanceCounter = new PerformanceCounter("SinglePlayerGameScene");
+
         System.gc();
     }
 
     @Override
     public int render() throws InterruptedException {
-        if (settingsComponent.isPaused){
+        performanceCounter.tick();
+        performanceCounter.start();
+
+        if (settingsComponent.isPaused) {
             whosTurnText.getComponent(TextComponent.class).setText("PAUSED");
             whosTurnText.getComponent(PositionComponent.class).y = Gdx.graphics.getHeight() / 5;
         } else if (battleMechanics.getComponent(BattleMechanicsStatesComponent.class).isMyTurn) {
@@ -153,20 +166,24 @@ public class SinglePlayerGameScene extends Scene {
             whosTurnText.getComponent(PositionComponent.class).y = Gdx.graphics.getHeight() * 2 / 5;
         }
 
+        //renderEntitySystem.updatePerformanceProfile(new double[]{performanceCounter.load.value});
         ashleyEngine.update(Gdx.graphics.getDeltaTime());
 
-        if(settingsComponent.goHome){
+        if (settingsComponent.goHome) {
             settingsComponent.goHome = false;
             return GameEngine.homeScene.IDENTIFIER;
         }
+
+        performanceCounter.stop();
+
         return IDENTIFIER;
     }
 
     @Override
     public void dispose() {
         systems.get("AudioEntitySystem").dispose();
-        for(HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
-            if(entry.getValue() != null) {
+        for (HashMap.Entry<String, DisposableEntitySystem> entry : systems.entrySet()) {
+            if (entry.getValue() != null) {
                 entry.getValue().dispose();
                 ashleyEngine.removeSystem(entry.getValue());
             }

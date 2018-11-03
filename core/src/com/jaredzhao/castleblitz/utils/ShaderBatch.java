@@ -15,9 +15,9 @@ public class ShaderBatch extends SpriteBatch {
     /**
      * Load and compile ShaderProgram
      *
-     * @param vertexShader      String containing vertex shader
-     * @param fragmentShader    String containing fragment shader
-     * @param size              Size of the ShaderProgram
+     * @param vertexShader   String containing vertex shader
+     * @param fragmentShader String containing fragment shader
+     * @param size           Size of the ShaderProgram
      */
     public ShaderBatch(String vertexShader, String fragmentShader, int size) {
         super(size);
@@ -25,7 +25,7 @@ public class ShaderBatch extends SpriteBatch {
         this.fragmentShader = fragmentShader;
         ShaderProgram.pedantic = false;
         shader = new ShaderProgram(vertexShader, fragmentShader);
-        if(shader.isCompiled()){
+        if (shader.isCompiled()) {
             setShader(shader);
         } else {
             System.out.println(shader.getLog());

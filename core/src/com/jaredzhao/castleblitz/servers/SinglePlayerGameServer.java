@@ -12,7 +12,7 @@ public class SinglePlayerGameServer implements GameServer {
     private String[][][] rawMap;
     private HashMap<String, boolean[][]> playerViewMaps;
 
-    public void init(){
+    public void init() {
         running = true;
         playerViewMaps = new HashMap<String, boolean[][]>();
 
@@ -52,16 +52,16 @@ public class SinglePlayerGameServer implements GameServer {
         }).start();
     }
 
-    public void loadMap(String[][][] rawMap){
+    public void loadMap(String[][][] rawMap) {
         this.rawMap = rawMap;
         updateViewMap();
     }
 
-    public String getTeam(){
+    public String getTeam() {
         return "G";
     }
 
-    public double viewRange(){
+    public double viewRange() {
         return 6.5;
     }
 
@@ -83,7 +83,7 @@ public class SinglePlayerGameServer implements GameServer {
         playerViewMaps.put("CLIENT", playerViewMap);
     }
 
-    public int[][] retrieveTeamPositions(){
+    public int[][] retrieveTeamPositions() {
         ArrayList<int[]> teamPositionArrayList = new ArrayList<int[]>();
         for (int j = 0; j < rawMap[0].length; j++) {
             for (int k = 0; k < rawMap[0][0].length; k++) {
@@ -94,21 +94,21 @@ public class SinglePlayerGameServer implements GameServer {
             }
         }
         int[][] teamPositionArray = new int[teamPositionArrayList.size()][2];
-        for(int i = 0; i < teamPositionArrayList.size(); i++){
+        for (int i = 0; i < teamPositionArrayList.size(); i++) {
             teamPositionArray[i] = teamPositionArrayList.get(i);
         }
         return teamPositionArray;
     }
 
-    public boolean[][] retrieveViewMap(){
+    public boolean[][] retrieveViewMap() {
         return playerViewMaps.get("CLIENT"); //Only return what has been adjusted for fog of war
     }
 
-    public Console getConsole(){
+    public Console getConsole() {
         return console;
     }
 
-    public void killServer(){
+    public void killServer() {
         running = false;
     }
 

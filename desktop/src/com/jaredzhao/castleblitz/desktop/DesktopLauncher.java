@@ -7,6 +7,9 @@ import com.jaredzhao.castleblitz.GameEngine;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.vSyncEnabled = true;
+		config.foregroundFPS = 60;
+		config.backgroundFPS = 60;
 		GameEngine gameEngine = new GameEngine();
 
 		config.title = "Castle Blitz - " + GameEngine.version;

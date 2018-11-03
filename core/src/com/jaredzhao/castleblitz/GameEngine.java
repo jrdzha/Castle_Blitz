@@ -15,108 +15,108 @@ import java.util.ArrayList;
  */
 public class GameEngine extends ApplicationAdapter {
 
-	private ArrayList<Scene> sceneList; //ArrayList containing all scenes
+    private ArrayList<Scene> sceneList; //ArrayList containing all scenes
 
-	public static int currentScene; //Current scene number
-	public static boolean loggedInToServer = false;
+    public static int currentScene; //Current scene number
+    public static boolean loggedInToServer = false;
 
-	public static Scene singlePlayerGameScene;
-	public static Scene openingScene;
-	public static Scene homeScene;
-	public static Scene signUpOrLoginScene;
+    public static Scene singlePlayerGameScene;
+    public static Scene openingScene;
+    public static Scene homeScene;
+    public static Scene signUpOrLoginScene;
 
-	public static Vector2 safeAreaInsets;
+    public static Vector2 safeAreaInsets;
 
-	public static String version = "Build 57"; //Current build version
+    public static String version = "Build 58"; //Current build version
 
-	public static float lifetime;
+    public static float lifetime;
 
-	public PreferencesAccessor preferencesAccessor;
-	public SocketAccessor socketAccessor;
+    public PreferencesAccessor preferencesAccessor;
+    public SocketAccessor socketAccessor;
 
-	/**
-	 * Creates the game object and initializes Accessors
-	 */
-	public GameEngine(){
-		preferencesAccessor = new PreferencesAccessor();
-		socketAccessor = new SocketAccessor("jaredzhao.com");
-	}
+    /**
+     * Creates the game object and initializes Accessors
+     */
+    public GameEngine() {
+        preferencesAccessor = new PreferencesAccessor();
+        socketAccessor = new SocketAccessor("jaredzhao.com");
+    }
 
-	/**
-	 * Starts the game and initializes scenes
-	 */
-	@Override
-	public void create () { //Called once when the game is started
-		lifetime = 0;
+    /**
+     * Starts the game and initializes scenes
+     */
+    @Override
+    public void create() { //Called once when the game is started
+        lifetime = 0;
 
-		Gdx.graphics.setResizable(false);
+        Gdx.graphics.setResizable(false);
 
-		preferencesAccessor.init();
-		socketAccessor.init();
+        preferencesAccessor.init();
+        socketAccessor.init();
 
-		sceneList = new ArrayList<Scene>();
+        sceneList = new ArrayList<Scene>();
 
-		initiateScenes();
+        initiateScenes();
 
-		currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
+        currentScene = openingScene.IDENTIFIER; //Current scene is openingScene
 
-		safeAreaInsets = getIOSSafeAreaInsets();
-		//safeAreaInsets = new Vector2(Gdx.graphics.getWidth(), 32);
-	}
+        safeAreaInsets = getIOSSafeAreaInsets();
+        //safeAreaInsets = new Vector2(Gdx.graphics.getWidth(), 32);
+    }
 
-	public void initiateScenes(){
-		singlePlayerGameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
-		openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
-		homeScene = new HomeScene(preferencesAccessor, socketAccessor);
-		signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
+    public void initiateScenes() {
+        singlePlayerGameScene = new SinglePlayerGameScene(preferencesAccessor); //Create new SinglePlayerGameScene
+        openingScene = new OpeningScene(preferencesAccessor, socketAccessor);
+        homeScene = new HomeScene(preferencesAccessor, socketAccessor);
+        signUpOrLoginScene = new SignUpOrLoginScene(preferencesAccessor, socketAccessor);
 
-		sceneList.add(openingScene); //IDENTIFIER = 0
-		sceneList.add(signUpOrLoginScene); //IDENTIFIER = 1
-		sceneList.add(homeScene); //IDENTIFIER = 2
-		sceneList.add(singlePlayerGameScene); //IDENTIFIER = 3
-	}
+        sceneList.add(openingScene); //IDENTIFIER = 0
+        sceneList.add(signUpOrLoginScene); //IDENTIFIER = 1
+        sceneList.add(homeScene); //IDENTIFIER = 2
+        sceneList.add(singlePlayerGameScene); //IDENTIFIER = 3
+    }
 
-	/**
-	 * Calls render in appropriate scenes
-	 * Switches between scenes when necessary
-	 */
-	@Override
-	public void render () {
-		socketAccessor.update();
+    /**
+     * Calls render in appropriate scenes
+     * Switches between scenes when necessary
+     */
+    @Override
+    public void render() {
+        socketAccessor.update();
 
-		if(!loggedInToServer && currentScene != openingScene.IDENTIFIER && currentScene != signUpOrLoginScene.IDENTIFIER){
-			currentScene = openingScene.IDENTIFIER;
-		}
+        if (!loggedInToServer && currentScene != openingScene.IDENTIFIER && currentScene != signUpOrLoginScene.IDENTIFIER) {
+            currentScene = openingScene.IDENTIFIER;
+        }
 
-		for(Scene scene : sceneList){
-			if(currentScene == scene.IDENTIFIER){
-				if(!scene.isRunning){
-					scene.init();
-					scene.isRunning = true;
-				}
-				try {
-					currentScene = scene.render();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			} else if(scene.isRunning) {
-				scene.dispose();
-				scene.isRunning = false;
-			}
-		}
+        for (Scene scene : sceneList) {
+            if (currentScene == scene.IDENTIFIER) {
+                if (!scene.isRunning) {
+                    scene.init();
+                    scene.isRunning = true;
+                }
+                try {
+                    currentScene = scene.render();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else if (scene.isRunning) {
+                scene.dispose();
+                scene.isRunning = false;
+            }
+        }
 
-		lifetime += Gdx.graphics.getDeltaTime();
-	}
+        lifetime += Gdx.graphics.getDeltaTime();
+    }
 
-	public static Vector2 getIOSSafeAreaInsets() {
-		if (Gdx.app.getType() == Application.ApplicationType.iOS) {
-			try {
-				Class<?> IOSLauncher = Class.forName("com.jaredzhao.castleblitz.IOSLauncher");
-				return (Vector2) IOSLauncher.getDeclaredMethod("getSafeAreaInsets").invoke(null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return new Vector2();
-	}
+    public static Vector2 getIOSSafeAreaInsets() {
+        if (Gdx.app.getType() == Application.ApplicationType.iOS) {
+            try {
+                Class<?> IOSLauncher = Class.forName("com.jaredzhao.castleblitz.IOSLauncher");
+                return (Vector2) IOSLauncher.getDeclaredMethod("getSafeAreaInsets").invoke(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new Vector2();
+    }
 }

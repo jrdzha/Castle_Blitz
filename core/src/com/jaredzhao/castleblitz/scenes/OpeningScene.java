@@ -29,7 +29,7 @@ public class OpeningScene extends Scene {
 
     private String[] userData;
 
-    public OpeningScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor){
+    public OpeningScene(PreferencesAccessor preferencesAccessor, SocketAccessor socketAccessor) {
         IDENTIFIER = 0;
         loggedIn = false;
         this.preferencesAccessor = preferencesAccessor;
@@ -53,7 +53,7 @@ public class OpeningScene extends Scene {
 
         userData = preferencesAccessor.loadUserData();
 
-        if(userData[0].equals("%DOESNOTEXIST%")){
+        if (userData[0].equals("%DOESNOTEXIST%")) {
             //send to account creation
             nextScene = GameEngine.signUpOrLoginScene.IDENTIFIER;
         } else {
@@ -91,14 +91,14 @@ public class OpeningScene extends Scene {
 
         batch.end();
 
-        if(socketAccessor.inputQueue.size() != 0){
-            if(socketAccessor.inputQueue.get(0).equals("LOGIN.OK")) {
+        if (socketAccessor.inputQueue.size() != 0) {
+            if (socketAccessor.inputQueue.get(0).equals("LOGIN.OK")) {
                 loggedIn = true;
                 socketAccessor.inputQueue.remove(0);
             }
         }
 
-        if(!loggedIn && timesRendered % 600 == 599){
+        if (!loggedIn && timesRendered % 600 == 599) {
             socketAccessor.outputQueue.add("LOGIN." + userData[0] + "." + userData[1]);
         }
 
@@ -111,7 +111,7 @@ public class OpeningScene extends Scene {
         return IDENTIFIER;
     }
 
-    public void dispose(){
+    public void dispose() {
         batch.dispose();
         fontGenerator.dispose();
         font.dispose();

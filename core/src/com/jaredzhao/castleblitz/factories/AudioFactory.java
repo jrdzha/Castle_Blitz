@@ -6,15 +6,15 @@ import com.badlogic.gdx.audio.Sound;
 
 public class AudioFactory {
 
-    public AudioFactory(){
+    public AudioFactory() {
 
     }
 
-    public Sound loadSound(String location){ //Load assets
+    public Sound loadSound(String location) { //Load assets
         return Gdx.audio.newSound(Gdx.files.internal(location));
     }
 
-    public String[] loadMusicTitles(){ //List of available tracks
+    public String[] loadMusicTitles() { //List of available tracks
         String[] songs = {"Vindsvept - Vindsvept Complete - 03 Let the Embers Burn.mp3",
                 "Vindsvept - Vindsvept Complete - 04 Weaving the Skies.mp3",
                 "Vindsvept - Vindsvept Complete - 05 In Honour of the king, part one.mp3",
@@ -82,7 +82,7 @@ public class AudioFactory {
         return songs;
     }
 
-    public Music loadMusic(String location){ //Load music from disk
+    public Music loadMusic(String location) { //Load music from disk
         return Gdx.audio.newMusic(Gdx.files.internal("audio/ost/" + location));
     }
 

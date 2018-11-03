@@ -23,13 +23,13 @@ public class BattleMechanicsEntitySystem extends DisposableEntitySystem {
     private BattleMechanicsStatesComponent battleMechanicsStatesComponent;
     private GameServer gameServer;
 
-    public BattleMechanicsEntitySystem(Entity map, GameServer gameServer, Entity battleMechanics){
+    public BattleMechanicsEntitySystem(Entity map, GameServer gameServer, Entity battleMechanics) {
         this.map = map;
         this.gameServer = gameServer;
         this.battleMechanicsStatesComponent = battleMechanics.getComponent(BattleMechanicsStatesComponent.class);
     }
 
-    public void addedToEngine(Engine engine){
+    public void addedToEngine(Engine engine) {
         selectedCharacters = engine.getEntitiesFor(Family.all(SelectableComponent.class, CharacterPropertiesComponent.class).get());
     }
 
