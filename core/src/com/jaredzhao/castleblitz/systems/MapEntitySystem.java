@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.FogOfWarComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
@@ -154,8 +155,8 @@ public class MapEntitySystem extends DisposableEntitySystem {
         for (Entity entity : updateTileEntities) {
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
             PositionComponent position = positionComponentComponentMapper.get(entity);
-            position.x = tileComponent.tileX * 16;
-            position.y = tileComponent.tileY * 16;
+            position.x = tileComponent.tileX * GameEngine.tileSize;
+            position.y = tileComponent.tileY * GameEngine.tileSize;
             entity.remove(UpdateTileComponent.class);
         }
 

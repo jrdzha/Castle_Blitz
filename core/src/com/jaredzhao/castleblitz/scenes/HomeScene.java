@@ -81,7 +81,7 @@ public class HomeScene extends Scene {
         characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        camera = entityFactory.createCamera(115);
+        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
         cameraScale = camera.getComponent(CameraComponent.class).scale;
 
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
@@ -109,23 +109,23 @@ public class HomeScene extends Scene {
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", true,
                 -36,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homePotions", true,
                 -18,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle", true,
                 0,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory", true,
                 18,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeRanking", true,
                 36,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, 16, 32));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, 80, 16));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeLevelStatus", true, -36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeGoldStatus", true, 0, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShardStatus", true, 36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, 32, 8));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, GameEngine.tileSize * 5, GameEngine.tileSize));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeLevelStatus", true, -36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeGoldStatus", true, 0, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShardStatus", true, 36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/armory.lvl"))));
 

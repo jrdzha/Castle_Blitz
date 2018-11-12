@@ -92,14 +92,14 @@ public class SignUpOrLoginScene extends Scene {
         characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        camera = entityFactory.createCamera(115);
+        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
 
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
         Entity battleMechanics = entityFactory.createBattleMechanics();
         settingsComponent = settings.getComponent(SettingsComponent.class);
-        camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
-        camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
+        camera.getComponent(PositionComponent.class).x = GameEngine.tileSize * rawMap[0].length / 2 - (GameEngine.tileSize / 2);
+        camera.getComponent(PositionComponent.class).y = GameEngine.tileSize * rawMap[0][0].length / 2 - (GameEngine.tileSize / 2);
         cameraScale = camera.getComponent(CameraComponent.class).scale;
 
         ashleyEngine.addEntity(camera);
@@ -126,6 +126,7 @@ public class SignUpOrLoginScene extends Scene {
         settingsComponent.password = "";
         settingsComponent.confirmPassword = "";
         settingsComponent.signUpLoginError = "";
+        settingsComponent.debug = true;
 
         usernameText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale, 75 * cameraScale, new Color(1, 1, 1, 0.5f), textScale, false);
         passwordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale, 55 * cameraScale, new Color(1, 1, 1, 0.5f), textScale, false);
@@ -173,7 +174,7 @@ public class SignUpOrLoginScene extends Scene {
         systems.put("HighlightEntitySystem", new HighlightEntitySystem());
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
-        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = true;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = false;
         ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderFogOfWar = false;
 
         //Add systems to ashleyEngine
@@ -185,6 +186,7 @@ public class SignUpOrLoginScene extends Scene {
 
     @Override
     public int render() throws InterruptedException {
+        System.out.println(loginButton.getComponent(PositionComponent.class).x + ", " + loginButton.getComponent(PositionComponent.class).y);
 
         if (settingsComponent.editPassword || settingsComponent.editUsername || settingsComponent.editConfirmPassword) {
             Gdx.input.setOnscreenKeyboardVisible(true);

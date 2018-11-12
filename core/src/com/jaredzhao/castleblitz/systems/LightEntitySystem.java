@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.LightComponent;
 import com.jaredzhao.castleblitz.components.map.TileComponent;
 
@@ -24,8 +25,8 @@ public class LightEntitySystem extends DisposableEntitySystem {
         for (Entity entity : lights) {
             LightComponent lightComponent = lightComponentComponentMapper.get(entity);
             TileComponent tileComponent = tileComponentComponentMapper.get(entity);
-            lightComponent.x = tileComponent.tileX * 16;
-            lightComponent.y = tileComponent.tileY * 16 + 6;
+            lightComponent.x = tileComponent.tileX * GameEngine.tileSize;
+            lightComponent.y = tileComponent.tileY * GameEngine.tileSize + (GameEngine.tileSize * 6 / 16);
         }
     }
 

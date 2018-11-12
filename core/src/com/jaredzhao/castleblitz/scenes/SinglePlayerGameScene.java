@@ -81,7 +81,7 @@ public class SinglePlayerGameScene extends Scene {
         map = mapFactory.loadMap(rawMap);
 
         //Create entities
-        camera = entityFactory.createCamera(115);
+        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
 
         Entity settings = entityFactory.createSettings();
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
@@ -100,22 +100,22 @@ public class SinglePlayerGameScene extends Scene {
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", true,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", false,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", false,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", false,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("home", false,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", false,
                 camera.getComponent(CameraComponent.class).cameraWidth / 2 - 100,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, 16, 16));
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
 

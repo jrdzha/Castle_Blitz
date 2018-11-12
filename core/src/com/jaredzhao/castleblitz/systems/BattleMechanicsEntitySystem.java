@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.graphics.AnimationComponent;
 import com.jaredzhao.castleblitz.components.graphics.HighlightComponent;
 import com.jaredzhao.castleblitz.components.graphics.VisibleComponent;
@@ -63,8 +64,8 @@ public class BattleMechanicsEntitySystem extends DisposableEntitySystem {
                     Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) == null) {
                         tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = GameEngine.tileSize;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = GameEngine.tileSize;
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
 
                         tile.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());
@@ -78,8 +79,8 @@ public class BattleMechanicsEntitySystem extends DisposableEntitySystem {
                     Entity tile = map.getComponent(MapComponent.class).mapEntities[0][position[0]][position[1]];
                     if (tile != null && tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class) == null) {
                         tile.getComponent(HighlightComponent.class).highlight.add(new SelectableComponent());
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = 16;
-                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = 16;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeX = GameEngine.tileSize;
+                        tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).sizeY = GameEngine.tileSize;
                         tile.getComponent(HighlightComponent.class).highlight.getComponent(SelectableComponent.class).name = "tile";
 
                         tile.getComponent(HighlightComponent.class).highlight.add(new VisibleComponent());

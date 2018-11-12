@@ -62,6 +62,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
 
     private PerformanceCounter renderEntitiesPerformanceCounter;
     private PerformanceCounter renderFogOfWarPerformanceCounter;
+    private PerformanceCounter renderGaussianBlurPerformanceCounter;
     private PerformanceCounter renderStaticUIPerformanceCounter;
     private PerformanceCounter renderTextPerformanceCounter;
 
@@ -115,16 +116,18 @@ public class RenderEntitySystem extends DisposableEntitySystem {
         ArrayList<Color> colors = new ArrayList<Color>();
         colors.add(Color.WHITE);
         colors.add(Color.GREEN);
+        colors.add(Color.YELLOW);
         colors.add(Color.RED);
-        colors.add(Color.BLUE);
+        colors.add(Color.CYAN);
         debugRenderer = new DebugRenderer(spriteBatch, profilerValues, colors);
 
         profile = new LinkedList<double[]>();
 
         renderEntitiesPerformanceCounter = new PerformanceCounter("RenderEntities");
-        renderFogOfWarPerformanceCounter = new PerformanceCounter("RenderEntities");
-        renderStaticUIPerformanceCounter = new PerformanceCounter("RenderEntities");
-        renderTextPerformanceCounter = new PerformanceCounter("RenderEntities");
+        renderFogOfWarPerformanceCounter = new PerformanceCounter("RenderFogOfWar");
+        renderGaussianBlurPerformanceCounter = new PerformanceCounter("RenderGaussianBlur");
+        renderStaticUIPerformanceCounter = new PerformanceCounter("RenderStaticUI");
+        renderTextPerformanceCounter = new PerformanceCounter("RenderText");
     }
 
     /**
@@ -162,6 +165,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
 
         renderEntitiesPerformanceCounter.tick();
         renderFogOfWarPerformanceCounter.tick();
+        renderGaussianBlurPerformanceCounter.tick();
         renderStaticUIPerformanceCounter.tick();
         renderTextPerformanceCounter.tick();
 
@@ -193,6 +197,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
         }
         renderFogOfWarPerformanceCounter.stop();
 
+        renderGaussianBlurPerformanceCounter.start();
         if (settingsComponent.isPaused || renderGaussianBlur) {
             frameBufferA.end();
             frameBufferRegion.setTexture(frameBufferA.getColorBufferTexture());
@@ -257,6 +262,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             blurBatch.draw(frameBufferRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             blurBatch.end();
         }
+        renderGaussianBlurPerformanceCounter.stop();
 
         renderStaticUIPerformanceCounter.start();
         drawEntities(staticUI);
@@ -267,7 +273,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
         renderTextPerformanceCounter.stop();
 
         //System.out.println("" + renderEntitiesPerformanceCounter.load.value + ", " + renderFogOfWarPerformanceCounter.load.value + ", " + renderStaticUIPerformanceCounter.load.value + ", " + renderTextPerformanceCounter.load.value);
-        this.updatePerformanceProfile(new double[]{renderEntitiesPerformanceCounter.load.latest, renderFogOfWarPerformanceCounter.load.latest, renderStaticUIPerformanceCounter.load.latest, renderTextPerformanceCounter.load.latest});
+        this.updatePerformanceProfile(new double[]{renderEntitiesPerformanceCounter.load.latest, renderFogOfWarPerformanceCounter.load.latest, renderGaussianBlurPerformanceCounter.load.latest, renderStaticUIPerformanceCounter.load.latest, renderTextPerformanceCounter.load.latest});
     }
 
     /**
@@ -324,7 +330,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
                     if (entity.getComponent(TileComponent.class) != null) {
                         currentSprite.setPosition(
                                 (positionComponent.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),
-                                (positionComponent.y - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8));
+                                (positionComponent.y - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - (GameEngine.tileSize / 2)));
                     } else {
                         currentSprite.setPosition(
                                 (positionComponent.x - orthographicCamera.position.x - (currentSprite.getWidth() / 2) + (orthographicCamera.viewportWidth / 2)),

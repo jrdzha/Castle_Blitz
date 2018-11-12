@@ -5,23 +5,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.jaredzhao.castleblitz.GameEngine;
 
 import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture props, tiles, castle, highlight, ui, ui2, homeui;
+    private Texture props, tiles1, tiles2, castle, highlight, ui, ui2, homeui;
 
     public AnimationFactory() { //Load assets
-        props = new Texture(Gdx.files.internal("graphics/dungeon_textures2.png"));
-        tiles = new Texture(Gdx.files.internal("graphics/dungeon_textures4.png"));
-        castle = new Texture(Gdx.files.internal("graphics/castle1.png"));
-        highlight = new Texture(Gdx.files.internal("graphics/highlight.png"));
+        props = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures2.png"));
+        tiles1 = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures6.png"));
+        tiles2 = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures7.png"));
+        castle = new Texture(Gdx.files.internal("graphics/highres/castle1.png"));
+        highlight = new Texture(Gdx.files.internal("graphics/highres/highlight.png"));
         ui = new Texture(Gdx.files.internal("ui/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
         homeui = new Texture(Gdx.files.internal("ui/home-ui.png"));
-
-        tiles.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h) { //Generate sprite with given dimensions and location from a texture
@@ -29,7 +29,7 @@ public class AnimationFactory {
     }
 
     public Sprite spriteRegionForTile(Texture tex, int x, int y, int w, int h) { //Generate sprite with given dimensions and location from a texture
-        return new Sprite(new TextureRegion(tex, (x * 16) + x, (y * 16) + y, w, h));
+        return new Sprite(new TextureRegion(tex, (x * (GameEngine.tileSize / 16 + 1) * 16), (y * (GameEngine.tileSize / 16 + 1) * 16), w, h));
     }
 
     public Object[] createUI(String type, int sizeX, int sizeY, float scale) { //Create UI elements
@@ -127,7 +127,11 @@ public class AnimationFactory {
     public Object[] createTile(int type) { //Create tile
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        sprites.add(spriteRegionForTile(tiles, type % 21, type / 21, 16, 16));
+        if (type % 21 < 12) {
+            sprites.add(spriteRegionForTile(tiles1, type % 21, type / 21, GameEngine.tileSize, GameEngine.tileSize));
+        } else {
+            sprites.add(spriteRegionForTile(tiles2, (type % 21) - 12, type / 21, GameEngine.tileSize, GameEngine.tileSize));
+        }
         sprites.get(0).setScale(1.005f);
         completeAnimation[0] = sprites;
         ArrayList<Integer> animations = new ArrayList<Integer>();
@@ -139,7 +143,7 @@ public class AnimationFactory {
     public Object[] createCastle() { //Create castle
         Object[] completeAnimation = new Object[2];
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-        Sprite castleSprite = spriteRegionForTile(castle, 0, 0, 48, 48);
+        Sprite castleSprite = spriteRegionForTile(castle, 0, 0, GameEngine.tileSize * 3, GameEngine.tileSize * 3);
         castleSprite.setColor(new Color(.7f, .7f, .75f, .9f));
         sprites.add(castleSprite);
         completeAnimation[0] = sprites;
@@ -158,14 +162,14 @@ public class AnimationFactory {
 
         if (flash) {
             for (double i = 0; i <= Math.PI; i += 0.1) {
-                tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
+                tile = spriteRegionForTile(highlight, 0, 0, GameEngine.tileSize, GameEngine.tileSize);
                 tile.setColor(r, g, b, a * (float) Math.sin(i));
                 tile.setScale(scale * 0.75f + scale * (float) Math.sin(i) * 0.25f);
                 sprites.add(tile);
                 animations.add(Integer.valueOf(1));
             }
         } else {
-            tile = spriteRegionForTile(highlight, 0, 0, 16, 16);
+            tile = spriteRegionForTile(highlight, 0, 0, GameEngine.tileSize, GameEngine.tileSize);
             tile.setColor(r, g, b, a);
             tile.setScale(scale);
 
@@ -183,7 +187,7 @@ public class AnimationFactory {
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
         for (int i = 2; i < 8; i++) {
-            Sprite sprite = spriteRegion(props, i, 0, 24, 24);
+            Sprite sprite = spriteRegion(props, i, 0, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2);
             sprites.add(sprite);
             animations.add(Integer.valueOf(4));
         }
@@ -198,28 +202,28 @@ public class AnimationFactory {
         ArrayList<Integer> animations = new ArrayList<Integer>();
         int animationTime = 40;
         if (type.equals("R")) {
-            sprites.add(spriteRegion(props, 4, 1, 24, 24));
-            sprites.add(spriteRegion(props, 5, 1, 24, 24));
+            sprites.add(spriteRegion(props, 4, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(props, 5, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else if (type.equals("G")) {
-            sprites.add(spriteRegion(props, 2, 1, 24, 24));
-            sprites.add(spriteRegion(props, 3, 1, 24, 24));
+            sprites.add(spriteRegion(props, 2, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(props, 3, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else if (type.equals("B")) {
-            sprites.add(spriteRegion(props, 0, 1, 24, 24));
-            sprites.add(spriteRegion(props, 1, 1, 24, 24));
+            sprites.add(spriteRegion(props, 0, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(props, 1, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else if (type.equals("D")) {
-            sprites.add(spriteRegion(props, 0, 0, 24, 24));
-            sprites.add(spriteRegion(props, 1, 0, 24, 24));
+            sprites.add(spriteRegion(props, 0, 0, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(props, 1, 0, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else if (type.equals("K")) {
-            sprites.add(spriteRegion(props, 6, 1, 24, 24));
-            sprites.add(spriteRegion(props, 7, 1, 24, 24));
+            sprites.add(spriteRegion(props, 6, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(props, 7, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else {
@@ -238,22 +242,22 @@ public class AnimationFactory {
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
         ArrayList<Integer> animations = new ArrayList<Integer>();
         if (type.equals("CH")) {
-            sprites.add(spriteRegion(props, 4, 2, 24, 24));
+            sprites.add(spriteRegion(props, 4, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else if (type.equals("BV")) {
-            sprites.add(spriteRegion(props, 2, 2, 24, 24));
+            sprites.add(spriteRegion(props, 2, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else if (type.equals("BH")) {
-            sprites.add(spriteRegion(props, 3, 2, 24, 24));
+            sprites.add(spriteRegion(props, 3, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else if (type.equals("BA")) {
-            sprites.add(spriteRegion(props, 0, 2, 24, 24));
+            sprites.add(spriteRegion(props, 0, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else if (type.equals("SC")) {
-            sprites.add(spriteRegion(props, 1, 2, 24, 24));
+            sprites.add(spriteRegion(props, 1, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else if (type.equals("LC")) {
-            sprites.add(spriteRegion(props, 5, 2, 24, 24));
+            sprites.add(spriteRegion(props, 5, 2, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(-1);
         } else {
             return null;

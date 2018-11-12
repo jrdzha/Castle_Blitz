@@ -26,7 +26,7 @@ void main(){
     vec2 pixelPosition = gl_FragCoord.xy;
     float attenuation;
     for(int i = 0; i < maxLights; i++){
-        attenuation = (pointLightIntensity[i] / (length((pointLightXY[i] - pixelPosition) / scale) + 10.0));
+        attenuation = (pointLightIntensity[i] * 15.0 / (length((pointLightXY[i] - pixelPosition) / scale) + 10.0));
         lighting += vec3(pointLightRGB[i] * attenuation);
     }
     lighting = max(lighting, vec3(0.8));

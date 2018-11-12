@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.map.MapComponent;
 import com.jaredzhao.castleblitz.components.mechanics.PositionComponent;
 import com.jaredzhao.castleblitz.components.player.CameraComponent;
@@ -29,13 +30,13 @@ public class CameraEntitySystem extends DisposableEntitySystem {
             CameraComponent camera = cameraComponentComponentMapper.get(entity);
             if (position.x < 0) {
                 position.x = 0;
-            } else if (position.x > map.getComponent(MapComponent.class).mapEntities[0].length * 16) {
-                position.x = map.getComponent(MapComponent.class).mapEntities[0].length * 16;
+            } else if (position.x > map.getComponent(MapComponent.class).mapEntities[0].length * GameEngine.tileSize) {
+                position.x = map.getComponent(MapComponent.class).mapEntities[0].length * GameEngine.tileSize;
             }
             if (position.y < 0) {
                 position.y = 0;
-            } else if (position.y > map.getComponent(MapComponent.class).mapEntities[0][0].length * 16) {
-                position.y = map.getComponent(MapComponent.class).mapEntities[0][0].length * 16;
+            } else if (position.y > map.getComponent(MapComponent.class).mapEntities[0][0].length * GameEngine.tileSize) {
+                position.y = map.getComponent(MapComponent.class).mapEntities[0][0].length * GameEngine.tileSize;
             }
             camera.camera.position.set(
                     (position.x + camera.camera.viewportWidth / 2),

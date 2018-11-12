@@ -27,7 +27,9 @@ public class GameEngine extends ApplicationAdapter {
 
     public static Vector2 safeAreaInsets;
 
-    public static String version = "Build 58"; //Current build version
+    public static String version = "Build 59"; //Current build version
+
+    public static int tileSize = 256;
 
     public static float lifetime;
 
