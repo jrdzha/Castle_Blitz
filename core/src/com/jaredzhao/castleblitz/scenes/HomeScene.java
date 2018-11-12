@@ -97,6 +97,7 @@ public class HomeScene extends Scene {
         settingsComponent.sfxOn = localSettings[1];
 
         headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int) (16 * camera.getComponent(CameraComponent.class).scale), true);
+        System.out.println(settingsComponent.username);
         usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, Color.WHITE, (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
         camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 16;
         camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 16;

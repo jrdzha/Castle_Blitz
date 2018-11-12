@@ -106,12 +106,12 @@ public class SignUpOrLoginScene extends Scene {
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
 
-        editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 73, 16, 16);
-        editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 53, 16, 16);
-        editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + 18, 33, 16, 16);
-        loginButton = entityFactory.createStaticPositionUI("login", true, 0, -70, 80, 16);
-        signUpButton = entityFactory.createStaticPositionUI("signUp", true, 0, -90, 80, 16);
-        backButton = entityFactory.createStaticPositionUI("back", true, 0, -70, 80, 16);
+        editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 73 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+        editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 53 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+        editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 33 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+        loginButton = entityFactory.createStaticPositionUI("login", true, 0, -70 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
+        signUpButton = entityFactory.createStaticPositionUI("signUp", true, 0, -90 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
+        backButton = entityFactory.createStaticPositionUI("back", true, 0, -70 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
 
         int textScale = 3;
         Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
@@ -128,14 +128,14 @@ public class SignUpOrLoginScene extends Scene {
         settingsComponent.signUpLoginError = "";
         settingsComponent.debug = true;
 
-        usernameText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale, 75 * cameraScale, new Color(1, 1, 1, 0.5f), textScale, false);
-        passwordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale, 55 * cameraScale, new Color(1, 1, 1, 0.5f), textScale, false);
-        confirmPasswordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale, 35 * cameraScale, new Color(1, 1, 1, 0.5f), textScale, false);
-        signUpLoginErrorText = entityFactory.createText("", 0, 15 * cameraScale, Color.WHITE, textScale, true);
+        usernameText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 75 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+        passwordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 55 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+        confirmPasswordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 35 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+        signUpLoginErrorText = entityFactory.createText("", 0, 15 * cameraScale * GameEngine.tileSize / 16, Color.WHITE, textScale, true);
 
-        setVisible(usernameText, false);
-        setVisible(passwordText, false);
-        setVisible(confirmPasswordText, false);
+        setVisible(usernameText, true);
+        setVisible(passwordText, true);
+        setVisible(confirmPasswordText, true);
 
         ashleyEngine.addEntity(loginButton);
         ashleyEngine.addEntity(signUpButton);
@@ -186,7 +186,6 @@ public class SignUpOrLoginScene extends Scene {
 
     @Override
     public int render() throws InterruptedException {
-        System.out.println(loginButton.getComponent(PositionComponent.class).x + ", " + loginButton.getComponent(PositionComponent.class).y);
 
         if (settingsComponent.editPassword || settingsComponent.editUsername || settingsComponent.editConfirmPassword) {
             Gdx.input.setOnscreenKeyboardVisible(true);
@@ -268,8 +267,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, false);
             setVisible(confirmPasswordText, false);
 
-            setYPosition(loginButton, -70);
-            setYPosition(signUpButton, -90);
+            setYPosition(loginButton, -70 * GameEngine.tileSize / 16);
+            setYPosition(signUpButton, -90 * GameEngine.tileSize / 16);
 
             if (settingsComponent.login) {
                 settingsComponent.login = false;
@@ -295,8 +294,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, true);
             setVisible(confirmPasswordText, true);
 
-            setYPosition(signUpButton, -70);
-            setYPosition(backButton, -90);
+            setYPosition(signUpButton, -70 * GameEngine.tileSize / 16);
+            setYPosition(backButton, -90 * GameEngine.tileSize / 16);
 
             if (settingsComponent.signUp) {
                 settingsComponent.signUp = false;
@@ -348,8 +347,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, true);
             setVisible(confirmPasswordText, false);
 
-            setYPosition(loginButton, -70);
-            setYPosition(backButton, -90);
+            setYPosition(loginButton, -70 * GameEngine.tileSize / 16);
+            setYPosition(backButton, -90 * GameEngine.tileSize / 16);
 
             if (settingsComponent.login) {
                 settingsComponent.login = false;

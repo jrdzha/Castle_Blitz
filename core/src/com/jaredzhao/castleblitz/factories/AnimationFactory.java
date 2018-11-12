@@ -19,9 +19,9 @@ public class AnimationFactory {
         tiles2 = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures7.png"));
         castle = new Texture(Gdx.files.internal("graphics/highres/castle1.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highres/highlight.png"));
-        ui = new Texture(Gdx.files.internal("ui/ui.png"));
-        ui2 = new Texture(Gdx.files.internal("ui/ui2.png"));
-        homeui = new Texture(Gdx.files.internal("ui/home-ui.png"));
+        ui = new Texture(Gdx.files.internal("ui/highres/ui.png"));
+        ui2 = new Texture(Gdx.files.internal("ui/highres/ui2.png"));
+        homeui = new Texture(Gdx.files.internal("ui/highres/home-ui.png"));
     }
 
     public Sprite spriteRegion(Texture tex, int x, int y, int w, int h) { //Generate sprite with given dimensions and location from a texture
