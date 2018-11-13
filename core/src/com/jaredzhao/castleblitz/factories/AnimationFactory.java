@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class AnimationFactory {
 
-    private Texture props, tiles1, tiles2, castle, highlight, ui, ui2, homeui;
+    private Texture props, tiles1, tiles2, castle, highlight, knightall, ui, ui2, homeui;
 
     public AnimationFactory() { //Load assets
         props = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures2.png"));
@@ -19,6 +19,7 @@ public class AnimationFactory {
         tiles2 = new Texture(Gdx.files.internal("graphics/highres/dungeon_textures7.png"));
         castle = new Texture(Gdx.files.internal("graphics/highres/castle1.png"));
         highlight = new Texture(Gdx.files.internal("graphics/highres/highlight.png"));
+        knightall = new Texture(Gdx.files.internal("graphics/highres/knightall2.png"));
         ui = new Texture(Gdx.files.internal("ui/highres/ui.png"));
         ui2 = new Texture(Gdx.files.internal("ui/highres/ui2.png"));
         homeui = new Texture(Gdx.files.internal("ui/highres/home-ui.png"));
@@ -224,6 +225,11 @@ public class AnimationFactory {
         } else if (type.equals("K")) {
             sprites.add(spriteRegion(props, 6, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             sprites.add(spriteRegion(props, 7, 1, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            animations.add(Integer.valueOf(animationTime));
+            animations.add(Integer.valueOf(animationTime));
+        } else if (type.equals("NEW KNIGHT")) {
+            sprites.add(spriteRegion(knightall, 0, 0, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
+            sprites.add(spriteRegion(knightall, 1, 0, GameEngine.tileSize * 3 / 2, GameEngine.tileSize * 3 / 2));
             animations.add(Integer.valueOf(animationTime));
             animations.add(Integer.valueOf(animationTime));
         } else {

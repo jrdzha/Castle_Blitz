@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.scenes;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.jaredzhao.castleblitz.GameEngine;
@@ -48,6 +49,9 @@ public class SignUpOrLoginScene extends Scene {
     private Entity editPasswordButton;
     private Entity editConfirmPasswordButton;
 
+    private int topButtonY;
+    private int bottomButtonY;
+
     private Entity usernameText;
     private Entity passwordText;
     private Entity confirmPasswordText;
@@ -92,7 +96,28 @@ public class SignUpOrLoginScene extends Scene {
         characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+        int textScale = 3;
+        if (GameEngine.platform.equals("mobile")) {
+            camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+
+            Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
+            while (testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 5.0 / 7.0) {
+                textScale++;
+                testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
+                testText.getComponent(TextComponent.class).bitmapFont = testText.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(testText.getComponent(TextComponent.class).freeTypeFontParameter);
+                testText.getComponent(TextComponent.class).glyphLayout.setText(testText.getComponent(TextComponent.class).bitmapFont, "***************");
+            }
+        } else if (GameEngine.platform.equals("desktop")) {
+            camera = entityFactory.createCamera(30 * GameEngine.tileSize);
+
+            Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
+            while (testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 5.0 / 30.0) {
+                textScale++;
+                testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
+                testText.getComponent(TextComponent.class).bitmapFont = testText.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(testText.getComponent(TextComponent.class).freeTypeFontParameter);
+                testText.getComponent(TextComponent.class).glyphLayout.setText(testText.getComponent(TextComponent.class).bitmapFont, "***************");
+            }
+        }
 
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
         Entity settings = entityFactory.createSettings();
@@ -106,32 +131,43 @@ public class SignUpOrLoginScene extends Scene {
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
 
-        editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 73 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
-        editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 53 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
-        editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, -camera.getComponent(CameraComponent.class).cameraWidth / 2 + (18 * GameEngine.tileSize / 16), 33 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
-        loginButton = entityFactory.createStaticPositionUI("login", true, 0, -70 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
-        signUpButton = entityFactory.createStaticPositionUI("signUp", true, 0, -90 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
-        backButton = entityFactory.createStaticPositionUI("back", true, 0, -70 * GameEngine.tileSize / 16, 5 * GameEngine.tileSize, GameEngine.tileSize);
 
-        int textScale = 3;
-        Entity testText = entityFactory.createText("***************", 0, 0, Color.WHITE, textScale, false);
-        while (testText.getComponent(TextComponent.class).glyphLayout.width / Gdx.graphics.getWidth() < 0.65f) {
-            textScale++;
-            testText.getComponent(TextComponent.class).freeTypeFontParameter.size = textScale;
-            testText.getComponent(TextComponent.class).bitmapFont = testText.getComponent(TextComponent.class).freeTypeFontGenerator.generateFont(testText.getComponent(TextComponent.class).freeTypeFontParameter);
-            testText.getComponent(TextComponent.class).glyphLayout.setText(testText.getComponent(TextComponent.class).bitmapFont, "***************");
-        }
 
         settingsComponent.username = "";
         settingsComponent.password = "";
         settingsComponent.confirmPassword = "";
         settingsComponent.signUpLoginError = "";
-        settingsComponent.debug = true;
+        settingsComponent.debug = false;
 
-        usernameText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 75 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
-        passwordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 55 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
-        confirmPasswordText = entityFactory.createText("", -Gdx.graphics.getWidth() / 2 + 32 * cameraScale * GameEngine.tileSize / 16, 35 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
-        signUpLoginErrorText = entityFactory.createText("", 0, 15 * cameraScale * GameEngine.tileSize / 16, Color.WHITE, textScale, true);
+        if (GameEngine.platform.equals("mobile")) {
+            topButtonY = -70 * GameEngine.tileSize / 16;
+            bottomButtonY = -90 * GameEngine.tileSize / 16;
+
+            editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, (int)(-2.5 * GameEngine.tileSize), 73 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, (int)(-2.5 * GameEngine.tileSize), 53 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, (int)(-2.5 * GameEngine.tileSize), 33 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            loginButton = entityFactory.createStaticPositionUI("login", true, 0, topButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            signUpButton = entityFactory.createStaticPositionUI("signUp", true, 0, bottomButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            backButton = entityFactory.createStaticPositionUI("back", true, 0, topButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            usernameText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 75 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            passwordText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 55 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            confirmPasswordText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 35 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            signUpLoginErrorText = entityFactory.createText("", 0, cameraScale * GameEngine.tileSize, Color.WHITE, textScale, true);
+        } else if (GameEngine.platform.equals("desktop")) {
+            topButtonY = -70 * GameEngine.tileSize / 16;
+            bottomButtonY = -90 * GameEngine.tileSize / 16;
+
+            editUsernameButton = entityFactory.createStaticPositionUI("editUsername", true, (int)(-2.5 * GameEngine.tileSize), 73 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            editPasswordButton = entityFactory.createStaticPositionUI("editPassword", true, (int)(-2.5 * GameEngine.tileSize), 53 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            editConfirmPasswordButton = entityFactory.createStaticPositionUI("editConfirmPassword", true, (int)(-2.5 * GameEngine.tileSize), 33 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize);
+            loginButton = entityFactory.createStaticPositionUI("login", true, 0, topButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            signUpButton = entityFactory.createStaticPositionUI("signUp", true, 0, bottomButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            backButton = entityFactory.createStaticPositionUI("back", true, 0, topButtonY, 5 * GameEngine.tileSize, GameEngine.tileSize);
+            usernameText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 75 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            passwordText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 55 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            confirmPasswordText = entityFactory.createText("", (int)(-1.75 * GameEngine.tileSize * cameraScale), 35 * cameraScale * GameEngine.tileSize / 16, new Color(1, 1, 1, 0.5f), textScale, false);
+            signUpLoginErrorText = entityFactory.createText("", 0, cameraScale * GameEngine.tileSize, Color.WHITE, textScale, true);
+        }
 
         setVisible(usernameText, true);
         setVisible(passwordText, true);
@@ -174,7 +210,7 @@ public class SignUpOrLoginScene extends Scene {
         systems.put("HighlightEntitySystem", new HighlightEntitySystem());
         systems.put("AnimationManagerEntitySystem", new AnimationManagerEntitySystem(settings));
         systems.put("BattleMechanicsEntitySystem", new BattleMechanicsEntitySystem(map, characterSelectionServer, battleMechanics));
-        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = false;
+        ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderGaussianBlur = true;
         ((RenderEntitySystem) systems.get("RenderEntitySystem")).renderFogOfWar = false;
 
         //Add systems to ashleyEngine
@@ -267,8 +303,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, false);
             setVisible(confirmPasswordText, false);
 
-            setYPosition(loginButton, -70 * GameEngine.tileSize / 16);
-            setYPosition(signUpButton, -90 * GameEngine.tileSize / 16);
+            setYPosition(loginButton, topButtonY);
+            setYPosition(signUpButton, bottomButtonY);
 
             if (settingsComponent.login) {
                 settingsComponent.login = false;
@@ -294,8 +330,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, true);
             setVisible(confirmPasswordText, true);
 
-            setYPosition(signUpButton, -70 * GameEngine.tileSize / 16);
-            setYPosition(backButton, -90 * GameEngine.tileSize / 16);
+            setYPosition(signUpButton, topButtonY);
+            setYPosition(backButton, bottomButtonY);
 
             if (settingsComponent.signUp) {
                 settingsComponent.signUp = false;
@@ -347,8 +383,8 @@ public class SignUpOrLoginScene extends Scene {
             setVisible(passwordText, true);
             setVisible(confirmPasswordText, false);
 
-            setYPosition(loginButton, -70 * GameEngine.tileSize / 16);
-            setYPosition(backButton, -90 * GameEngine.tileSize / 16);
+            setYPosition(loginButton, topButtonY);
+            setYPosition(backButton, bottomButtonY);
 
             if (settingsComponent.login) {
                 settingsComponent.login = false;

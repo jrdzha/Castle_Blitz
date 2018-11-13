@@ -95,8 +95,8 @@ public class InputEntitySystem extends DisposableEntitySystem implements InputPr
                 entity.getComponent(HasSoundEffectComponent.class).dynamicVolume = false;
                 entity.getComponent(HasSoundEffectComponent.class).soundLength = .038f;
 
-                getEngine().addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10, positionComponent.y + 18, 16, 16));
-                getEngine().addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10, positionComponent.y + 18, 16, 16));
+                getEngine().addEntity(entityFactory.createDynamicPositionUI("move", positionComponent.x - 10 * GameEngine.tileSize / 16, positionComponent.y + 18 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize));
+                getEngine().addEntity(entityFactory.createDynamicPositionUI("attack", positionComponent.x + 10 * GameEngine.tileSize / 16, positionComponent.y + 18 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize));
 
                 battleMechanicsStatesComponent.characterSelected = true;
             }

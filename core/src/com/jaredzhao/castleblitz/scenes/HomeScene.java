@@ -2,6 +2,7 @@ package com.jaredzhao.castleblitz.scenes;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.jaredzhao.castleblitz.GameEngine;
@@ -81,7 +82,11 @@ public class HomeScene extends Scene {
         characterSelectionServer.loadMap(rawMap);
         map = mapFactory.loadMap(rawMap);
 
-        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+        if (GameEngine.platform.equals("mobile")) {
+            camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+        } else if (GameEngine.platform.equals("desktop")) {
+            camera = entityFactory.createCamera(30 * GameEngine.tileSize);
+        }
         cameraScale = camera.getComponent(CameraComponent.class).scale;
 
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
@@ -96,11 +101,10 @@ public class HomeScene extends Scene {
         settingsComponent.soundOn = localSettings[0];
         settingsComponent.sfxOn = localSettings[1];
 
-        headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int) (16 * camera.getComponent(CameraComponent.class).scale), true);
-        System.out.println(settingsComponent.username);
-        usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, Color.WHITE, (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
-        camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 16;
-        camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 16;
+        headingText = entityFactory.createText("Castle", 0, Gdx.graphics.getHeight() * 7 / 20 - GameEngine.safeAreaInsets.y, Color.WHITE, (int) (GameEngine.tileSize * camera.getComponent(CameraComponent.class).scale), true);
+        usernameText = entityFactory.createText(settingsComponent.username, -52 * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - GameEngine.tileSize * cameraScale, Color.WHITE, (int) (GameEngine.tileSize * camera.getComponent(CameraComponent.class).scale / 2), false);
+        camera.getComponent(PositionComponent.class).x = GameEngine.tileSize * rawMap[0].length / 2 - GameEngine.tileSize;
+        camera.getComponent(PositionComponent.class).y = GameEngine.tileSize * rawMap[0][0].length / 2 - GameEngine.tileSize;
 
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
@@ -109,24 +113,24 @@ public class HomeScene extends Scene {
         ashleyEngine.addEntity(settings);
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShop", true,
-                -36,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
+                -36 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homePotions", true,
-                -18,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
+                -18 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeCastle", true,
                 0,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeArmory", true,
-                18,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
+                18 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize * 2));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeRanking", true,
-                36,
-                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30, GameEngine.tileSize, GameEngine.tileSize * 2));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20, GameEngine.tileSize * 5, GameEngine.tileSize));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeLevelStatus", true, -36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeGoldStatus", true, 0, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
-        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShardStatus", true, 36, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - 8, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
+                36 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / -2 + 30 * GameEngine.tileSize / 16, GameEngine.tileSize, GameEngine.tileSize * 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("battle", true, 0, -20 * GameEngine.tileSize / 16, GameEngine.tileSize * 5, GameEngine.tileSize));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeLevelStatus", true, -36 * GameEngine.tileSize / 16, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - GameEngine.tileSize / 2, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeGoldStatus", true, 0, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - GameEngine.tileSize / 2, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
+        ashleyEngine.addEntity(entityFactory.createStaticPositionUI("homeShardStatus", true, 36 * GameEngine.tileSize / 16, camera.getComponent(CameraComponent.class).cameraHeight / 2 - GameEngine.safeAreaInsets.y / cameraScale - GameEngine.tileSize / 2, GameEngine.tileSize * 2, GameEngine.tileSize / 2));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/armory.lvl"))));
 
@@ -165,9 +169,9 @@ public class HomeScene extends Scene {
                 socketAccessor.inputQueue.remove(0);
                 if (input[0].equals("ID")) {
                     settingsComponent.id = input[1];
-                    idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
+                    idText = entityFactory.createText(settingsComponent.id, 52 * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - GameEngine.tileSize * cameraScale, new Color(1, 0.5f, 0.5f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), false);
                     idText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
-                    preIdText = entityFactory.createText("/", 47 * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 16 * cameraScale, new Color(0.8f, 0.8f, 0.8f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale), false);
+                    preIdText = entityFactory.createText("/", 47 * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - GameEngine.tileSize * cameraScale, new Color(0.8f, 0.8f, 0.8f, 1), (int) (8 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), false);
                     preIdText.getComponent(PositionComponent.class).x -= idText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(preIdText);
                     ashleyEngine.addEntity(idText);
@@ -175,21 +179,21 @@ public class HomeScene extends Scene {
                     settingsComponent.rank = input[1];
                 } else if (input[0].equals("LEVEL")) {
                     settingsComponent.level = input[1];
-                    levelText = entityFactory.createText(input[1], -47.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), true);
+                    levelText = entityFactory.createText(input[1], -47.75f * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 4.75f * cameraScale * GameEngine.tileSize / 16, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), true);
                     ashleyEngine.addEntity(levelText);
                 } else if (input[0].equals("XP")) {
                     settingsComponent.xp = input[1];
-                    xpText = entityFactory.createText(input[1], -21.25f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], -21.25f * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale * GameEngine.tileSize / 16, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("SHARDS")) {
                     settingsComponent.shards = input[1];
-                    xpText = entityFactory.createText(input[1], 50.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], 50.75f * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale * GameEngine.tileSize / 16, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("GOLD")) {
                     settingsComponent.gold = input[1];
-                    xpText = entityFactory.createText(input[1], 14.75f * cameraScale, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale), false);
+                    xpText = entityFactory.createText(input[1], 14.75f * cameraScale * GameEngine.tileSize / 16, Gdx.graphics.getHeight() / 2 - GameEngine.safeAreaInsets.y - 6.5f * cameraScale * GameEngine.tileSize / 16, Color.WHITE, (int) (6 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), false);
                     xpText.getComponent(PositionComponent.class).x -= xpText.getComponent(TextComponent.class).glyphLayout.width;
                     ashleyEngine.addEntity(xpText);
                 } else if (input[0].equals("UNLOCKED-CHARACTERS")) {

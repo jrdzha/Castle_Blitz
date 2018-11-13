@@ -368,7 +368,7 @@ public class RenderEntitySystem extends DisposableEntitySystem {
                 } else if (tileTypeInt == 4) {
                     shapeRenderer.setColor(new Color(0, 0, 0, 0f));
                 }
-                shapeRenderer.rect((i * 16 - orthographicCamera.position.x - 8 + (orthographicCamera.viewportWidth / 2)), (j * 16 - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - 8), 16, 16);
+                shapeRenderer.rect((i * GameEngine.tileSize - orthographicCamera.position.x - GameEngine.tileSize / 2 + (orthographicCamera.viewportWidth / 2)), (j * GameEngine.tileSize - orthographicCamera.position.y + (orthographicCamera.viewportHeight / 2) - GameEngine.tileSize / 2), GameEngine.tileSize, GameEngine.tileSize);
 
             }
         }

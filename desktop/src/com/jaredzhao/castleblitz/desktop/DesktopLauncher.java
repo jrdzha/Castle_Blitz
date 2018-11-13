@@ -7,14 +7,14 @@ import com.jaredzhao.castleblitz.GameEngine;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.vSyncEnabled = true;
+		config.vSyncEnabled = false;
 		config.foregroundFPS = 60;
 		config.backgroundFPS = 60;
-		GameEngine gameEngine = new GameEngine();
 
 		config.title = "Castle Blitz - " + GameEngine.version;
 
-		String version = "iPhone X";
+		String version = "Desktop";
+		String platform = "desktop";
 
 		if(version.equals("iPhone X")) {
 			config.width = 1125 / 3;
@@ -42,10 +42,19 @@ public class DesktopLauncher {
 			config.width = 1440 / 3;
 			config.height = 2960 / 3;
 		} else if(version.equals("Desktop")){
+			config.width = LwjglApplicationConfiguration.getDesktopDisplayMode().width;
+			config.height = LwjglApplicationConfiguration.getDesktopDisplayMode().height;
+		} else if(version.equals("Desktop 1080")){
 			config.width = 1920;
 			config.height = 1080;
+		} else if(version.equals("Desktop 1440")){
+			config.width = 2560;
+			config.height = 1440;
 		}
 
+		config.fullscreen = true;
+
+		GameEngine gameEngine = new GameEngine(platform);
 		new LwjglApplication(gameEngine, config);
 	}
 }

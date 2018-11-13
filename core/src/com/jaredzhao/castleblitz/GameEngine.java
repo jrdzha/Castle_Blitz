@@ -28,10 +28,9 @@ public class GameEngine extends ApplicationAdapter {
     public static Vector2 safeAreaInsets;
 
     public static String version = "Build 59"; //Current build version
-
     public static int tileSize = 256;
-
     public static float lifetime;
+    public static String platform;
 
     public PreferencesAccessor preferencesAccessor;
     public SocketAccessor socketAccessor;
@@ -39,9 +38,10 @@ public class GameEngine extends ApplicationAdapter {
     /**
      * Creates the game object and initializes Accessors
      */
-    public GameEngine() {
+    public GameEngine(String platform) {
         preferencesAccessor = new PreferencesAccessor();
         socketAccessor = new SocketAccessor("jaredzhao.com");
+        this.platform = platform;
     }
 
     /**

@@ -81,16 +81,20 @@ public class SinglePlayerGameScene extends Scene {
         map = mapFactory.loadMap(rawMap);
 
         //Create entities
-        camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+        if (GameEngine.platform.equals("mobile")) {
+            camera = entityFactory.createCamera(7 * GameEngine.tileSize);
+        } else if (GameEngine.platform.equals("desktop")) {
+            camera = entityFactory.createCamera(30 * GameEngine.tileSize);
+        }
 
         Entity settings = entityFactory.createSettings();
         Entity fogOfWar = entityFactory.createFogOfWar(rawMap[0].length, rawMap[0][0].length);
-        whosTurnText = entityFactory.createText("YOUR TURN", 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int) (10 * camera.getComponent(CameraComponent.class).scale), true);
+        whosTurnText = entityFactory.createText("YOUR TURN", 0, Gdx.graphics.getHeight() * 2 / 5, Color.WHITE, (int) (10 * camera.getComponent(CameraComponent.class).scale * GameEngine.tileSize / 16), true);
         settingsComponent = settings.getComponent(SettingsComponent.class);
         battleMechanics = entityFactory.createBattleMechanics();
         battleMechanics.getComponent(BattleMechanicsStatesComponent.class).isMyTurn = true;
-        camera.getComponent(PositionComponent.class).x = 8 * rawMap[0].length - 8;
-        camera.getComponent(PositionComponent.class).y = 8 * rawMap[0][0].length - 8;
+        camera.getComponent(PositionComponent.class).x = GameEngine.tileSize * rawMap[0].length / 2 - GameEngine.tileSize / 2;
+        camera.getComponent(PositionComponent.class).y = GameEngine.tileSize * rawMap[0][0].length / 2 - GameEngine.tileSize / 2;
         ashleyEngine.addEntity(camera);
         ashleyEngine.addEntity(map);
         ashleyEngine.addEntity(settings);
@@ -99,23 +103,23 @@ public class SinglePlayerGameScene extends Scene {
         Vector2 insets = new Vector2(GameEngine.safeAreaInsets.x / camera.getComponent(CameraComponent.class).scale, GameEngine.safeAreaInsets.y / camera.getComponent(CameraComponent.class).scale);
 
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("pause", true,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 10 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sound", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 28 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("sfx", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 46 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("fastforward", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 64 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("home", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 82 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
         ashleyEngine.addEntity(entityFactory.createStaticPositionUI("debug", false,
-                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 100,
-                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
+                camera.getComponent(CameraComponent.class).cameraWidth / 2 - 100 * GameEngine.tileSize / 16,
+                camera.getComponent(CameraComponent.class).cameraHeight / 2 - 10 * GameEngine.tileSize / 16 - insets.y, GameEngine.tileSize, GameEngine.tileSize));
 
         ashleyEngine.addEntity(entityFactory.createMusic(mapFactory.loadAvailableTracks(Gdx.files.internal("levels/test2.lvl"))));
 
@@ -126,7 +130,7 @@ public class SinglePlayerGameScene extends Scene {
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 
-        renderEntitySystem = new RenderEntitySystem(camera, settings, fogOfWar, mapHeight, 1.6f, .12f);
+        renderEntitySystem = new RenderEntitySystem(camera, settings, fogOfWar, mapHeight, 1.35f, .03f);
 
         //Initialize systems
         systems.put("CameraEntitySystem", new CameraEntitySystem(map));

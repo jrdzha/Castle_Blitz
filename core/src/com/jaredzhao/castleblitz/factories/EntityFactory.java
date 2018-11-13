@@ -1,6 +1,7 @@
 package com.jaredzhao.castleblitz.factories;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -192,8 +193,8 @@ public class EntityFactory {
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
 
-            centerOffsetY = -8;
-            selectionSizeY = 16;
+            centerOffsetY = -GameEngine.tileSize / 2;
+            selectionSizeY = GameEngine.tileSize;
         } else if (type.equals("homePotions")) {
             Object[] sprite = animationFactory.createUI("homePotionsOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -203,8 +204,8 @@ public class EntityFactory {
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
 
-            centerOffsetY = -8;
-            selectionSizeY = 16;
+            centerOffsetY = -GameEngine.tileSize / 2;
+            selectionSizeY = GameEngine.tileSize;
         } else if (type.equals("homeShop")) {
             Object[] sprite = animationFactory.createUI("homeShopOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -214,8 +215,8 @@ public class EntityFactory {
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
 
-            centerOffsetY = -8;
-            selectionSizeY = 16;
+            centerOffsetY = -GameEngine.tileSize / 2;
+            selectionSizeY = GameEngine.tileSize;
         } else if (type.equals("homeArmory")) {
             Object[] sprite = animationFactory.createUI("homeArmoryOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -225,8 +226,8 @@ public class EntityFactory {
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
 
-            centerOffsetY = -8;
-            selectionSizeY = 16;
+            centerOffsetY = -GameEngine.tileSize / 2;
+            selectionSizeY = GameEngine.tileSize;
         } else if (type.equals("homeRanking")) {
             Object[] sprite = animationFactory.createUI("homeRankingOff", sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
@@ -236,8 +237,8 @@ public class EntityFactory {
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
             entity.getComponent(SpriteComponent.class).spriteList.add((ArrayList<Sprite>) sprite[0]);
 
-            centerOffsetY = -8;
-            selectionSizeY = 16;
+            centerOffsetY = -GameEngine.tileSize / 2;
+            selectionSizeY = GameEngine.tileSize;
         } else {
             Object[] sprite = animationFactory.createUI(type, sizeX, sizeY, 1);
             entity.getComponent(AnimationComponent.class).animationTimeList.add((ArrayList<Integer>) sprite[1]);
