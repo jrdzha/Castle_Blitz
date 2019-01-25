@@ -48,8 +48,8 @@ public class OpeningScene extends Scene {
         font = fontGenerator.generateFont(fontParameter);
         layout = new GlyphLayout();
 
-//        preferencesAccessor.putString("username", "%DOESNOTEXIST%");
-//        preferencesAccessor.putString("password", "%DOESNOTEXIST%");
+        preferencesAccessor.putString("username", "%DOESNOTEXIST%");
+        preferencesAccessor.putString("password", "%DOESNOTEXIST%");
 
         userData = preferencesAccessor.loadUserData();
 

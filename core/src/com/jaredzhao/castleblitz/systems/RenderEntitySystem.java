@@ -422,7 +422,6 @@ public class RenderEntitySystem extends DisposableEntitySystem {
             String currentTrack = "";
             if (musicComponent.currentMusicIndex != -1) {
                 currentTrack = musicComponent.currentMusicName;
-                currentTrack = currentTrack.substring(33, currentTrack.length() - 4);
             }
             debugText.add("Music Playing: " + currentTrack);
 

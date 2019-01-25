@@ -1,0 +1,10 @@
+name=Knight
+symbole=K
+cost=4
+health=100
+armor=0.15
+resistance=0.00
+movement_range=4
+attack_range=1
+strength=40
+magic=0

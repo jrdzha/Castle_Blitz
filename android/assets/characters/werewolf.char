@@ -1,0 +1,10 @@
+name=Werewolf
+symbole=W
+cost=6
+health=150
+armor=0.00
+resistance=0.20
+movement_range=6
+attack_range=1
+strength=40
+magic=0

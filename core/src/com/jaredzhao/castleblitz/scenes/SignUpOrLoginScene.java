@@ -189,7 +189,7 @@ public class SignUpOrLoginScene extends Scene {
         //Load settings
         boolean[] localSettings = preferencesAccessor.loadLocalSettings();
         settingsComponent.soundOn = localSettings[0];
-        settingsComponent.sfxOn = localSettings[1];
+        settingsComponent.sfxOn = false;
 
         int mapHeight = map.getComponent(MapComponent.class).mapEntities[0][0].length;
 

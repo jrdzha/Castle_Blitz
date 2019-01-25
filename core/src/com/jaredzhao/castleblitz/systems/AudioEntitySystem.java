@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.jaredzhao.castleblitz.GameEngine;
 import com.jaredzhao.castleblitz.components.audio.HasSoundEffectComponent;
 import com.jaredzhao.castleblitz.components.audio.MusicComponent;
 import com.jaredzhao.castleblitz.components.audio.SoundEffectComponent;
@@ -66,9 +67,10 @@ public class AudioEntitySystem extends DisposableEntitySystem {
                 float xPosition = Math.abs((positionComponent.x) - (orthographicCamera.position.x - (camera.getComponent(CameraComponent.class).cameraWidth / 2f)));
                 float yPosition = Math.abs((positionComponent.y) - (orthographicCamera.position.y - (camera.getComponent(CameraComponent.class).cameraHeight / 2f)));
 
-                soundEffectComponent.volume += (float) (75f / (Math.pow(Math.pow(xPosition, 2) + Math.pow(yPosition, 2), 1) + 512));
+                soundEffectComponent.volume += (float) (GameEngine.tileSize * GameEngine.tileSize / (Math.pow(Math.pow(xPosition, 2) + Math.pow(yPosition, 2), 1) + 512f));
+                soundEffectComponent.volume = Math.min(soundEffectComponent.volume, 0.5f);
             } else {
-                soundEffectComponent.volume = 1;
+                soundEffectComponent.volume = 1f;
             }
 
             if (entity.getComponent(StopSoundComponent.class) != null) {
@@ -122,6 +124,11 @@ public class AudioEntitySystem extends DisposableEntitySystem {
                         nextSong = songName;
                     }
                 }
+
+                if (nextSong.equals("")) {
+                    nextSong = music.songs[music.currentMusicIndex % music.songs.length];
+                }
+
                 entity.getComponent(MusicComponent.class).currentMusicName = nextSong;
                 music.currentMusic = audioFactory.loadMusic(nextSong);
             } else if (!music.shouldLoop && (music.currentMusic == null || !music.currentMusic.isPlaying())) {
